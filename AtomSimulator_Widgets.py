@@ -55,7 +55,7 @@ class SimulatorWidget(QWidget):
 		super().__init__(parent)
 		
 		# Define all default values 
-		self.moireBtn = "Trilayer"
+		self.moireBtn = "Single"
 		self.pix = 256
 		self.L = 7
 	
@@ -317,7 +317,7 @@ class SimulatorWidget(QWidget):
 		self.trilayer = QRadioButton("Trilayer")
 		self.trilayer.setToolTip("Create a trilayer moire lattice")
 
-		self.trilayer.setChecked(True) # Default value is no moire lattice. plot only 1 lattice
+		self.noMoire.setChecked(True) # Default value is no moire lattice. plot only 1 lattice
 		
 
 		## IMPORTANTTTT: have to connect all buttons to the SAME update__button function so theyll be like mutually exclusive. 
@@ -370,7 +370,7 @@ class SimulatorWidget(QWidget):
 		self.plotAtoms() 
 
 	def initCalcWidget(self):
-		groupBox = QGroupBox("STM Topography Time Estimator")
+		groupBox = QGroupBox("SPM Time Estimator")
 		groupBox.setToolTip("Calculate estimated time to take STM topography")
 		vlayout = QVBoxLayout(self)
 
@@ -406,7 +406,7 @@ class SimulatorWidget(QWidget):
 		self.vt_nm_label.setMinimumWidth(30)
 
 
-		self.topo_eta_label = QLabel("Estimated time: " + str(self.hrs) + 'h ' + str(self.mins) + 'min ' + str(self.sec) + 's')
+		self.topo_eta_label = QLabel("Est. time: " + str(self.hrs) + 'h ' + str(self.mins) + 'min ' + str(self.sec) + 's')
 
 		hbox.addWidget(self.topo_eta_label)
 
@@ -469,7 +469,7 @@ class SimulatorWidget(QWidget):
 			pass
 
 	def initMapCalcWidget(self):
-		groupBox = QGroupBox("dI/dV Map Time Estimator")
+		groupBox = QGroupBox("Spectroscopy Map Time Estimator")
 		groupBox.setToolTip("Calculate estimated time to take dI/dV map")
 		vlayout = QVBoxLayout(self)
 
@@ -599,6 +599,8 @@ class SimulatorWidget(QWidget):
 		self.hex1btn = QRadioButton("Hexagonal")
 		self.sq1btn = QRadioButton("Square")
 		self.hex1btn.setChecked(True)
+		self.hex1btn.setToolTip("Create hexagonal lattice")
+		self.sq1btn.setToolTip("Create square lattice")
 
 		# Connect btn to update functions when clicked https://www.tutorialspoint.com/pyqt/pyqt_qpushbutton_widget.htm
 		self.hex1btn.toggled.connect(self.updateLattice1)
@@ -791,6 +793,8 @@ class SimulatorWidget(QWidget):
 		self.hex2btn = QRadioButton("Hexagonal")
 		self.sq2btn = QRadioButton("Square")
 		self.hex2btn.setChecked(True)
+		self.hex2btn.setToolTip("Create hexagonal lattice")
+		self.sq2btn.setToolTip("Create square lattice")
 
 		# Connect btn to update functions when clicked https://www.tutorialspoint.com/pyqt/pyqt_qpushbutton_widget.htm
 		self.hex2btn.toggled.connect(self.updateLattice2)
@@ -1034,6 +1038,8 @@ class SimulatorWidget(QWidget):
 		self.hex3btn = QRadioButton("Hexagonal")
 		self.sq3btn = QRadioButton("Square")
 		self.hex3btn.setChecked(True)
+		self.hex3btn.setToolTip("Create hexagonal lattice")
+		self.sq3btn.setToolTip("Create square lattice")
 
 		# Connect btn to update functions when clicked https://www.tutorialspoint.com/pyqt/pyqt_qpushbutton_widget.htm
 		self.hex3btn.toggled.connect(self.updateLattice3)
@@ -1751,40 +1757,47 @@ class SimulatorWidget(QWidget):
 		# & https://pythonspot.com/pyqt5-file-dialog/
 		# self.dir_path = QFileDialog.getExistingDirectory(self, "Choose Directory", os.getcwd()) # This just opens the directory files. this seems like its more for opening/selecting a certain file rather than saving it 
 		self.saveFileName = QFileDialog.getSaveFileName(self, "Save file as...",os.getcwd())  # This returns a 2 item tuple, and the first item is the path directory w/the file name so save the files here
-		self.filePath=self.saveFileName[0] # This includes the full path... has form: ~/users/Desktop/folder/filename
-		self.fileName = self.filePath.split('/')[-1] # Split the string by the slant / character. Splitting it creates a list, the [-1] index retrieves the LAST entry of that list, which is going to be the main file name of all the files that will be saved
-														
+		# Use try/except because the gui would crash if i opened the file dialog to save a file, then pressed cancel
+		try:
+			self.filePath=self.saveFileName[0] # This includes the full path... has form: ~/users/Desktop/folder/filename
+			self.fileName = self.filePath.split('/')[-1] # Split the string by the slant / character. Splitting it creates a list, the [-1] index retrieves the LAST entry of that list, which is going to be the main file name of all the files that will be saved
+															
 
-		# Check whether the specified path exists or not. from https://appdividend.com/2021/07/03/how-to-create-directory-if-not-exist-in-python/
-		isExist = os.path.exists(self.filePath)
-		if not isExist:
-			# Create a new directory because it does not exist 
-			os.makedirs(self.filePath) # of the form ~/users/Desktop/filename (file name has no extension!)
+			# Check whether the specified path exists or not. from https://appdividend.com/2021/07/03/how-to-create-directory-if-not-exist-in-python/
+			isExist = os.path.exists(self.filePath)
+			if not isExist:
+				# Create a new directory because it does not exist 
+				os.makedirs(self.filePath) # of the form ~/users/Desktop/filename (file name has no extension!)
 
-	
-
-		# Save lattice & FFT figure as png's in the created folder:
-		# plt.savefig(self.fileName+'.png')
-		mplimg.imsave(self.filePath + '/' + self.fileName+'.png', self.Z, cmap = self.colormap_RS)
-		mplimg.imsave(self.filePath + '/' + self.fileName+'_FFT.png', self.fftZ, cmap = self.colormap_FFT)
 		
-		# Save atoms array as txt file in the created folder
-		np.savetxt(self.filePath + '/' + self.fileName +'.txt', self.Z)
 
-		# Also save a .txt file with the input parameter values: (IN THE FUTURE maybe make this a pandas dataframe or csv file or something?)
-		param_file = open(self.filePath + '/' + self.fileName +'_params.txt', "w+") # Open a new blank text file where we will write the input parameters
-		param_file.write("Moire: " + (self.moireBtn) + "\nPix: " + str(self.pix) + "\nL: " + str(self.L) +  "\nImage offset angle: " + str(self.theta_im) + "\nLow pass filter: " + str(self.filter_bool) + '\nSigma: ' + str(self.sigma) +
-				'\n\n--------------------------------\nLattice 1:\n--------------------------------\n' + self.lattice1 + '\na: ' + str(self.a) + '\ne11: ' + str(self.e11) +
-				'\ne12: ' + str(self.e12) + '\ne22: ' + str(self.e22) + "\nDots0/Honeycomb1: " + str(self.honeycomb) +
-				'\n\n--------------------------------\nLattice 2:\n--------------------------------\n' + self.lattice2 + '\nb: ' + str(self.b) + '\nd11: ' + str(self.d11) + 
-				'\nd12: ' + str(self.d12) + '\nd22: ' + str(self.d22) + "\nDots0/Honeycomb1: " + str(self.honeycomb2) +
-				'\nTwist angle (btwn lattice 1 & 2): ' + str(self.theta_tw) + '\n\n--------------------------------\nLattice 3:\n--------------------------------\n' + self.lattice3 + '\nc: ' + str(self.c) + '\nf11: ' + str(self.f11) + 
-				'\nf12: ' + str(self.f12) + '\nf22: ' + str(self.f22) + "\nDots0/Honeycomb1: " + str(self.honeycomb3) +
-				'\nTwist angle (btwn lattice 2 & 3): ' + str(self.theta_tw2) + 
-				'\n\n--------------------------------\nEstimated time to take STM topography: ' + str(self.hrs) + 'h ' + str(self.mins) + 'min ' + str(self.sec) + ' s\nTip scanner speed: ' + str(self.vt) + ' nm/s'
-				'\nEstimated time to take dI/dV map: ' + str(self.days_map) + 'days ' + str(self.hrs_map) + 'h ' + str(self.mins_map) +  'min\nTime per spectra: ' + str(self.tps) + ' s')
-				
-		param_file.close() # Close the text file
+			# Save lattice & FFT figure as png's in the created folder:
+			# plt.savefig(self.fileName+'.png')
+			mplimg.imsave(self.filePath + '/' + self.fileName+'.png', self.Z, cmap = self.colormap_RS)
+			mplimg.imsave(self.filePath + '/' + self.fileName+'_FFT.png', self.fftZ, cmap = self.colormap_FFT)
+			
+			# Save atoms array as txt file in the created folder
+			np.savetxt(self.filePath + '/' + self.fileName +'.txt', self.Z)
+
+			# Also save a .txt file with the input parameter values: (IN THE FUTURE maybe make this a pandas dataframe or csv file or something?)
+			param_file = open(self.filePath + '/' + self.fileName +'_params.txt', "w+") # Open a new blank text file where we will write the input parameters
+			param_file.write("Moire: " + (self.moireBtn) + "\nPix: " + str(self.pix) + "\nL: " + str(self.L) +  "\nImage offset angle: " + str(self.theta_im) + "\nLow pass filter: " + str(self.filter_bool) + '\nSigma: ' + str(self.sigma) +
+					'\n\n--------------------------------\nLattice 1:\n--------------------------------\n' + self.lattice1 + '\na: ' + str(self.a) + '\ne11: ' + str(self.e11) +
+					'\ne12: ' + str(self.e12) + '\ne22: ' + str(self.e22) + "\nDots0/Honeycomb1: " + str(self.honeycomb) +
+					'\n\n--------------------------------\nLattice 2:\n--------------------------------\n' + self.lattice2 + '\nb: ' + str(self.b) + '\nd11: ' + str(self.d11) + 
+					'\nd12: ' + str(self.d12) + '\nd22: ' + str(self.d22) + "\nDots0/Honeycomb1: " + str(self.honeycomb2) +
+					'\nTwist angle (btwn lattice 1 & 2): ' + str(self.theta_tw) + '\n\n--------------------------------\nLattice 3:\n--------------------------------\n' + self.lattice3 + '\nc: ' + str(self.c) + '\nf11: ' + str(self.f11) + 
+					'\nf12: ' + str(self.f12) + '\nf22: ' + str(self.f22) + "\nDots0/Honeycomb1: " + str(self.honeycomb3) +
+					'\nTwist angle (btwn lattice 2 & 3): ' + str(self.theta_tw2) + 
+					'\n\n--------------------------------\nEstimated time to take STM topography: ' + str(self.hrs) + 'h ' + str(self.mins) + 'min ' + str(self.sec) + ' s\nTip scanner speed: ' + str(self.vt) + ' nm/s'
+					'\nEstimated time to take dI/dV map: ' + str(self.days_map) + 'days ' + str(self.hrs_map) + 'h ' + str(self.mins_map) +  'min\nTime per spectra: ' + str(self.tps) + ' s')
+					
+			param_file.close() # Close the text file
+		
+
+		except FileNotFoundError: # https://www.pythonfixing.com/2022/03/fixed-pyqt5-application-shutting-down.html
+								  # If you press cancel when the file dialog window opens, it will return self.saveFileName = '' (an empty string), which gives error in the rest of the code above
+			return 				  # ^^ so it will bring up a FileNotFound error; if this happens, just do nothing / the filedialog box will close but the app wont crash 
 
 	def initFiltering(self):
 		groupBox = QGroupBox("Low pass filtering")
