@@ -52,8 +52,10 @@ def squareatoms(pix, L, a, theta, e11, e12, e22, honeycomb, origin_x = 0, origin
     """
   
     # Reciprocal lattice vectors for square crystal WITH STRAIN
-    k1 = (2*np.pi/a)*np.array([1 + e11, e12])
-    k2 = (2*np.pi/a)*np.array([e12, 1 + e22]) 
+    # k1 = (2*np.pi/a)*np.array([1 + e11, e12])
+    # k2 = (2*np.pi/a)*np.array([e12, 1 + e22]) 
+    k1 = (2*np.pi/a)*np.array([1 - e11, -e12])#/(1+e11+e22+e11*e22 - e12^2)
+    k2 = (2*np.pi/a)*np.array([-e12, 1 - e22])#/(1+e11+e22+e11*e22 - e12^2)
 
     # Create rotation matrix to the lattice by theta (assuming theta is in degrees)
     theta_rad = np.deg2rad(theta) # convert theta to radians
