@@ -1685,45 +1685,51 @@ class SimulatorWidget(QWidget):
 		### FYI: I do np.flipud(image) and then ax.invert_axes to set the y-axis to be normal like from 0--->N strting at the origin instead of it being reversed, from N ---> 0
 		# Plot original image
 		fig1 = ax00.imshow(np.flipud(self.Z), cmap = self.colormap_RS, extent=[0,self.L,0,self.L])
-		ax00.set_xlabel('x (nm)')
-		ax00.set_ylabel('y (nm)')
+		ax00.set_xticks([])
+		ax00.set_yticks([])
 		ax00.set_title('Real space image')
 		ax00.grid(False)
 		plt.colorbar(fig1, ax=ax00, fraction=0.046, pad=0.04) # fixed colorbar issues, from: https://stackoverflow.com/questions/16702479/matplotlib-colorbar-placement-and-size
 		# plt.tight_layout()
 
-
-		# Add a scalebar to the plot, from https://stackoverflow.com/questions/39786714/how-to-insert-scale-bar-in-a-map-in-matplotlib
 		from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
 		import matplotlib.font_manager as fm
-		fontprops = fm.FontProperties(size=12)
-		scalebar = AnchoredSizeBar(ax00.transData,
-                           3, '3 nm', 'lower left', 
-                           pad=0.1,
-                           color='white',
-                           frameon=False,
-                           size_vertical=0.1,
-                           fontproperties=fontprops)
+		# fontprops = fm.FontProperties(size=12)
+		scalebar_Z = AnchoredSizeBar(ax00.transData, np.ceil(self.L/10 *2)/2, str(np.ceil(self.L/10 *2)/2) + ' nm', 
+					     'lower right', pad=0.5, sep=5, borderpad=0.5, frameon=True, color='black', label_top=True)
 
-
-
-		ax00.add_artist(scalebar) 
-
-
+		ax00.add_artist(scalebar_Z)
 
 		# Plot FFT of original image
-		fig2 = ax01.imshow(np.flipud(self.fftZ_norm), cmap = self.colormap_FFT, extent=[-(self.pix * np.pi)/self.L, (self.pix * np.pi)/self.L,-(self.pix * np.pi)/self.L, (self.pix * np.pi)/self.L])
-		ax01.set_xlabel('$k_x$ (1/nm)')
-		ax01.set_ylabel('$k_y$ (1/nm)')
+		
+		# Calculate min/max extent of k-space given N pixels and L distance for a sampling rate L/N
+		freq = np.fft.fftfreq(self.pix, self.L/self.pix)
+		extL = 2*np.pi*np.min(freq) 
+		extR = 2*np.pi*np.max(freq)
+		
+		# # Below is an explicit calculation to see how Numpy sorts the frequencies for even/odd N pixels
+		# if self.pix%2==0:
+		# 	extL = -self.pix*np.pi/self.L
+		# 	extR = (self.pix-2)*np.pi/self.L
+		# else:
+		# 	extL = -(self.pix-1)*np.pi/self.L
+		# 	extR = (self.pix-1)*np.pi/self.L
+		
+		fig2 = ax01.imshow(np.flipud(self.fftZ_norm), cmap = self.colormap_FFT, extent=[extL, extR, extL, extR])
+		# ax01.set_xlabel('$k_x$ (1/nm)')
+		# ax01.set_ylabel('$k_y$ (1/nm)')
 		ax01.set_title('FFT')
 		ax01.grid(False)
+		ax01.set_xticks([])
+		ax01.set_yticks([])
 		plt.colorbar(fig2, ax=ax01, fraction=0.046, pad=0.04)
 		# self.make_colorbar(fig1)
 		# self.make_colorbar(fig2)
 		plt.tight_layout()
-		# self.colormap = plt.getp(fig1,"cmap")
-		# print(self.colormap)
-		# norm = 
+		scalebar_FFT = AnchoredSizeBar(ax01.transData, np.ceil(np.pi/self.a), str(np.ceil(np.pi/self.a)) + r' $\mathrm{nm}^{-1}$',
+					       'lower right', pad=0.5, sep=5, borderpad=0.5, frameon=True, color='black',label_top=True)
+
+		ax01.add_artist(scalebar_FFT)
 		self.canvas.draw() 
 
 	def initSaveButton(self):
