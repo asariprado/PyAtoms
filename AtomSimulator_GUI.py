@@ -52,15 +52,15 @@ class Window(QDialog):
         # Use 'self.' when defining basically any thing in the class - these are class member variables (?) they can be accessed in all functions throughout the class
 
         # Call functions to initialize everything else
-        self.setWindowTitle('Atom Simulator GUI - Version 1?') # Sets the title on the external window that pops up when you run the code
+        self.setWindowTitle('Atom Simulator GUI - Version 1') # Sets the title on the external window that pops up when you run the code
         self.initGeo() # Sets size of the popup gui window
         self.initWidgetsGrid() # For placing multiple widgets in the popup gui in a grid layout
         self.show()
 
 
 
-
-    def initGeo(self):
+    ## Tried to change the numbers here to change the size of the window but it doesnt work?
+    def initGeo(self): 
         # Set geometry of popup gui window
         self.setGeometry(100, 100, 1250,500)#self.width(),self.height())#1200, 850)
         # self.setStyleSheet("background: gray;") # Change color of background in window
@@ -71,7 +71,7 @@ class Window(QDialog):
       
         # Hard-coded these numbers just by running the code and seeing how it looked when I changed the numbers
         # These numbers set the size of the window that pops up
-        self.x = self.width() // 3 + 20
+        self.x = self.width() // 3 + 20 
         self.y = 40
         self.w = (2*self.width()) // 3 - 100
         self.h = self.height() - 100
@@ -116,7 +116,7 @@ class Window(QDialog):
 
 
         # Add matplotlib fig/toolbar to gui
-        grid.addWidget(self.SimWidget.initMatplotlibFig(),2,1,9,5) # Make the matplotlib canvas/figure the largest widget
+        grid.addWidget(self.SimWidget.initMatplotlibFig(),2,1,8,5) # Make the matplotlib canvas/figure the largest widget
         
         self.setLayout(grid)
         
@@ -137,6 +137,14 @@ class Window(QDialog):
                 sys.exit(app.exec_()) # Exit program if the exit button was clicked
 
 
+
+
+# Handle high resolution displays:  https://stackoverflow.com/questions/39247342/pyqt-gui-size-on-high-resolution-screens
+if hasattr(Qt, 'AA_EnableHighDpiScaling'):
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+if hasattr(Qt, 'AA_UseHighDpiPixmaps'):
+    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    
 # To run, go to the file path location in terminal and type  'python AtomSimulator_GUI.py'
 # driver code
 if __name__ == '__main__':
