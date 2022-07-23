@@ -106,7 +106,7 @@ class SimulatorWidget(QWidget):
 				            'tab10', 'tab10_r', 'tab20', 'tab20_r', 'tab20b', 'tab20b_r', 'tab20c','tab20c_r','flag', 'flag_r', 
 				            'prism','prism_r', 'ocean', 'ocean_r', 'gist_earth', 'gist_earth_r', 'terrain', 'terrain_r', 'gist_stern', 'gist_stern_r',
 				            'gnuplot', 'gnuplot_r', 'gnuplot2','gnuplot2_r', 'CMRmap', 'CMRmap_r', 'cubehelix', 'cubehelix_r', 'brg', 'brg_r',
-				            'gist_rainbow', 'gist_rainbow_r', 'rainbow','rainbow_r', 'jet', 'jet_r', 'turbo','turbo_r', 'nipy_spectral', 'nipy_spectral_r','gist_ncar', 'gist_ncar_r']
+				            'gist_rainbow', 'gist_rainbow_r', 'rainbow','rainbow_r', 'jet', 'jet_r', 'nipy_spectral', 'nipy_spectral_r','gist_ncar', 'gist_ncar_r']
 
 		self.figure =plt.figure(figsize=(10,10))
 		
@@ -657,7 +657,7 @@ class SimulatorWidget(QWidget):
 
 		# # # # # # # # # # # # # # # # # # # # 
 		### Pick honeycomb or dots pattern on lattice 1 ###
-		self.honeycomb1_label = QLabel("Plotting pattern:")
+		self.honeycomb1_label = QLabel("Overall phase:")
 		# Create radiobuttons
 		self.honeycombButton = QRadioButton("Honeycomb")
 		self.dotsButton = QRadioButton("Dots")
@@ -858,7 +858,7 @@ class SimulatorWidget(QWidget):
 
 		# # # # # # # # # # # # # # # # # # # # 
 		### Pick honeycomb or dots pattern on lattice 2 ###
-		self.honeycomb2_label = QLabel("Plotting pattern:")
+		self.honeycomb2_label = QLabel("Overall phase:")
 		self.honeycomb2_label.setToolTip("Choose whether to plot the lattice with a honeycomb pattern or dots for atoms... ")
 		# Create radiobuttons
 		self.honeycombButton2 = QRadioButton("Honeycomb")
@@ -1104,8 +1104,8 @@ class SimulatorWidget(QWidget):
 
 
 		# # # # # # # # # # # # # # # # # # # # 
-		### Pick honeycomb or dots pattern on lattice 2 ###
-		self.honeycomb3_label = QLabel("Plotting pattern:")
+		### Pick honeycomb or dots pattern on lattice 3 ###
+		self.honeycomb3_label = QLabel("Overall phase:")
 		self.honeycomb3_label.setToolTip("Choose whether to plot the lattice with a honeycomb pattern or dots for atoms... ")
 		# Create radiobuttons
 		self.honeycombButton3 = QRadioButton("Honeycomb")
@@ -1115,8 +1115,8 @@ class SimulatorWidget(QWidget):
 
 		### IMPORTANTTTT: have to connect all buttons to the same update__button function so theyll be like mutually exclusive.
 		## so if you click one, it means the others are set to false, etc. this is defined in the updating function
-		self.honeycombButton3.toggled.connect(self.updateHoneycombDotsButton2)
-		self.dotsButton3.toggled.connect(self.updateHoneycombDotsButton2)
+		self.honeycombButton3.toggled.connect(self.updateHoneycombDotsButton3)
+		self.dotsButton3.toggled.connect(self.updateHoneycombDotsButton3)
 
 		# Create QButtonGroup to be mutually exclusive w the honeycomb buttons
 		self.hc3_btn_group = QButtonGroup(self)
