@@ -101,7 +101,7 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin):
         phase *= exp(-1j*2*pi/3) # Muliply by phase shift to bring hollow site down to origin
 
     elif origin == "B-site":
-        phase *= exp(-1j*4*pi/3)**2 # Multiply by phase shift again to bring B-site to origin
+        phase *= exp(-1j*2*pi/3)**2 # Multiply by phase shift again to bring B-site to origin
 
 
     # Multiply the lattice by the phase , add the conjugate to get rid of imaginary.
