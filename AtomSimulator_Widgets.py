@@ -23,6 +23,7 @@ from numpy import arctan as arctan
 
 from numpy import sqrt as sqrt
 from numpy import log as log
+from numpy import pi as pi
 
 
 
@@ -81,9 +82,16 @@ class SimulatorWidget(QWidget):
 		self.f12 = 0
 		self.f22 = 0 
 
-		self.honeycomb = 0
-		self.honeycomb2 = 0
-		self.honeycomb3 = 0
+		# self.honeycomb = 0
+		# self.honeycomb2 = 0
+		# self.honeycomb3 = 0
+
+		self.alpha1 = 1
+		self.beta1 = 0
+		self.alpha2 = 1
+		self.beta2 = 0
+		self.alpha3 = 1
+		self.beta3 = 0
 
 		self.filter_bool = False
 		self.sigma = 0
@@ -110,7 +118,7 @@ class SimulatorWidget(QWidget):
 
 		self.figure =plt.figure(figsize=(10,10))
 		
-		self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.honeycomb)
+		self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.alpha1, self.beta1)
 		
 		# STM topography time estimator
 		self.vt = 20 # velocity of tip scanner, for calculating how long the image should take when doing actual stm measurements
@@ -587,8 +595,11 @@ class SimulatorWidget(QWidget):
 
 		self.tab1a = QWidget(self)
 		self.tab2a = QWidget(self)
+		self.tab3a = QWidget(self)
 		self.lat1tabs.addTab(self.tab1a, "Parameters")
+		self.lat1tabs.addTab(self.tab3a, "Sublattices")
 		self.lat1tabs.addTab(self.tab2a, "Strain")
+		
 
 
 
@@ -655,32 +666,7 @@ class SimulatorWidget(QWidget):
 		self.tab1a.layout.addLayout(h2box)
 
 
-		# # # # # # # # # # # # # # # # # # # # 
-		### Pick honeycomb or dots pattern on lattice 1 ###
-		self.honeycomb1_label = QLabel("Overall phase:")
-		# Create radiobuttons
-		self.honeycombButton = QRadioButton("Honeycomb")
-		self.dotsButton = QRadioButton("Dots")
-		self.dotsButton.setToolTip("Atoms look like dots")
-		self.dotsButton.setChecked(True)
-
-		# Create QButtonGroup to be mutually exclusive w the lattice symmetry buttons. This is all u have to do for them to work correctly! 
-		self.hc_btn_group = QButtonGroup(self)
-		self.hc_btn_group.addButton(self.honeycombButton)
-		self.hc_btn_group.addButton(self.dotsButton)
-
-		### IMPORTANTTTT: have to connect all buttons to the same update__button function so theyll be like mutually exclusive. so if you click one, it means the others are set to false, etc. this is defined in the updating function
-		self.honeycombButton.toggled.connect(self.updateHoneycombDotsButton)
-		self.dotsButton.toggled.connect(self.updateHoneycombDotsButton)
-
-
-		h6box = QHBoxLayout(self)
-		h6box.addWidget(self.honeycombButton)
-		h6box.addWidget(self.dotsButton)
-
-		# Add honeycomb/dots button widgets to the tab 1
-		self.tab1a.layout.addWidget(self.honeycomb1_label)
-		self.tab1a.layout.addLayout(h6box)
+		
 
 
 
@@ -756,11 +742,112 @@ class SimulatorWidget(QWidget):
 		self.tab2a.layout.addLayout(h4box)
 		self.tab2a.layout.addLayout(h5box)
 
+
+
+
+
+		# # # # # # # # # # # # # # # # # # # # # 
+		# ### Pick honeycomb or dots pattern on lattice 1 ###
+		# self.honeycomb1_label = QLabel("Overall phase:")
+		# # Create radiobuttons
+		# self.honeycombButton = QRadioButton("Honeycomb")
+		# self.dotsButton = QRadioButton("Dots")
+		# self.dotsButton.setToolTip("Atoms look like dots")
+		# self.dotsButton.setChecked(True)
+
+		# # Create QButtonGroup to be mutually exclusive w the lattice symmetry buttons. This is all u have to do for them to work correctly! 
+		# self.hc_btn_group = QButtonGroup(self)
+		# self.hc_btn_group.addButton(self.honeycombButton)
+		# self.hc_btn_group.addButton(self.dotsButton)
+
+		# ### IMPORTANTTTT: have to connect all buttons to the same update__button function so theyll be like mutually exclusive. so if you click one, it means the others are set to false, etc. this is defined in the updating function
+		# self.honeycombButton.toggled.connect(self.updateHoneycombDotsButton)
+		# self.dotsButton.toggled.connect(self.updateHoneycombDotsButton)
+
+		# # h6box = QHBoxLayout(self)
+		# # h6box.addWidget(self.honeycombButton)
+		# # h6box.addWidget(self.dotsButton)
+
+
+
+		self.sublattices_label1 = QLabel("Pick strength of sublattices Z = A + B")
+		self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+
+		# # # # # # # # # # # # # # # # # # # # 
+		### Pick alpha1 weight of sublattice a ###
+		# self.alpha1_param_label = QLabel("Lattice constant (nm)", self)
+		# self.alpha1_param_label.setToolTip("Weight of sublattice a")
+		self.alpha1_label = QLabel("alpha1:", self)
+		self.alpha1_label.setToolTip("Weight of sublattice a")
+		self.alpha1_input = QLineEdit(self)
+		self.alpha1_input.returnPressed.connect(self.update_alpha1) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
+		self.alpha1_input.setPlaceholderText(str(self.alpha1))
+		self.alpha1_input.setToolTip("Weight of sublattice a")
+		self.alpha1_input.setFixedWidth(60)
+
+		
+		self.alpha1_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
+		self.alpha1_btn.clicked.connect(self.update_alpha1)
+		self.alpha1_btn.setAutoDefault(False)
+
+
+		h7box = QHBoxLayout(self)
+		h7box.addWidget(self.alpha1_label)
+		h7box.addWidget(self.alpha1_input)
+		h7box.addWidget(self.alpha1_btn)
+
+
+
+		# # # # # # # # # # # # # # # # # # # # 
+		### Pick beta1 weight of sublattice b ###
+		# self.beta1_param_label = QLabel("Lattice constant (nm)", self)
+		# self.beta1_param_label.setToolTip("Weight of sublattice B")
+		self.beta1_label = QLabel("beta1:", self)
+		self.beta1_label.setToolTip("Weight of sublattice B")
+		self.beta1_input = QLineEdit(self)
+		self.beta1_input.returnPressed.connect(self.update_beta1) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
+		self.beta1_input.setPlaceholderText(str(self.beta1))
+		self.beta1_input.setToolTip("Weight of sublattice B")
+		self.beta1_input.setFixedWidth(60)
+
+		
+		self.beta1_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
+		self.beta1_btn.clicked.connect(self.update_beta1)
+		self.beta1_btn.setAutoDefault(False)
+
+
+		h8box = QHBoxLayout(self)
+		h8box.addWidget(self.beta1_label)
+		h8box.addWidget(self.beta1_input)
+		h8box.addWidget(self.beta1_btn)
+
+
+
+
+
+
+		
+
+		# Add honeycomb/dots button widgets to the tab 3
+		self.tab3a.layout = QVBoxLayout(self)
+		self.tab3a.layout.addWidget(self.sublattices_label1)
+		self.tab3a.layout.addWidget(self.sublattices_label2)
+		# self.tab3a.layout.addLayout(h6box)
+		self.tab3a.layout.addLayout(h7box)
+		self.tab3a.layout.addLayout(h8box)
+
+
+
+
+
+
 		# Set the layouts for each tab...
 		self.tab1a.setLayout(self.tab1a.layout)
 		self.tab1a.layout.setSpacing(1)
 		self.tab2a.setLayout(self.tab2a.layout)
 		self.tab2a.layout.setSpacing(1)
+		self.tab3a.setLayout(self.tab3a.layout)
+		self.tab3a.layout.setSpacing(1)
 
 		vlayout = QVBoxLayout(self)
 		vlayout.addWidget(self.lat1tabs)
@@ -782,7 +869,9 @@ class SimulatorWidget(QWidget):
 
 		self.tab1b = QWidget(self)
 		self.tab2b = QWidget(self)
+		self.tab3b = QWidget(self)
 		self.lat2tabs.addTab(self.tab1b, "Parameters")
+		self.lat2tabs.addTab(self.tab3b, "Sublattices")
 		self.lat2tabs.addTab(self.tab2b, "Strain")
 
 			
@@ -855,35 +944,6 @@ class SimulatorWidget(QWidget):
 		self.tab1b.layout.addWidget(self.b_param_label)
 		self.tab1b.layout.addLayout(h2box)
 
-
-		# # # # # # # # # # # # # # # # # # # # 
-		### Pick honeycomb or dots pattern on lattice 2 ###
-		self.honeycomb2_label = QLabel("Overall phase:")
-		self.honeycomb2_label.setToolTip("Choose whether to plot the lattice with a honeycomb pattern or dots for atoms... ")
-		# Create radiobuttons
-		self.honeycombButton2 = QRadioButton("Honeycomb")
-		self.dotsButton2 = QRadioButton("Dots")
-		self.dotsButton2.setToolTip("Atoms look like dots")
-		self.dotsButton2.setChecked(True)
-
-		### IMPORTANTTTT: have to connect all buttons to the same update__button function so theyll be like mutually exclusive.
-		## so if you click one, it means the others are set to false, etc. this is defined in the updating function
-		self.honeycombButton2.toggled.connect(self.updateHoneycombDotsButton2)
-		self.dotsButton2.toggled.connect(self.updateHoneycombDotsButton2)
-
-		# Create QButtonGroup to be mutually exclusive w the honeycomb buttons
-		self.hc2_btn_group = QButtonGroup(self)
-		self.hc2_btn_group.addButton(self.honeycombButton2)
-		self.hc2_btn_group.addButton(self.dotsButton2)
-
-		h6box = QHBoxLayout(self)
-		h6box.addWidget(self.honeycombButton2)
-		h6box.addWidget(self.dotsButton2)
-
-
-		# Add honeycomb/dots button widgets to the tab 1
-		self.tab1b.layout.addWidget(self.honeycomb2_label)
-		self.tab1b.layout.addLayout(h6box)
 
 
 		# # # # # # # # # # # # # # # # # # # # 
@@ -1001,11 +1061,103 @@ class SimulatorWidget(QWidget):
 
 
 
+
+		# # # # # # # # # # # # # # # # # # # # # 
+		# ### Pick honeycomb or dots pattern on lattice 2 ###
+		# self.honeycomb2_label = QLabel("Overall phase:")
+		# self.honeycomb2_label.setToolTip("Choose whether to plot the lattice with a honeycomb pattern or dots for atoms... ")
+		# # Create radiobuttons
+		# self.honeycombButton2 = QRadioButton("Honeycomb")
+		# self.dotsButton2 = QRadioButton("Dots")
+		# self.dotsButton2.setToolTip("Atoms look like dots")
+		# self.dotsButton2.setChecked(True)
+
+		# ### IMPORTANTTTT: have to connect all buttons to the same update__button function so theyll be like mutually exclusive.
+		# ## so if you click one, it means the others are set to false, etc. this is defined in the updating function
+		# self.honeycombButton2.toggled.connect(self.updateHoneycombDotsButton2)
+		# self.dotsButton2.toggled.connect(self.updateHoneycombDotsButton2)
+
+		# # Create QButtonGroup to be mutually exclusive w the honeycomb buttons
+		# self.hc2_btn_group = QButtonGroup(self)
+		# self.hc2_btn_group.addButton(self.honeycombButton2)
+		# self.hc2_btn_group.addButton(self.dotsButton2)
+
+		# h6box = QHBoxLayout(self)
+		# h6box.addWidget(self.honeycombButton2)
+		# h6box.addWidget(self.dotsButton2)
+
+
+
+		self.sublattices_label1 = QLabel("Pick strength of sublattices Z = A + B")
+		self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+
+		# # # # # # # # # # # # # # # # # # # # 
+		### Pick alpha2 weight of sublattice a ###
+		# self.alpha1_param_label = QLabel("Lattice constant (nm)", self)
+		# self.alpha1_param_label.setToolTip("Weight of sublattice a")
+		self.alpha2_label = QLabel("alpha2:", self)
+		self.alpha2_label.setToolTip("Weight of sublattice a")
+		self.alpha2_input = QLineEdit(self)
+		self.alpha2_input.returnPressed.connect(self.update_alpha2) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
+		self.alpha2_input.setPlaceholderText(str(self.alpha2))
+		self.alpha2_input.setToolTip("Weight of sublattice a")
+		self.alpha2_input.setFixedWidth(60)
+
+		
+		self.alpha2_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
+		self.alpha2_btn.clicked.connect(self.update_alpha2)
+		self.alpha2_btn.setAutoDefault(False)
+
+
+		h7box = QHBoxLayout(self)
+		h7box.addWidget(self.alpha2_label)
+		h7box.addWidget(self.alpha2_input)
+		h7box.addWidget(self.alpha2_btn)
+
+
+
+		# # # # # # # # # # # # # # # # # # # # 
+		### Pick beta2 weight of sublattice b ###
+		# self.beta1_param_label = QLabel("Lattice constant (nm)", self)
+		# self.beta1_param_label.setToolTip("Weight of sublattice B")
+		self.beta2_label = QLabel("beta2:", self)
+		self.beta2_label.setToolTip("Weight of sublattice B")
+		self.beta2_input = QLineEdit(self)
+		self.beta2_input.returnPressed.connect(self.update_beta2) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
+		self.beta2_input.setPlaceholderText(str(self.beta2))
+		self.beta2_input.setToolTip("Weight of sublattice B")
+		self.beta2_input.setFixedWidth(60)
+
+		
+		self.beta2_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
+		self.beta2_btn.clicked.connect(self.update_beta2)
+		self.beta2_btn.setAutoDefault(False)
+
+
+		h8box = QHBoxLayout(self)
+		h8box.addWidget(self.beta2_label)
+		h8box.addWidget(self.beta2_input)
+		h8box.addWidget(self.beta2_btn)
+
+
+
+		# Add honeycomb/dots button widgets to the tab 3
+		self.tab3b.layout = QVBoxLayout(self)
+		self.tab3b.layout.addWidget(self.sublattices_label1)
+		self.tab3b.layout.addWidget(self.sublattices_label2)
+		# self.tab3b.layout.addLayout(h6box)
+		self.tab3b.layout.addLayout(h7box)
+		self.tab3b.layout.addLayout(h8box)
+
+
+
 		# Set the layouts for each tab...
 		self.tab1b.setLayout(self.tab1b.layout)
 		self.tab1b.layout.setSpacing(1)
 		self.tab2b.setLayout(self.tab2b.layout)
 		self.tab2b.layout.setSpacing(1)
+		self.tab3b.setLayout(self.tab3b.layout)
+		self.tab3b.layout.setSpacing(1)
 
 
 		vlayout = QVBoxLayout(self)
@@ -1027,7 +1179,9 @@ class SimulatorWidget(QWidget):
 
 		self.tab1c = QWidget(self)
 		self.tab2c = QWidget(self)
+		self.tab3c = QWidget(self)
 		self.lat3tabs.addTab(self.tab1c, "Parameters")
+		self.lat3tabs.addTab(self.tab3c, "Sublattices")
 		self.lat3tabs.addTab(self.tab2c, "Strain")
 
 
@@ -1103,35 +1257,7 @@ class SimulatorWidget(QWidget):
 
 
 
-		# # # # # # # # # # # # # # # # # # # # 
-		### Pick honeycomb or dots pattern on lattice 3 ###
-		self.honeycomb3_label = QLabel("Overall phase:")
-		self.honeycomb3_label.setToolTip("Choose whether to plot the lattice with a honeycomb pattern or dots for atoms... ")
-		# Create radiobuttons
-		self.honeycombButton3 = QRadioButton("Honeycomb")
-		self.dotsButton3 = QRadioButton("Dots")
-		self.dotsButton3.setToolTip("Atoms look like dots")
-		self.dotsButton3.setChecked(True)
-
-		### IMPORTANTTTT: have to connect all buttons to the same update__button function so theyll be like mutually exclusive.
-		## so if you click one, it means the others are set to false, etc. this is defined in the updating function
-		self.honeycombButton3.toggled.connect(self.updateHoneycombDotsButton3)
-		self.dotsButton3.toggled.connect(self.updateHoneycombDotsButton3)
-
-		# Create QButtonGroup to be mutually exclusive w the honeycomb buttons
-		self.hc3_btn_group = QButtonGroup(self)
-		self.hc3_btn_group.addButton(self.honeycombButton3)
-		self.hc3_btn_group.addButton(self.dotsButton3)
-
-		h6box = QHBoxLayout(self)
-		h6box.addWidget(self.honeycombButton3)
-		h6box.addWidget(self.dotsButton3)
-
-	
-		# Add honeycomb/dots button widgets to the tab 1
-		self.tab1c.layout.addWidget(self.honeycomb3_label)
-		self.tab1c.layout.addLayout(h6box)
-
+		
 
 
 		# # # # # # # # # # # # # # # # # # # # 
@@ -1250,11 +1376,108 @@ class SimulatorWidget(QWidget):
 
 
 
+
+		# # # # # # # # # # # # # # # # # # # # # 
+		# ### Pick honeycomb or dots pattern on lattice 3 ###
+		# self.honeycomb3_label = QLabel("Overall phase:")
+		# self.honeycomb3_label.setToolTip("Choose whether to plot the lattice with a honeycomb pattern or dots for atoms... ")
+		# # Create radiobuttons
+		# self.honeycombButton3 = QRadioButton("Honeycomb")
+		# self.dotsButton3 = QRadioButton("Dots")
+		# self.dotsButton3.setToolTip("Atoms look like dots")
+		# self.dotsButton3.setChecked(True)
+
+		# ### IMPORTANTTTT: have to connect all buttons to the same update__button function so theyll be like mutually exclusive.
+		# ## so if you click one, it means the others are set to false, etc. this is defined in the updating function
+		# self.honeycombButton3.toggled.connect(self.updateHoneycombDotsButton3)
+		# self.dotsButton3.toggled.connect(self.updateHoneycombDotsButton3)
+
+		# # Create QButtonGroup to be mutually exclusive w the honeycomb buttons
+		# self.hc3_btn_group = QButtonGroup(self)
+		# self.hc3_btn_group.addButton(self.honeycombButton3)
+		# self.hc3_btn_group.addButton(self.dotsButton3)
+
+		# h6box = QHBoxLayout(self)
+		# h6box.addWidget(self.honeycombButton3)
+		# h6box.addWidget(self.dotsButton3)
+
+	
+
+		self.sublattices_label1 = QLabel("Pick strength of sublattices (Z = A + B)")
+		self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+		# # # # # # # # # # # # # # # # # # # # 
+		### Pick alpha3 weight of sublattice a ###
+		# self.alpha1_param_label = QLabel("Lattice constant (nm)", self)
+		# self.alpha1_param_label.setToolTip("Weight of sublattice a")
+		self.alpha3_label = QLabel("alpha3:", self)
+		self.alpha3_label.setToolTip("Weight of sublattice a")
+		self.alpha3_input = QLineEdit(self)
+		self.alpha3_input.returnPressed.connect(self.update_alpha3) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
+		self.alpha3_input.setPlaceholderText(str(self.alpha3))
+		self.alpha3_input.setToolTip("Weight of sublattice a")
+		self.alpha3_input.setFixedWidth(60)
+
+		
+		self.alpha3_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
+		self.alpha3_btn.clicked.connect(self.update_alpha3)
+		self.alpha3_btn.setAutoDefault(False)
+
+
+		h7box = QHBoxLayout(self)
+		h7box.addWidget(self.alpha3_label)
+		h7box.addWidget(self.alpha3_input)
+		h7box.addWidget(self.alpha3_btn)
+
+
+
+		# # # # # # # # # # # # # # # # # # # # 
+		### Pick beta1 weight of sublattice b ###
+		# self.beta1_param_label = QLabel("Lattice constant (nm)", self)
+		# self.beta1_param_label.setToolTip("Weight of sublattice B")
+		self.beta3_label = QLabel("beta3:", self)
+		self.beta3_label.setToolTip("Weight of sublattice B")
+		self.beta3_input = QLineEdit(self)
+		self.beta3_input.returnPressed.connect(self.update_beta3) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
+		self.beta3_input.setPlaceholderText(str(self.beta3))
+		self.beta3_input.setToolTip("Weight of sublattice B")
+		self.beta3_input.setFixedWidth(60)
+
+		
+		self.beta3_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
+		self.beta3_btn.clicked.connect(self.update_beta3)
+		self.beta3_btn.setAutoDefault(False)
+
+
+		h8box = QHBoxLayout(self)
+		h8box.addWidget(self.beta3_label)
+		h8box.addWidget(self.beta3_input)
+		h8box.addWidget(self.beta3_btn)
+
+
+
+
+
+
+		
+
+		# Add honeycomb/dots button widgets to the tab 3
+		self.tab3c.layout = QVBoxLayout(self)
+		self.tab3c.layout.addWidget(self.sublattices_label1)
+		self.tab3c.layout.addWidget(self.sublattices_label2)
+		self.tab3c.layout.addLayout(h7box)
+		self.tab3c.layout.addLayout(h8box)
+
+
+
+
+
 		# Set the layouts for each tab...
 		self.tab1c.setLayout(self.tab1c.layout)
 		self.tab1c.layout.setSpacing(1)
 		self.tab2c.setLayout(self.tab2c.layout)
 		self.tab2c.layout.setSpacing(1)
+		self.tab3c.setLayout(self.tab3c.layout)
+		self.tab3c.layout.setSpacing(1)
 
 
 		# Add tabs to a QVBoxLayout to be able to set the whole groupbox layout to the tabs
@@ -1538,6 +1761,114 @@ class SimulatorWidget(QWidget):
 				self.honeycomb3 = 0
 		self.plotAtoms()
 
+	def update_alpha1(self):
+		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
+				# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
+			self.alpha1 = eval(self.alpha1_input.text()) 
+			self.alpha1_input.setPlaceholderText(str(self.alpha1))
+			self.plotAtoms() 
+		except:
+			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
+			# https://www.w3schools.com/python/python_try_except.asp
+			# Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
+			self.alpha1_error = QMessageBox()
+			self.alpha1_error.setWindowTitle("Error")
+			self.alpha1_error.setText("Type in a number or numerical expression")
+			self.alpha1_error.setInformativeText("Your input for alpha1 is: " +  str(self.alpha1_input.text()))
+			self.alpha1_error.setIcon(QMessageBox.Warning)
+			self.alpha1_error.setStandardButtons(QMessageBox.Retry)
+			x = self.alpha1_error.exec()
+
+	def update_beta1(self):
+		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
+				# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
+			self.beta1 = eval(self.beta1_input.text()) 
+			self.beta1_input.setPlaceholderText(str(self.beta1))
+			self.plotAtoms() 
+		except:
+			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
+			# https://www.w3schools.com/python/python_try_except.asp
+			# Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
+			self.beta1_error = QMessageBox()
+			self.beta1_error.setWindowTitle("Error")
+			self.beta1_error.setText("Type in a number or numerical expression")
+			self.beta1_error.setInformativeText("Your input for beta1 is: " +  str(self.beta1_input.text()))
+			self.beta1_error.setIcon(QMessageBox.Warning)
+			self.beta1_error.setStandardButtons(QMessageBox.Retry)
+			x = self.beta1_error.exec()
+
+	def update_alpha2(self):
+		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
+				# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
+			self.alpha2 = eval(self.alpha2_input.text()) 
+			self.alpha2_input.setPlaceholderText(str(self.alpha2))
+			self.plotAtoms() 
+		except:
+			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
+			# https://www.w3schools.com/python/python_try_except.asp
+			# Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
+			self.alpha2_error = QMessageBox()
+			self.alpha2_error.setWindowTitle("Error")
+			self.alpha2_error.setText("Type in a number or numerical expression")
+			self.alpha2_error.setInformativeText("Your input for alpha2 is: " +  str(self.alpha2_input.text()))
+			self.alpha2_error.setIcon(QMessageBox.Warning)
+			self.alpha2_error.setStandardButtons(QMessageBox.Retry)
+			x = self.alpha2_error.exec()
+
+	def update_beta2(self):
+		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
+				# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
+			self.beta2 = eval(self.beta2_input.text()) 
+			self.beta2_input.setPlaceholderText(str(self.beta2))
+			self.plotAtoms() 
+		except:
+			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
+			# https://www.w3schools.com/python/python_try_except.asp
+			# Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
+			self.beta2_error = QMessageBox()
+			self.beta2_error.setWindowTitle("Error")
+			self.beta2_error.setText("Type in a number or numerical expression")
+			self.beta2_error.setInformativeText("Your input for beta2 is: " +  str(self.beta2_input.text()))
+			self.beta2_error.setIcon(QMessageBox.Warning)
+			self.beta2_error.setStandardButtons(QMessageBox.Retry)
+			x = self.beta2_error.exec()
+
+	def update_alpha3(self):
+		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
+				# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
+			self.alpha3 = eval(self.alpha3_input.text()) 
+			self.alpha3_input.setPlaceholderText(str(self.alpha3))
+			self.plotAtoms() 
+		except:
+			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
+			# https://www.w3schools.com/python/python_try_except.asp
+			# Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
+			self.alpha3_error = QMessageBox()
+			self.alpha3_error.setWindowTitle("Error")
+			self.alpha3_error.setText("Type in a number or numerical expression")
+			self.alpha3_error.setInformativeText("Your input for alpha3 is: " +  str(self.alpha3_input.text()))
+			self.alpha3_error.setIcon(QMessageBox.Warning)
+			self.alpha3_error.setStandardButtons(QMessageBox.Retry)
+			x = self.alpha3_error.exec()
+
+	def update_beta3(self):
+		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
+				# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
+			self.beta3 = eval(self.beta3_input.text()) 
+			self.beta3_input.setPlaceholderText(str(self.beta3))
+			self.plotAtoms() 
+		except:
+			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
+			# https://www.w3schools.com/python/python_try_except.asp
+			# Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
+			self.beta3_error = QMessageBox()
+			self.beta3_error.setWindowTitle("Error")
+			self.beta3_error.setText("Type in a number or numerical expression")
+			self.beta3_error.setInformativeText("Your input for beta3 is: " +  str(self.beta3_input.text()))
+			self.beta3_error.setIcon(QMessageBox.Warning)
+			self.beta3_error.setStandardButtons(QMessageBox.Retry)
+			x = self.beta3_error.exec()
+
 	# CREATING THE MATPLOTLIB FIGURE
 	def initMatplotlibFig(self):
 		# Create a figure instance to plot on
@@ -1662,14 +1993,14 @@ class SimulatorWidget(QWidget):
 
 		# if moire btn is clicked yes, plot a moire lattice
 		if self.moireBtn != 'Single':
-			self.Z, self.fftZ = moirelattice(self.pix, self.L, self.a, self.b, self.c, self.moireBtn, self.lattice1, self.lattice2, self.lattice3, self.theta_im, self.theta_tw, self.theta_tw2, self.e11, self.e12, self.e22, self.d11, self.d12, self.d22, self.f11, self.f12, self.f22, self.honeycomb, self.honeycomb2, self.honeycomb3, self.filter_bool, self.sigma)
+			self.Z, self.fftZ = moirelattice(self.pix, self.L, self.a, self.b, self.c, self.moireBtn, self.lattice1, self.lattice2, self.lattice3, self.theta_im, self.theta_tw, self.theta_tw2, self.e11, self.e12, self.e22, self.d11, self.d12, self.d22, self.f11, self.f12, self.f22, self.alpha1, self.beta1, self.alpha2, self.beta2, self.alpha3, self.beta3, self.filter_bool, self.sigma)
 
 		# if moire btn is clicked no, only plot a single lattice using the lattice1 parameters. all lattice2 inputs are ignored
 		else:
 			if self.lattice1 == 'Hexagonal':
-				self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.honeycomb)
+				self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.alpha1, self.beta1)
 			elif self.lattice1 == 'Square':
-				self.Z, self.fftZ = squareatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.honeycomb)
+				self.Z, self.fftZ = squareatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22)
 
 		# Normalize the FFTs to be between 0-1
 		self.fftZ_norm = (self.fftZ - np.min(np.min((self.fftZ))))/(np.max(np.max(self.fftZ)) - np.min(np.min(self.fftZ)))
@@ -2092,11 +2423,11 @@ class SimulatorWidget(QWidget):
 		# 	open('HH_ascii.txt')
 
 
-	# TO SUPPRESS QLAYOUT WARNING IN TERMINAL. from: https://stackoverflow.com/questions/25660597/hide-critical-pyqt-warning-when-clicking-a-checkboc
-	def handler(msg_type, msg_log_context, msg_string):
-  	  pass
+	# # TO SUPPRESS QLAYOUT WARNING IN TERMINAL. from: https://stackoverflow.com/questions/25660597/hide-critical-pyqt-warning-when-clicking-a-checkboc
+	# def handler(msg_type, msg_log_context, msg_string):
+ #  	  pass
 
-	qInstallMessageHandler(handler)
+	# qInstallMessageHandler(handler)
 
 
 
