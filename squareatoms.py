@@ -27,10 +27,10 @@ from numpy import arctan as arctan
 
 from numpy import sqrt as sqrt
 from numpy import log as log
+from numpy import pi as pi
 
 
-
-def squareatoms(pix, L, a, theta, e11, e12, e22, honeycomb, origin_x = 0, origin_y = 0):
+def squareatoms(pix, L, a, theta, e11, e12, e22, origin_x = 0, origin_y = 0):
     """
     Simulates a square atomic lattice and takes the FFT of the lattice
 
@@ -56,6 +56,9 @@ def squareatoms(pix, L, a, theta, e11, e12, e22, honeycomb, origin_x = 0, origin
     # k2 = (2*np.pi/a)*np.array([e12, 1 + e22]) 
     k1 = (2*np.pi/a)*np.array([1 - e11, -e12])#/(1+e11+e22+e11*e22 - e12^2)
     k2 = (2*np.pi/a)*np.array([-e12, 1 - e22])#/(1+e11+e22+e11*e22 - e12^2)
+
+
+
 
     # Create rotation matrix to the lattice by theta (assuming theta is in degrees)
     theta_rad = np.deg2rad(theta) # convert theta to radians
@@ -83,14 +86,17 @@ def squareatoms(pix, L, a, theta, e11, e12, e22, honeycomb, origin_x = 0, origin
     x = X - ctrX  # these are also meshgrids
     y = Y - ctrY
 
-    # Set amplitudes to plot lattice as honeycomb or dots ... This basically just changes the phase of the atoms 
-    if honeycomb == 1:
-        A = 1/2
-        B = -1/4
-    else:
-        A = 1/2
-        B = 1/4
+    # # Set amplitudes to plot lattice as honeycomb or dots ... This basically just changes the phase of the atoms 
+    # if honeycomb == 1:
+    #     A = 1/2
+    #     B = -1/4
+    # else:
+    #     A = 1/2
+    #     B = 1/4
 
+    # removing honeycomb dependence, clean up code later
+    A = 1/2
+    B = 1/4
     # Create square lattice
     Z = A + B * (cos((k1[0]*x) + (k1[1]*y)) + cos((k2[0]*x) + (k2[1]*y)))
 
