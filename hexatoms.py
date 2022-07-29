@@ -21,9 +21,11 @@ from numpy import arctan as arctan
 
 from numpy import sqrt as sqrt
 from numpy import log as log
+from numpy import pi as pi
+from numpy import exp as exp
 
 
-def hexatoms(pix, L, a, theta, e11, e12, e22, honeycomb, origin_x = 0, origin_y = 0): 
+def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin_x = 0, origin_y = 0): 
     """
     
     Returns np.arrays of  hexagonal atomic lattice and its FFT
@@ -96,13 +98,15 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, honeycomb, origin_x = 0, origin_y 
 
 
 
-    # Create the image with or without a honeycomb pattern:
-    if honeycomb == 1: # Normalized amplitudes
-        A1 = 1
-        B1 = -2/9
-    else:
-        A1 = 0
-        B1 = 2/9
+    # # Create the image with or without a honeycomb pattern:
+    # if honeycomb == 1: # Normalized amplitudes
+    #     A1 = 1
+    #     B1 = -2/9
+    # else:
+    #     A1 = 0
+    #     B1 = 2/9
+
+   
     # ## This is un normalized -- comment out
     # if honeycomb == 1: # Creates the image with a honeycomb pattern
     #     A = -1
@@ -119,7 +123,26 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, honeycomb, origin_x = 0, origin_y 
     #            + cos((k3x * x_i) + (k3y * y_i))) 
 
     ## should it be this one or the commented out one above????
-    Z = A1 + B1 * (3/2 + (cos((k1[0]*x_i) + (k1[1]*y_i)) + (cos((k2[0]*x_i) + (k2[1]*y_i))) + (cos((k3[0]*x_i) + (k3[1]*y_i)))))
+
+
+    # Create hexagonal lattice
+    # Z = A1 + B1 * (3/2 + (cos((k1[0]*x_i) + (k1[1]*y_i)) + (cos((k2[0]*x_i) + (k2[1]*y_i))) + (cos((k3[0]*x_i) + (k3[1]*y_i)))))
+
+
+    # Create plain lattice
+    T = exp(1j*(k1x*x_i + k1y*y_i)) + exp(1j*(k2x*x_i + k2y*y_i)) + exp(1j*(k3x*x_i + k3y*y_i))
+
+    # Phase
+    phase = alpha + beta*exp(-1j*2*pi/3)
+    phase *= exp(1j*4*pi/3)
+
+    # Multiply the lattice by the phase , add the conjugate to get rid of imaginary. take the real paart only
+    Z_un = np.real(T*phase + np.conjugate(T*phase))
+
+
+    # Normalize Z:
+    Z = (Z_un - np.min(np.min(Z_un)))/(np.max(np.max(Z_un)) - np.min(np.min(Z_un))) 
+
 
 
 
