@@ -25,7 +25,7 @@ from numpy import pi as pi
 from numpy import exp as exp
 
 
-def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta): 
+def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin): 
     """
     
     Returns np.arrays of  hexagonal atomic lattice and its FFT
@@ -88,15 +88,20 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta):
     # Create plain lattice
     T = exp(1j*(k1x*X + k1y*Y)) + exp(1j*(k2x*X + k2y*Y)) + exp(1j*(k3x*X + k3y*Y))
 
+   
     # Amplitude (alpha, beta) and phase-offsets on the A and B sublattices, respectively.
     phase = alpha + beta*exp(-1j*2*pi/3)
-    
-    # #Uncomment below to shift origin to hollowsite or B-sublattice
-    # if checkbox == hollow:
-    #     phase *= exp(-1j*2*pi/3)
 
-    # if checkbox == B-sublattice:
-    #     phase *= exp(-1j*4*pi/3)**2
+    # To shift origin to hollowsite or B-sublattice
+    if origin == "A-site":
+        phase = phase # Keep as is
+        
+
+    elif origin == "Hollow site":
+        phase *= exp(-1j*2*pi/3) # Muliply by phase shift to bring hollow site down to origin
+
+    elif origin == "B-site":
+        phase *= exp(-1j*4*pi/3)**2 # Multiply by phase shift again to bring B-site to origin
 
 
     # Multiply the lattice by the phase , add the conjugate to get rid of imaginary.

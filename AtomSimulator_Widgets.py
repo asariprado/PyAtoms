@@ -85,6 +85,9 @@ class SimulatorWidget(QWidget):
 		# self.honeycomb = 0
 		# self.honeycomb2 = 0
 		# self.honeycomb3 = 0
+		self.origin1 = "Hollow site"
+		self.origin2 = "Hollow site"
+		self.origin3 = "Hollow site"
 
 		self.alpha1 = 1
 		self.beta1 = 0
@@ -118,7 +121,7 @@ class SimulatorWidget(QWidget):
 
 		self.figure =plt.figure(figsize=(10,10))
 		
-		self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.alpha1, self.beta1)
+		self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.alpha1, self.beta1, self.origin1)
 		
 		# STM topography time estimator
 		self.vt = 20 # velocity of tip scanner, for calculating how long the image should take when doing actual stm measurements
@@ -334,32 +337,21 @@ class SimulatorWidget(QWidget):
 		self.noMoire.toggled.connect(self.updateMoireBtn)
 		self.trilayer.toggled.connect(self.updateMoireBtn)
 
+
+
+		# Create QButtonGroup to be mutually exclusive  buttons, from https://www.programcreek.com/python/example/108083/PyQt5.QtWidgets.QButtonGroup
+		self.moire_btn_group = QButtonGroup(self)
+		self.moire_btn_group.addButton(self.noMoire)
+		self.moire_btn_group.addButton(self.yesMoire)
+		self.moire_btn_group.addButton(self.trilayer)
+
+
 		hbox.addWidget(self.noMoire)
 		hbox.addWidget(self.yesMoire)
 		hbox.addWidget(self.trilayer)
 
 		groupBox.setLayout(hbox)
 		groupBox.setContentsMargins(0,0,0,0) # Sets the left , top , right , and bottom margins to use around the layout.
-
-
-		# self.tabs_moire = QTabWidget(self)
-		# self.tabs_1 = QWidget(self)
-		# self.tabs_2 = QWidget(self)
-
-		# self.tabs_moire.addTab(self.tabs_1, "Lattice 1 parameters")
-		# self.tabs_moire.addTab(self.tabs_2, "Strain")
-
-		# # Create first tab
-		# self.tabs_1.layout = QVBoxLayout(self)
-		# self.tabs_1.layout.addWidget(self.noMoire)
-		# self.tabs_1.layout.addWidget(self.yesMoire)
-		# self.tabs_1.setLayout(self.tabs_1.layout)
-		# self.tabs_2.layout = QVBoxLayout(self)
-		# self.tabs_2.layout.addWidget(self.trilayer)
-		# self.tabs_2.setLayout(self.tabs_2.layout)
-
-		# hbox.addWidget(self.tabs_moire)
-		# groupBox.setLayout(hbox)
 
 
 		return groupBox
@@ -596,8 +588,10 @@ class SimulatorWidget(QWidget):
 		self.tab1a = QWidget(self)
 		self.tab2a = QWidget(self)
 		self.tab3a = QWidget(self)
+		# self.tab4a = QWidget(self)
 		self.lat1tabs.addTab(self.tab1a, "Parameters")
 		self.lat1tabs.addTab(self.tab3a, "Sublattices")
+		# self.lat1tabs.addTab(self.tab4a, "Origin")
 		self.lat1tabs.addTab(self.tab2a, "Strain")
 		
 
@@ -747,31 +741,43 @@ class SimulatorWidget(QWidget):
 
 
 		# # # # # # # # # # # # # # # # # # # # # 
-		# ### Pick honeycomb or dots pattern on lattice 1 ###
-		# self.honeycomb1_label = QLabel("Overall phase:")
-		# # Create radiobuttons
-		# self.honeycombButton = QRadioButton("Honeycomb")
-		# self.dotsButton = QRadioButton("Dots")
-		# self.dotsButton.setToolTip("Atoms look like dots")
-		# self.dotsButton.setChecked(True)
+		# ### Pick origin site for lattice 1 ###
+		self.origin1label = QLabel("Origin")
+		# Create radiobuttons
+		self.hollowsite1 = QRadioButton("Hollow site")
+		self.Asite1 = QRadioButton("A-site")
+		self.Bsite1 = QRadioButton("B-site")
 
-		# # Create QButtonGroup to be mutually exclusive w the lattice symmetry buttons. This is all u have to do for them to work correctly! 
-		# self.hc_btn_group = QButtonGroup(self)
-		# self.hc_btn_group.addButton(self.honeycombButton)
-		# self.hc_btn_group.addButton(self.dotsButton)
+		self.hollowsite1.setChecked(True)
+
+		# # Create QButtonGroup to be mutually exclusive  buttons. This is all u have to do for them to work correctly! 
+		self.origin1_group = QButtonGroup(self)
+		self.origin1_group.addButton(self.hollowsite1)
+		self.origin1_group.addButton(self.Asite1)
+		self.origin1_group.addButton(self.Bsite1)
 
 		# ### IMPORTANTTTT: have to connect all buttons to the same update__button function so theyll be like mutually exclusive. so if you click one, it means the others are set to false, etc. this is defined in the updating function
-		# self.honeycombButton.toggled.connect(self.updateHoneycombDotsButton)
-		# self.dotsButton.toggled.connect(self.updateHoneycombDotsButton)
+		self.hollowsite1.toggled.connect(self.updateOrigin1)
+		self.Asite1.toggled.connect(self.updateOrigin1)
+		self.Bsite1.toggled.connect(self.updateOrigin1)
 
-		# # h6box = QHBoxLayout(self)
-		# # h6box.addWidget(self.honeycombButton)
-		# # h6box.addWidget(self.dotsButton)
+		h6box = QHBoxLayout(self)
+		h6box.addWidget(self.hollowsite1)
+		h6box.addWidget(self.Asite1)
+		h6box.addWidget(self.Bsite1)
+
+
+
 
 
 
 		self.sublattices_label1 = QLabel("Pick strength of sublattices Z = A + B")
 		self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+
+
+		self.sublattices_label = QLabel("Weight of sublattices")
+
+
 
 		# # # # # # # # # # # # # # # # # # # # 
 		### Pick alpha1 weight of sublattice a ###
@@ -830,16 +836,18 @@ class SimulatorWidget(QWidget):
 
 		# Add honeycomb/dots button widgets to the tab 3
 		self.tab3a.layout = QVBoxLayout(self)
-		self.tab3a.layout.addWidget(self.sublattices_label1)
-		self.tab3a.layout.addWidget(self.sublattices_label2)
-		# self.tab3a.layout.addLayout(h6box)
+		self.tab3a.layout.addWidget(self.origin1label)
+		self.tab3a.layout.addLayout(h6box)
+		# self.tab3a.layout.addWidget(self.sublattices_label1)
+		# self.tab3a.layout.addWidget(self.sublattices_label2)
+		self.tab3a.layout.addWidget(self.sublattices_label)
 		self.tab3a.layout.addLayout(h7box)
 		self.tab3a.layout.addLayout(h8box)
+		
 
 
 
-
-
+		
 
 		# Set the layouts for each tab...
 		self.tab1a.setLayout(self.tab1a.layout)
@@ -848,6 +856,7 @@ class SimulatorWidget(QWidget):
 		self.tab2a.layout.setSpacing(1)
 		self.tab3a.setLayout(self.tab3a.layout)
 		self.tab3a.layout.setSpacing(1)
+
 
 		vlayout = QVBoxLayout(self)
 		vlayout.addWidget(self.lat1tabs)
@@ -1063,33 +1072,36 @@ class SimulatorWidget(QWidget):
 
 
 		# # # # # # # # # # # # # # # # # # # # # 
-		# ### Pick honeycomb or dots pattern on lattice 2 ###
-		# self.honeycomb2_label = QLabel("Overall phase:")
-		# self.honeycomb2_label.setToolTip("Choose whether to plot the lattice with a honeycomb pattern or dots for atoms... ")
-		# # Create radiobuttons
-		# self.honeycombButton2 = QRadioButton("Honeycomb")
-		# self.dotsButton2 = QRadioButton("Dots")
-		# self.dotsButton2.setToolTip("Atoms look like dots")
-		# self.dotsButton2.setChecked(True)
+		# ### Pick origin site for lattice 2 ###
+		self.origin2label = QLabel("Origin")
+		# Create radiobuttons
+		self.hollowsite2 = QRadioButton("Hollow site")
+		self.Asite2 = QRadioButton("A-site")
+		self.Bsite2 = QRadioButton("B-site")
 
-		# ### IMPORTANTTTT: have to connect all buttons to the same update__button function so theyll be like mutually exclusive.
-		# ## so if you click one, it means the others are set to false, etc. this is defined in the updating function
-		# self.honeycombButton2.toggled.connect(self.updateHoneycombDotsButton2)
-		# self.dotsButton2.toggled.connect(self.updateHoneycombDotsButton2)
+		self.hollowsite2.setChecked(True)
 
-		# # Create QButtonGroup to be mutually exclusive w the honeycomb buttons
-		# self.hc2_btn_group = QButtonGroup(self)
-		# self.hc2_btn_group.addButton(self.honeycombButton2)
-		# self.hc2_btn_group.addButton(self.dotsButton2)
+		# # Create QButtonGroup to be mutually exclusive  buttons. This is all u have to do for them to work correctly! 
+		self.origin2_group = QButtonGroup(self)
+		self.origin2_group.addButton(self.hollowsite2)
+		self.origin2_group.addButton(self.Asite2)
+		self.origin2_group.addButton(self.Bsite2)
 
-		# h6box = QHBoxLayout(self)
-		# h6box.addWidget(self.honeycombButton2)
-		# h6box.addWidget(self.dotsButton2)
+		# ### IMPORTANTTTT: have to connect all buttons to the same update__button function so theyll be like mutually exclusive. so if you click one, it means the others are set to false, etc. this is defined in the updating function
+		self.hollowsite2.toggled.connect(self.updateOrigin2)
+		self.Asite2.toggled.connect(self.updateOrigin2)
+		self.Bsite2.toggled.connect(self.updateOrigin2)
+
+		h6box = QHBoxLayout(self)
+		h6box.addWidget(self.hollowsite2)
+		h6box.addWidget(self.Asite2)
+		h6box.addWidget(self.Bsite2)
 
 
+		# self.sublattices_label1 = QLabel("Pick strength of sublattices Z = A + B")
+		# self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
-		self.sublattices_label1 = QLabel("Pick strength of sublattices Z = A + B")
-		self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+		self.sublattices_label = QLabel("Weight of sublattices")
 
 		# # # # # # # # # # # # # # # # # # # # 
 		### Pick alpha2 weight of sublattice a ###
@@ -1143,9 +1155,9 @@ class SimulatorWidget(QWidget):
 
 		# Add honeycomb/dots button widgets to the tab 3
 		self.tab3b.layout = QVBoxLayout(self)
-		self.tab3b.layout.addWidget(self.sublattices_label1)
-		self.tab3b.layout.addWidget(self.sublattices_label2)
-		# self.tab3b.layout.addLayout(h6box)
+		self.tab3b.layout.addWidget(self.origin2label)
+		self.tab3b.layout.addLayout(h6box)
+		self.tab3b.layout.addWidget(self.sublattices_label)
 		self.tab3b.layout.addLayout(h7box)
 		self.tab3b.layout.addLayout(h8box)
 
@@ -1378,28 +1390,36 @@ class SimulatorWidget(QWidget):
 
 
 		# # # # # # # # # # # # # # # # # # # # # 
-		# ### Pick honeycomb or dots pattern on lattice 3 ###
-		# self.honeycomb3_label = QLabel("Overall phase:")
-		# self.honeycomb3_label.setToolTip("Choose whether to plot the lattice with a honeycomb pattern or dots for atoms... ")
-		# # Create radiobuttons
-		# self.honeycombButton3 = QRadioButton("Honeycomb")
-		# self.dotsButton3 = QRadioButton("Dots")
-		# self.dotsButton3.setToolTip("Atoms look like dots")
-		# self.dotsButton3.setChecked(True)
+		# ### Pick origin site for lattice 3 ###
+		self.origin3label = QLabel("Origin")
+		# Create radiobuttons
+		self.hollowsite3 = QRadioButton("Hollow site")
+		self.Asite3 = QRadioButton("A-site")
+		self.Bsite3 = QRadioButton("B-site")
 
-		# ### IMPORTANTTTT: have to connect all buttons to the same update__button function so theyll be like mutually exclusive.
-		# ## so if you click one, it means the others are set to false, etc. this is defined in the updating function
-		# self.honeycombButton3.toggled.connect(self.updateHoneycombDotsButton3)
-		# self.dotsButton3.toggled.connect(self.updateHoneycombDotsButton3)
+		self.hollowsite3.setChecked(True)
 
-		# # Create QButtonGroup to be mutually exclusive w the honeycomb buttons
-		# self.hc3_btn_group = QButtonGroup(self)
-		# self.hc3_btn_group.addButton(self.honeycombButton3)
-		# self.hc3_btn_group.addButton(self.dotsButton3)
+		# # Create QButtonGroup to be mutually exclusive  buttons. This is all u have to do for them to work correctly! 
+		self.origin3_group = QButtonGroup(self)
+		self.origin3_group.addButton(self.hollowsite3)
+		self.origin3_group.addButton(self.Asite3)
+		self.origin3_group.addButton(self.Bsite3)
 
-		# h6box = QHBoxLayout(self)
-		# h6box.addWidget(self.honeycombButton3)
-		# h6box.addWidget(self.dotsButton3)
+		# ### IMPORTANTTTT: have to connect all buttons to the same update__button function so theyll be like mutually exclusive. so if you click one, it means the others are set to false, etc. this is defined in the updating function
+		self.hollowsite3.toggled.connect(self.updateOrigin3)
+		self.Asite3.toggled.connect(self.updateOrigin3)
+		self.Bsite3.toggled.connect(self.updateOrigin3)
+
+		h6box = QHBoxLayout(self)
+		h6box.addWidget(self.hollowsite3)
+		h6box.addWidget(self.Asite3)
+		h6box.addWidget(self.Bsite3)
+
+
+		# self.sublattices_label1 = QLabel("Pick strength of sublattices Z = A + B")
+		# self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+
+		self.sublattices_label = QLabel("Weight of sublattices")
 
 	
 
@@ -1462,8 +1482,9 @@ class SimulatorWidget(QWidget):
 
 		# Add honeycomb/dots button widgets to the tab 3
 		self.tab3c.layout = QVBoxLayout(self)
-		self.tab3c.layout.addWidget(self.sublattices_label1)
-		self.tab3c.layout.addWidget(self.sublattices_label2)
+		self.tab3c.layout.addWidget(self.origin3label)
+		self.tab3c.layout.addLayout(h6box)
+		self.tab3c.layout.addWidget(self.sublattices_label)
 		self.tab3c.layout.addLayout(h7box)
 		self.tab3c.layout.addLayout(h8box)
 
@@ -1734,32 +1755,38 @@ class SimulatorWidget(QWidget):
 			self.f22_error.setStandardButtons(QMessageBox.Retry)
 			x = self.f22_error.exec()
 
-	def updateHoneycombDotsButton(self):
+	def updateOrigin1(self):
 		radio_btn = self.sender()
 		if radio_btn.isChecked():
-			if radio_btn.text() == 'Honeycomb':
-				self.honeycomb = 1
-			elif radio_btn.text() == 'Dots':
-				self.honeycomb = 0
+			if radio_btn.text() == 'Hollow site':
+				self.origin1 = "Hollow site"
+			elif radio_btn.text() == 'A-site':
+				self.origin1 = 'A-site'
+			elif radio_btn.text() == "B-site":
+				self.origin1 = "B-site"
 		self.plotAtoms() 
 
-	def updateHoneycombDotsButton2(self):
+	def updateOrigin2(self):
 		radio_btn = self.sender()
 		if radio_btn.isChecked():
-			if radio_btn.text() == 'Honeycomb':
-				self.honeycomb2 = 1
-			elif radio_btn.text() == 'Dots':
-				self.honeycomb2 = 0
-		self.plotAtoms()
+			if radio_btn.text() == 'Hollow site':
+				self.origin2 = "Hollow site"
+			elif radio_btn.text() == 'A-site':
+				self.origin2 = 'A-site'
+			elif radio_btn.text() == "B-site":
+				self.origin2 = "B-site"
+		self.plotAtoms() 
 
-	def updateHoneycombDotsButton3(self):
+	def updateOrigin3(self):
 		radio_btn = self.sender()
 		if radio_btn.isChecked():
-			if radio_btn.text() == 'Honeycomb':
-				self.honeycomb3 = 1
-			elif radio_btn.text() == 'Dots':
-				self.honeycomb3 = 0
-		self.plotAtoms()
+			if radio_btn.text() == 'Hollow site':
+				self.origin3 = "Hollow site"
+			elif radio_btn.text() == 'A-site':
+				self.origin3 = 'A-site'
+			elif radio_btn.text() == "B-site":
+				self.origin3 = "B-site"
+		self.plotAtoms() 
 
 	def update_alpha1(self):
 		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
@@ -1993,12 +2020,12 @@ class SimulatorWidget(QWidget):
 
 		# if moire btn is clicked yes, plot a moire lattice
 		if self.moireBtn != 'Single':
-			self.Z, self.fftZ = moirelattice(self.pix, self.L, self.a, self.b, self.c, self.moireBtn, self.lattice1, self.lattice2, self.lattice3, self.theta_im, self.theta_tw, self.theta_tw2, self.e11, self.e12, self.e22, self.d11, self.d12, self.d22, self.f11, self.f12, self.f22, self.alpha1, self.beta1, self.alpha2, self.beta2, self.alpha3, self.beta3, self.filter_bool, self.sigma)
+			self.Z, self.fftZ = moirelattice(self.pix, self.L, self.a, self.b, self.c, self.moireBtn, self.lattice1, self.lattice2, self.lattice3, self.theta_im, self.theta_tw, self.theta_tw2, self.e11, self.e12, self.e22, self.d11, self.d12, self.d22, self.f11, self.f12, self.f22, self.alpha1, self.beta1, self.alpha2, self.beta2, self.alpha3, self.beta3, self.origin1, self.origin2, self.origin3, self.filter_bool, self.sigma)
 
 		# if moire btn is clicked no, only plot a single lattice using the lattice1 parameters. all lattice2 inputs are ignored
 		else:
 			if self.lattice1 == 'Hexagonal':
-				self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.alpha1, self.beta1)
+				self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.alpha1, self.beta1, self.origin1)
 			elif self.lattice1 == 'Square':
 				self.Z, self.fftZ = squareatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22)
 
