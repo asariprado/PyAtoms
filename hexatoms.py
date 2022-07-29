@@ -25,7 +25,7 @@ from numpy import pi as pi
 from numpy import exp as exp
 
 
-def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin_x = 0, origin_y = 0): 
+def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta): 
     """
     
     Returns np.arrays of  hexagonal atomic lattice and its FFT
@@ -51,31 +51,20 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin_x = 0, origin_
     """
     
     
-    # Create 2D meshgrid of points
-    x = np.linspace(0, L, pix) 
+    # Create 2D meshgrid of points. Make sure there is *always* a dedicated pixel for the origin (0,0) for pix even or odd
+    x = np.arange(-(pix//2),(pix-1)//2 + 1)*L/(pix-1) 
     [X,Y] = np.meshgrid(x,x) 
     ## ^^ IMPORTANT: make sure its typed [X,Y] instead of [Y,X], 
     ##    otherwise you might need to transpose the output
     
-    
-    # Set the origin/center of the image to be at (the pixel corresponding to?) L/2
-    ctrX, ctrY = x[int(np.floor(pix/2))], x[int(np.floor(pix/2))]
-
-
-    # Calculate the distance from a point on the meshgrid to the center of image
-    # Distance from point on meshgrid to center of x/y axes
-    x_i = X - ctrX    # these are also meshgrids
-    y_i = Y - ctrY
-
-    ## Reciprocal lattice vectors for hexagonal crystal WITH STRAIN
+    ## Reciprocal lattice vectors for hexagonal crystal WITH STRAIN defined in local coordinates
     k1 = (2*np.pi/a)* np.array([1 - e11 - (e12/m.sqrt(3)), (1/m.sqrt(3)) - e12 - (e22/m.sqrt(3))])
     k2 = (2*np.pi/a)* np.array([-1 + e11 - (e12/m.sqrt(3)), (1/m.sqrt(3)) + e12 - (e22/m.sqrt(3))])
     k3 = -(k1 + k2) # Get the 3rd wavevector by taking a linear combo of k1,k2 
     ## ADD STRAIN:  to see how the strain tensor is defined and how this affects the recip lattice vectors, 
     ## look at paper: https://journals.aps.org/prb/abstract/10.1103/PhysRevB.80.045401 
  
-
-    # Rotate the lattice by theta (assuming theta is in degrees)
+    # Rotate the lattice by theta (in degrees)
     theta_rad = np.deg2rad(theta) # convert theta to radians
 
     # Create rotation matrix to multiply reciprocal lattice vectors to rotate the image 
@@ -96,51 +85,26 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin_x = 0, origin_
     k2x, k2y = k2[0], k2[1]
     k3x, k3y = k3[0], k3[1]
 
-
-
-    # # Create the image with or without a honeycomb pattern:
-    # if honeycomb == 1: # Normalized amplitudes
-    #     A1 = 1
-    #     B1 = -2/9
-    # else:
-    #     A1 = 0
-    #     B1 = 2/9
-
-   
-    # ## This is un normalized -- comment out
-    # if honeycomb == 1: # Creates the image with a honeycomb pattern
-    #     A = -1
-    # else:              # No honeycomb pattern (equivalent to plotting dots as atoms)
-    #     A = 1
-
-
-    # Create hexagonal lattice
-    # Remember that electron wavefunctions are complex exponentials
-    # Taking the real part only we get a cosine bc e^ikx = cos(kx) + isin(kx)
-    # Multiply by 2 to account for both +k and -k frequencies]
-    # Z = 2 * A * (cos((k1x * x_i) + (k1y * y_i)) 
-    #            + cos((k2x * x_i) + (k2y * y_i)) 
-    #            + cos((k3x * x_i) + (k3y * y_i))) 
-
-    ## should it be this one or the commented out one above????
-
-
-    # Create hexagonal lattice
-    # Z = A1 + B1 * (3/2 + (cos((k1[0]*x_i) + (k1[1]*y_i)) + (cos((k2[0]*x_i) + (k2[1]*y_i))) + (cos((k3[0]*x_i) + (k3[1]*y_i)))))
-
-
     # Create plain lattice
-    T = exp(1j*(k1x*x_i + k1y*y_i)) + exp(1j*(k2x*x_i + k2y*y_i)) + exp(1j*(k3x*x_i + k3y*y_i))
+    T = exp(1j*(k1x*X + k1y*Y)) + exp(1j*(k2x*X + k2y*Y)) + exp(1j*(k3x*X + k3y*Y))
 
-    # Phase
+    # Amplitude (alpha, beta) and phase-offsets on the A and B sublattices, respectively.
     phase = alpha + beta*exp(-1j*2*pi/3)
-    phase *= exp(1j*4*pi/3)
+    
+    # #Uncomment below to shift origin to hollowsite or B-sublattice
+    # if checkbox == hollow:
+    #     phase *= exp(-1j*2*pi/3)
 
-    # Multiply the lattice by the phase , add the conjugate to get rid of imaginary. take the real paart only
+    # if checkbox == B-sublattice:
+    #     phase *= exp(-1j*4*pi/3)**2
+
+
+    # Multiply the lattice by the phase , add the conjugate to get rid of imaginary.
+    # (The real part is taken since the result has a 0j complex component.)
     Z_un = np.real(T*phase + np.conjugate(T*phase))
 
 
-    # Normalize Z:
+    # Normalize so that the image values are 0<Z<1:
     Z = (Z_un - np.min(np.min(Z_un)))/(np.max(np.max(Z_un)) - np.min(np.min(Z_un))) 
 
 
