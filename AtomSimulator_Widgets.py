@@ -742,9 +742,9 @@ class SimulatorWidget(QWidget):
 
 		# # # # # # # # # # # # # # # # # # # # # 
 		# ### Pick origin site for lattice 1 ###
-		self.origin1label = QLabel("Origin")
+		self.origin1label = QLabel("Lattice site at origin")
 		# Create radiobuttons
-		self.hollowsite1 = QRadioButton("Hollow site")
+		self.hollowsite1 = QRadioButton("Hollow")
 		self.Asite1 = QRadioButton("A-site")
 		self.Bsite1 = QRadioButton("B-site")
 
@@ -1073,9 +1073,9 @@ class SimulatorWidget(QWidget):
 
 		# # # # # # # # # # # # # # # # # # # # # 
 		# ### Pick origin site for lattice 2 ###
-		self.origin2label = QLabel("Origin")
+		self.origin2label = QLabel("Lattice site at origin")
 		# Create radiobuttons
-		self.hollowsite2 = QRadioButton("Hollow site")
+		self.hollowsite2 = QRadioButton("Hollow")
 		self.Asite2 = QRadioButton("A-site")
 		self.Bsite2 = QRadioButton("B-site")
 
@@ -1391,9 +1391,9 @@ class SimulatorWidget(QWidget):
 
 		# # # # # # # # # # # # # # # # # # # # # 
 		# ### Pick origin site for lattice 3 ###
-		self.origin3label = QLabel("Origin")
+		self.origin3label = QLabel("Lattice site at origin")
 		# Create radiobuttons
-		self.hollowsite3 = QRadioButton("Hollow site")
+		self.hollowsite3 = QRadioButton("Hollow")
 		self.Asite3 = QRadioButton("A-site")
 		self.Bsite3 = QRadioButton("B-site")
 
@@ -2168,7 +2168,7 @@ class SimulatorWidget(QWidget):
 		groupBox.setToolTip("Low pass filter the data")
 		vlayout = QVBoxLayout(self)
 
-		self.filter_btn = QCheckBox("Filter")
+		self.filter_btn = QCheckBox("Filter (pixels)")
 		self.filter_btn.setChecked(False)
 		self.filter_btn.stateChanged.connect(self.updateSigma)
 		# self.calc_btn_grp = QButtonGroup()
