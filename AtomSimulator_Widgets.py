@@ -85,9 +85,9 @@ class SimulatorWidget(QWidget):
 		# self.honeycomb = 0
 		# self.honeycomb2 = 0
 		# self.honeycomb3 = 0
-		self.origin1 = "Hollow site"
-		self.origin2 = "Hollow site"
-		self.origin3 = "Hollow site"
+		self.origin1 = "Hollow"
+		self.origin2 = "Hollow"
+		self.origin3 = "Hollow"
 
 		self.alpha1 = 1
 		self.beta1 = 0
@@ -1758,8 +1758,8 @@ class SimulatorWidget(QWidget):
 	def updateOrigin1(self):
 		radio_btn = self.sender()
 		if radio_btn.isChecked():
-			if radio_btn.text() == 'Hollow site':
-				self.origin1 = "Hollow site"
+			if radio_btn.text() == 'Hollow':
+				self.origin1 = "Hollow"
 			elif radio_btn.text() == 'A-site':
 				self.origin1 = 'A-site'
 			elif radio_btn.text() == "B-site":
@@ -1769,8 +1769,8 @@ class SimulatorWidget(QWidget):
 	def updateOrigin2(self):
 		radio_btn = self.sender()
 		if radio_btn.isChecked():
-			if radio_btn.text() == 'Hollow site':
-				self.origin2 = "Hollow site"
+			if radio_btn.text() == 'Hollow':
+				self.origin2 = "Hollow"
 			elif radio_btn.text() == 'A-site':
 				self.origin2 = 'A-site'
 			elif radio_btn.text() == "B-site":
@@ -1780,8 +1780,8 @@ class SimulatorWidget(QWidget):
 	def updateOrigin3(self):
 		radio_btn = self.sender()
 		if radio_btn.isChecked():
-			if radio_btn.text() == 'Hollow site':
-				self.origin3 = "Hollow site"
+			if radio_btn.text() == 'Hollow':
+				self.origin3 = "Hollow"
 			elif radio_btn.text() == 'A-site':
 				self.origin3 = 'A-site'
 			elif radio_btn.text() == "B-site":

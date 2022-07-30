@@ -97,7 +97,7 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin):
         phase = phase # Keep as is
         
 
-    elif origin == "Hollow site":
+    elif origin == "Hollow":
         phase *= exp(-1j*2*pi/3) # Muliply by phase shift to bring hollow site down to origin
 
     elif origin == "B-site":
