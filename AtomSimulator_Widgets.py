@@ -2145,13 +2145,13 @@ class SimulatorWidget(QWidget):
 
 			# Also save a .txt file with the input parameter values: (IN THE FUTURE maybe make this a pandas dataframe or csv file or something?)
 			param_file = open(self.filePath + '/' + self.fileName +'_params.txt', "w+") # Open a new blank text file where we will write the input parameters
-			param_file.write("Moire: " + (self.moireBtn) + "\nPix: " + str(self.pix) + "\nL: " + str(self.L) +  "\nImage offset angle: " + str(self.theta_im) + "\nLow pass filter: " + str(self.filter_bool) + '\nSigma: ' + str(self.sigma) +
+			param_file.write("# of layers: " + (self.moireBtn) + "\nPix: " + str(self.pix) + "\nL: " + str(self.L) +  "\nImage offset angle: " + str(self.theta_im) + "\nLow pass filter: " + str(self.filter_bool) + '\nSigma: ' + str(self.sigma) +
 					'\n\n--------------------------------\nLattice 1:\n--------------------------------\n' + self.lattice1 + '\na: ' + str(self.a) + '\ne11: ' + str(self.e11) +
-					'\ne12: ' + str(self.e12) + '\ne22: ' + str(self.e22) + "\nDots0/Honeycomb1: " + str(self.honeycomb) +
+					'\ne12: ' + str(self.e12) + '\ne22: ' + str(self.e22) + "\nAlpha1: " + str(self.alpha1) + "\nBeta1: " + str(self.beta1) + "\nOrigin1: " + str(self.origin1) + 
 					'\n\n--------------------------------\nLattice 2:\n--------------------------------\n' + self.lattice2 + '\nb: ' + str(self.b) + '\nd11: ' + str(self.d11) + 
-					'\nd12: ' + str(self.d12) + '\nd22: ' + str(self.d22) + "\nDots0/Honeycomb1: " + str(self.honeycomb2) +
+					'\nd12: ' + str(self.d12) + '\nd22: ' + str(self.d22) + "\nAlpha2: " + str(self.alpha2) + "\nBeta2: " + str(self.beta2) + "\nOrigin2: " + str(self.origin2) + 
 					'\nTwist angle (btwn lattice 1 & 2): ' + str(self.theta_tw) + '\n\n--------------------------------\nLattice 3:\n--------------------------------\n' + self.lattice3 + '\nc: ' + str(self.c) + '\nf11: ' + str(self.f11) + 
-					'\nf12: ' + str(self.f12) + '\nf22: ' + str(self.f22) + "\nDots0/Honeycomb1: " + str(self.honeycomb3) +
+					'\nf12: ' + str(self.f12) + '\nf22: ' + str(self.f22) + "\nAlpha3: " + str(self.alpha3) + "\nBeta3: " + str(self.beta3) + "\nOrigin3: " + str(self.origin3) + 
 					'\nTwist angle (btwn lattice 2 & 3): ' + str(self.theta_tw2) + 
 					'\n\n--------------------------------\nEstimated time to take STM topography: ' + str(self.hrs) + 'h ' + str(self.mins) + 'min ' + str(self.sec) + ' s\nTip scanner speed: ' + str(self.vt) + ' nm/s'
 					'\nEstimated time to take dI/dV map: ' + str(self.days_map) + 'days ' + str(self.hrs_map) + 'h ' + str(self.mins_map) +  'min\nTime per spectra: ' + str(self.tps) + ' s')

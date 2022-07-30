@@ -109,8 +109,14 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin):
     Z_un = np.real(T*phase + np.conjugate(T*phase))
 
 
-    # Normalize so that the image values are 0<Z<1:
-    Z = (Z_un - np.min(np.min(Z_un)))/(np.max(np.max(Z_un)) - np.min(np.min(Z_un))) 
+    # Normalize image 
+    # First, avoid division by zero
+    if alpha == 0 and beta == 0:
+        Z = np.ones((pix,pix))
+
+    # Then normalize so that image values are between 0<Z<1.
+    else:
+        Z = (Z_un - np.min(np.min(Z_un)))/(np.max(np.max(Z_un)) - np.min(np.min(Z_un))) 
 
 
 
