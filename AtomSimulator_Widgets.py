@@ -2050,6 +2050,12 @@ class SimulatorWidget(QWidget):
 		plt.colorbar(fig1, ax=ax00, fraction=0.046, pad=0.04) # fixed colorbar issues, from: https://stackoverflow.com/questions/16702479/matplotlib-colorbar-placement-and-size
 		# plt.tight_layout()
 
+		# Plot a circular with the radius of the half-width at half-max of a 2D gaussian of width w, HWHM = sqrt(2*log(2))*w
+		if self.filter_bool == True and self.sigma != 0:
+			sigma_real = self.sigma*self.L/(self.pix-1) # Convert pixels to real-space units
+			circ = plt.Circle((self.L/8,self.L/8),sigma_real*np.sqrt(2*np.log(2)),fill=True,color='white',alpha=0.5)
+			ax00.add_artist(circ)
+
 		from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
 		import matplotlib.font_manager as fm
 		# fontprops = fm.FontProperties(size=12)
@@ -2074,20 +2080,26 @@ class SimulatorWidget(QWidget):
 		# 	extR = (self.pix-1)*np.pi/self.L
 		
 		fig2 = ax01.imshow(np.flipud(self.fftZ_norm), cmap = self.colormap_FFT, extent=[extL, extR, extL, extR])
-		# ax01.set_xlabel('$k_x$ (1/nm)')
-		# ax01.set_ylabel('$k_y$ (1/nm)')
+		ax01.set_xlabel('$k_x$ (1/nm)')
+		ax01.set_ylabel('$k_y$ (1/nm)')
 		ax01.set_title('FFT')
 		ax01.grid(False)
-		ax01.set_xticks([])
-		ax01.set_yticks([])
+		# ax01.set_xticks([])
+		# ax01.set_yticks([])
 		plt.colorbar(fig2, ax=ax01, fraction=0.046, pad=0.04)
 		# self.make_colorbar(fig1)
 		# self.make_colorbar(fig2)
 		plt.tight_layout()
-		scalebar_FFT = AnchoredSizeBar(ax01.transData, np.ceil(np.pi/self.a), str(np.ceil(np.pi/self.a)) + r' $\mathrm{nm}^{-1}$',
-					       'lower right', pad=0.5, sep=5, borderpad=0.5, frameon=True, color='black',label_top=True)
 
-		ax01.add_artist(scalebar_FFT)
+		if self.filter_bool == True and self.sigma != 0:
+			sigma_k = 1/sigma_real # The width of gaussian in k-space
+			circ_k = plt.Circle((0,0),sigma_k*np.sqrt(2*np.log(2)),fill=False,color='red')
+			ax01.add_artist(circ_k)
+
+		# scalebar_FFT = AnchoredSizeBar(ax01.transData, np.ceil(np.pi/(4*self.a)), str(np.ceil(np.pi/self.a)) + r' $\mathrm{nm}^{-1}$',
+		# 			       'lower right', pad=0.5, sep=5, borderpad=0.5, frameon=True, color='black',label_top=True)
+
+		# ax01.add_artist(scalebar_FFT)
 		self.canvas.draw() 
 
 	def initSaveButton(self):
@@ -2168,7 +2180,7 @@ class SimulatorWidget(QWidget):
 		groupBox.setToolTip("Low pass filter the data")
 		vlayout = QVBoxLayout(self)
 
-		self.filter_btn = QCheckBox("Filter (pixels)")
+		self.filter_btn = QCheckBox("Filter (pix)")
 		self.filter_btn.setChecked(False)
 		self.filter_btn.stateChanged.connect(self.updateSigma)
 		# self.calc_btn_grp = QButtonGroup()

@@ -98,12 +98,12 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
         if filter_bool == True:
             Z = gaussian_filter((Z1 * Z2 * Z3 + Z1 + Z2 + Z3)/4, sigma,mode='mirror') # filter the stacked 3 lattices
             fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))
-            # fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
-
 
         else:
             # Stack the 3 lattices to create moire superlattice
-            Z = (Z1 * Z2 * Z3 + Z1 + Z2 + Z3)/4
+            Z = (Z1 * Z2 * Z3 + Z1 + Z2 + Z3)/4 #Normalize after this line, but need if statement for alpha AND beta ==0
+            
+
             # Take the fft     
             fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))   
             # fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
