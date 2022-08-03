@@ -118,6 +118,7 @@ class Window(QDialog):
         # Add matplotlib fig/toolbar to gui
         grid.addWidget(self.SimWidget.initMatplotlibFig(),2,1,8,5) # Make the matplotlib canvas/figure the largest widget
         
+        
         self.setLayout(grid)
         
 

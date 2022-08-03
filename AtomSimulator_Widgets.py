@@ -123,6 +123,8 @@ class SimulatorWidget(QWidget):
 		
 		self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.alpha1, self.beta1, self.origin1)
 		
+		self.sigma_real = self.sigma*self.L/(self.pix-1)
+
 		# STM topography time estimator
 		self.vt = 20 # velocity of tip scanner, for calculating how long the image should take when doing actual stm measurements
 		self.time_tot = (2 * self.pix * self.L) / self.vt # Total time in seconds
@@ -161,6 +163,7 @@ class SimulatorWidget(QWidget):
 
 		# Pixels
 		self.pix_label = QLabel("Pixels:")
+		self.pix_label.setToolTip("Create a square (pix x pix) image")
 		self.pix_input = QLineEdit(self)
 		self.pix_input.returnPressed.connect(self.updatePix) # Connect this intput dialog whenever the enter/return button is pressed
 		## !!!! use # .editingFinished.connect instead of .returnPressed.connect because it detects when enter/tab is pressed or if you click on a different widget in the gui. then it'll update  
@@ -191,6 +194,7 @@ class SimulatorWidget(QWidget):
 
 		# Length of image
 		self.length_Label = QLabel("L: ")
+		self.length_Label.setToolTip("Length of image in nanometers") 
 		self.L_input = QLineEdit(self)
 		self.L_input.returnPressed.connect(self.updateL) # Connect this intput dialog whenever the enter/return button is pressed
 		# self.L_input.returnPressed.connect(self.update_vt) # Connect to update_vt function to calculate the new estimate time of STM image bc it depends on the length of image
@@ -219,6 +223,7 @@ class SimulatorWidget(QWidget):
 
 		# Image twist angle theta
 		self.theta_label = QLabel("Theta:")
+		self.theta_label.setToolTip("Rotates the entire image by the input offset angle") 
 		self.theta_im_input = QLineEdit(self)
 		self.theta_im_input.returnPressed.connect(self.updateTheta) # Connect this intput dialog whenever the enter/return button is pressed
 		self.theta_im_input.setPlaceholderText(str(self.theta_im))
@@ -377,6 +382,7 @@ class SimulatorWidget(QWidget):
 		self.calc_topo_btn = QCheckBox("Calculate     ")
 		self.calc_topo_btn.setChecked(False)
 		self.calc_topo_btn.stateChanged.connect(self.update_calc)
+		self.calc_topo_btn.setToolTip("Check to calculate")
 		# self.calc_btn_grp = QButtonGroup()
 		# self.calc_btn_grp.addButton(self.calc_topo_btn, 1)
 
@@ -399,6 +405,7 @@ class SimulatorWidget(QWidget):
 
 		# Define label to display the value of the slider next to the textbox
 		self.vt_label = QLabel("Tip speed: ", self)
+		self.vt_label.setToolTip("Velocity of tip")
 		# self.vt_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
 		self.vt_label.setMinimumWidth(30)
 		self.vt_nm_label = QLabel(" nm/s", self)
@@ -476,6 +483,7 @@ class SimulatorWidget(QWidget):
 		self.calc_map_btn = QCheckBox("Calculate     ")
 		self.calc_map_btn.setChecked(False)
 		self.calc_map_btn.stateChanged.connect(self.update_map_calc)
+		self.calc_map_btn.setToolTip("Check to calculate")
 		# self.calc_btn_grp = QButtonGroup()
 		# self.calc_btn_grp.addButton(self.calc_topo_btn, 1)
 
@@ -489,7 +497,7 @@ class SimulatorWidget(QWidget):
 		self.tps_input = QLineEdit(self)
 		self.tps_input.returnPressed.connect(self.update_tps) # Connect this intput dialog whenever the enter/return button is pressed
 		self.tps_input.setPlaceholderText(str(self.tps))
-		self.tps_input.setFixedWidth(60)
+		self.tps_input.setFixedWidth(40)
 
 		self.tps_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update!
 		self.tps_btn.clicked.connect(self.update_tps)
@@ -497,6 +505,7 @@ class SimulatorWidget(QWidget):
 
 		# Define label to display the value of the slider next to the textbox
 		self.tps_label = QLabel("Time per spectra: ", self)
+		self.tps_label.setToolTip("Time per spectra")
 		# self.tps_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
 		self.tps_label.setMinimumWidth(30)
 		self.tps_s_label = QLabel(" s", self)
@@ -636,7 +645,7 @@ class SimulatorWidget(QWidget):
 		self.a_input.returnPressed.connect(self.update_a) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
 		self.a_input.setPlaceholderText(str(self.a))
 		self.a_input.setToolTip("Periodicity of 1st lattice (spacing between atoms) in nm")
-		self.a_input.setFixedWidth(60)
+		self.a_input.setMinimumWidth(85)
 
 		# Define label to display the value of the slider next to the slider
 		self.a_nm_Label = QLabel(" nm", self) # Display the corrected value. only up to 2 decimal pts
@@ -775,7 +784,8 @@ class SimulatorWidget(QWidget):
 		self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
 
-		self.sublattices_label = QLabel("Weight of sublattices")
+		self.sublattices_label = QLabel("\nWeight of sublattices")
+		self.sublattices_label.setToolTip("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
 
 
@@ -784,11 +794,11 @@ class SimulatorWidget(QWidget):
 		# self.alpha1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.alpha1_param_label.setToolTip("Weight of sublattice a")
 		self.alpha1_label = QLabel("alpha1:", self)
-		self.alpha1_label.setToolTip("Weight of sublattice a")
+		self.alpha1_label.setToolTip("Weight of sublattice A")
 		self.alpha1_input = QLineEdit(self)
 		self.alpha1_input.returnPressed.connect(self.update_alpha1) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
 		self.alpha1_input.setPlaceholderText(str(self.alpha1))
-		self.alpha1_input.setToolTip("Weight of sublattice a")
+		self.alpha1_input.setToolTip("Weight of sublattice A")
 		self.alpha1_input.setFixedWidth(60)
 
 		
@@ -915,7 +925,7 @@ class SimulatorWidget(QWidget):
 
 		# # # # # # # # # # # # # # # # # # # # 
 		### Pick lattice 2 periodicity b ###
-		self.b_param_label = QLabel("Lattice constant (nm)", self)
+		self.b_param_label = QLabel("\nLattice constant (nm)", self)
 		self.b_label = QLabel("b:", self)
 		# self.b_label.setFixedWidth(20)
 		self.b_input = QLineEdit(self)
@@ -925,7 +935,7 @@ class SimulatorWidget(QWidget):
 		self.b_label.setToolTip("Periodicity of 2nd lattice (spacing between atoms) in nm")
 		self.b_input.setToolTip("Periodicity of 2nd lattice (spacing between atoms) in nm")
 		# self.b_label.setBuddy(self.b_input)
-		self.b_input.setFixedWidth(60)
+		self.b_input.setMinimumWidth(85)
 
 		self.b_label.setMinimumHeight(15)
 		self.b_input.setMinimumHeight(15)
@@ -1101,18 +1111,20 @@ class SimulatorWidget(QWidget):
 		# self.sublattices_label1 = QLabel("Pick strength of sublattices Z = A + B")
 		# self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
-		self.sublattices_label = QLabel("Weight of sublattices")
+		self.sublattices_label = QLabel("\nWeight of sublattices")
+		self.sublattices_label.setToolTip("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+
 
 		# # # # # # # # # # # # # # # # # # # # 
 		### Pick alpha2 weight of sublattice a ###
 		# self.alpha1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.alpha1_param_label.setToolTip("Weight of sublattice a")
 		self.alpha2_label = QLabel("alpha2:", self)
-		self.alpha2_label.setToolTip("Weight of sublattice a")
+		self.alpha2_label.setToolTip("Weight of sublattice A")
 		self.alpha2_input = QLineEdit(self)
 		self.alpha2_input.returnPressed.connect(self.update_alpha2) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
 		self.alpha2_input.setPlaceholderText(str(self.alpha2))
-		self.alpha2_input.setToolTip("Weight of sublattice a")
+		self.alpha2_input.setToolTip("Weight of sublattice A")
 		self.alpha2_input.setFixedWidth(60)
 
 		
@@ -1174,7 +1186,7 @@ class SimulatorWidget(QWidget):
 
 		vlayout = QVBoxLayout(self)
 		vlayout.addWidget(self.lat2tabs)
-		vlayout.setSpacing(1)
+		vlayout.setSpacing(2)
 
 		lat2groupBox.setLayout(vlayout)
 		# lat2groupBox.setContentsMargins(0,15,0,0) # Sets the left , top , right , and bottom margins to use around the layout.
@@ -1228,13 +1240,13 @@ class SimulatorWidget(QWidget):
 
 		# # # # # # # # # # # # # # # # # # # # 
 		### Pick lattice 3 periodicity a3 ###
-		self.c_param_label = QLabel("Lattice constant (nm)", self)
+		self.c_param_label = QLabel("\nLattice constant (nm)", self)
 		self.c_label = QLabel("c:", self)
 		# self.b_label.setFixedWidth(20)
 		self.c_input = QLineEdit(self)
 		self.c_input.returnPressed.connect(self.update_c) # Connect this intput dialog whenever the enter/return button is pressed
 		self.c_input.setPlaceholderText(str(self.c))
-		self.c_input.setFixedWidth(60)
+		self.c_input.setMinimumWidth(85)
 		self.c_param_label.setToolTip("Periodicity of 3rd lattice (spacing between atoms) in nm")
 		self.c_label.setToolTip("Periodicity of 3rd lattice (spacing between atoms) in nm")
 		self.c_input.setToolTip("Periodicity of 3rd lattice (spacing between atoms) in nm")
@@ -1419,7 +1431,9 @@ class SimulatorWidget(QWidget):
 		# self.sublattices_label1 = QLabel("Pick strength of sublattices Z = A + B")
 		# self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
-		self.sublattices_label = QLabel("Weight of sublattices")
+		self.sublattices_label = QLabel("\nWeight of sublattices")
+		self.sublattices_label.setToolTip("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+
 
 	
 
@@ -1430,11 +1444,11 @@ class SimulatorWidget(QWidget):
 		# self.alpha1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.alpha1_param_label.setToolTip("Weight of sublattice a")
 		self.alpha3_label = QLabel("alpha3:", self)
-		self.alpha3_label.setToolTip("Weight of sublattice a")
+		self.alpha3_label.setToolTip("Weight of sublattice A")
 		self.alpha3_input = QLineEdit(self)
 		self.alpha3_input.returnPressed.connect(self.update_alpha3) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
 		self.alpha3_input.setPlaceholderText(str(self.alpha3))
-		self.alpha3_input.setToolTip("Weight of sublattice a")
+		self.alpha3_input.setToolTip("Weight of sublattice A")
 		self.alpha3_input.setFixedWidth(60)
 
 		
@@ -1504,7 +1518,7 @@ class SimulatorWidget(QWidget):
 		# Add tabs to a QVBoxLayout to be able to set the whole groupbox layout to the tabs
 		vlayout = QVBoxLayout(self)
 		vlayout.addWidget(self.lat3tabs)
-		vlayout.setSpacing(1)
+		vlayout.setSpacing(2)
 
 		lat3groupBox.setLayout(vlayout)
 		# lat3groupBox.setContentsMargins(0,15,0,0) # Sets the left , top , right , and bottom margins to use around the layout.
@@ -2052,8 +2066,8 @@ class SimulatorWidget(QWidget):
 
 		# Plot a circular with the radius of the half-width at half-max of a 2D gaussian of width w, HWHM = sqrt(2*log(2))*w
 		if self.filter_bool == True and self.sigma != 0:
-			sigma_real = self.sigma*self.L/(self.pix-1) # Convert pixels to real-space units
-			circ = plt.Circle((self.L/8,self.L/8),sigma_real*np.sqrt(2*np.log(2)),fill=True,color='white',alpha=0.5)
+			self.sigma_real = self.sigma*self.L/(self.pix-1) # Convert pixels to real-space units
+			circ = plt.Circle((self.L/8,self.L/8),self.sigma_real*np.sqrt(2*np.log(2)),fill=True,color='white',alpha=0.5)
 			ax00.add_artist(circ)
 
 		from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
@@ -2092,7 +2106,7 @@ class SimulatorWidget(QWidget):
 		plt.tight_layout()
 
 		if self.filter_bool == True and self.sigma != 0:
-			sigma_k = 1/sigma_real # The width of gaussian in k-space
+			sigma_k = 1/self.sigma_real # The width of gaussian in k-space
 			circ_k = plt.Circle((0,0),sigma_k*np.sqrt(2*np.log(2)),fill=False,color='red')
 			ax01.add_artist(circ_k)
 
@@ -2183,14 +2197,11 @@ class SimulatorWidget(QWidget):
 		self.filter_btn = QCheckBox("Filter (pix)")
 		self.filter_btn.setChecked(False)
 		self.filter_btn.stateChanged.connect(self.updateSigma)
+		self.filter_btn.setToolTip("Check to filter")
 		# self.calc_btn_grp = QButtonGroup()
 		# self.calc_btn_grp.addButton(self.calc_topo_btn, 1)
 
-		hbox = QHBoxLayout(self)
-		hbox.addWidget(self.filter_btn)
-
-		vlayout = QVBoxLayout(self)
-		# vlayout.addLayout(hbox)
+		
 
 		# Create vt input text box
 		self.sigma_input = QLineEdit(self)
@@ -2205,13 +2216,23 @@ class SimulatorWidget(QWidget):
 
 		# Define label to display the value of the slider next to the textbox
 		self.sigma_label = QLabel("Sigma:", self)
+
+		# self.sigma_real_label = QLabel("Sigma_real: " + str(self.sigma_real) + " pix", self)
 		# self.sigma_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
 		# self.sigma_label.setMinimumWidth(40)
 		# self.vt_nm_label = QLabel(" nm/s", self)
 		# self.vt_nm_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
 		# self.vt_nm_label.setMinimumWidth(30)
 
-		
+
+		hbox = QHBoxLayout(self)
+		hbox.addWidget(self.filter_btn)
+		# hbox.addWidget(self.sigma_real_label)
+
+		vlayout = QVBoxLayout(self)
+		# vlayout.addLayout(hbox)
+
+
 		hbox2 = QHBoxLayout(self)
 		hbox2.addWidget(self.sigma_label)
 		hbox2.addWidget(self.sigma_input)
@@ -2238,6 +2259,8 @@ class SimulatorWidget(QWidget):
 					self.sigma = eval(self.sigma_input.text()) #float(self.a_input.text())
 					self.sigma_input.setPlaceholderText(str(self.sigma))
 					self.filter_bool = True
+					# self.sigma_real = self.sigma*self.L/(self.pix-1)
+					# self.sigma_real_label.setText("Real: " + str(self.sigma_real*np.sqrt(2*np.log(2))), self)
 					self.plotAtoms()
 			except:
 				# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
