@@ -106,6 +106,7 @@ python AtomSimulator_GUI.py
       - `Hexagonal`, `a = 0.3`, `A-site`, `alpha1 = 1`, `beta1 = 0`
     - Lattice 2:
        - `Hexagonal`, `b = 0.3*3`, `Twist angle = 0`, `A-site`, `alpha2 = 1`, `beta2 = 0` 
+     
        ![2H-NbSe2](https://user-images.githubusercontent.com/62832051/182723639-dc7b7277-1328-4ecd-8913-8428cc38331f.png)
        ![2H-NbSe2_FFT](https://user-images.githubusercontent.com/62832051/182723651-0ced0fed-5f33-4a78-bbc4-d9bf321e9811.png)
 
