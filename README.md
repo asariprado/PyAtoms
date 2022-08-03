@@ -117,7 +117,7 @@ python AtomSimulator_GUI.py
     - Lattice 1:
       - `Hexagonal`, `a = 0.3`,  `Hollow`, `alpha1 = 1`, `beta1 = 1`
     - Lattice 2:
-       - `Hexagonal`, `b = 0.3*sqrt(3)`, `Twist angle = 30`, `Hollow`, `alpha2 = 1`, `beta2 = 0`
+       - `Hexagonal`, `b = 0.3*sqrt(3)`, `Twist angle = 30`, `Hollow`, `alpha2 = 1`, `beta2 = 0` 
 ![Kekule-O trivial](https://user-images.githubusercontent.com/62832051/182722880-113f3ada-2199-4fe0-926f-73e645fda904.png)
 ![Kekule-O trivial_FFT](https://user-images.githubusercontent.com/62832051/182722894-8a1e5cc1-afaa-41c3-8d5a-ee098aed254d.png)
 
