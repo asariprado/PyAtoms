@@ -83,7 +83,14 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
             fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))    
             # Normalize the FFT to be betweeen 0-1. this is so the plots dont move around much 
             # fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
+            if (alpha1 == beta1) or (alpha2 == beta2):
+                # Do not normalize FFT bc it gives a sivide by 0 error
+                pass
+            else:
+                fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
+                fftZ = fftZ_norm
 
+    
     
     ## CREATE THIRD LATTICE IF TRILAYER MOIRE BUTTON IS CHOSEN ## 
     elif moireBtn == 'Trilayer': 
@@ -98,14 +105,25 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
         if filter_bool == True:
             Z = gaussian_filter((Z1 * Z2 * Z3 + Z1 + Z2 + Z3)/4, sigma,mode='mirror') # filter the stacked 3 lattices
             fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))
-
+            
         else:
             # Stack the 3 lattices to create moire superlattice
             Z = (Z1 * Z2 * Z3 + Z1 + Z2 + Z3)/4 #Normalize after this line, but need if statement for alpha AND beta ==0
+         
+            if (alpha1 == beta1) or (alpha2 == beta2) or (alpha3==beta3):
+                # Do not normalize FFT bc it gives a divide by 0 error
+                fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))   
+                
+                pass
+            else:
+                fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
+                fftZ = fftZ_norm
+
+
             
 
             # Take the fft     
-            fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))   
+            # fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))   
             # fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
  
 

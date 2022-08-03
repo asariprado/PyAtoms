@@ -98,6 +98,7 @@ class SimulatorWidget(QWidget):
 
 		self.filter_bool = False
 		self.sigma = 0
+		self.sigma_real = self.sigma*self.L/(self.pix-1)  *np.sqrt(2*np.log(2))
 
 		self.saveFileName = ''
 
@@ -123,7 +124,7 @@ class SimulatorWidget(QWidget):
 		
 		self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.alpha1, self.beta1, self.origin1)
 		
-		self.sigma_real = self.sigma*self.L/(self.pix-1)
+		
 
 		# STM topography time estimator
 		self.vt = 20 # velocity of tip scanner, for calculating how long the image should take when doing actual stm measurements
@@ -2044,7 +2045,7 @@ class SimulatorWidget(QWidget):
 				self.Z, self.fftZ = squareatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22)
 
 		# Normalize the FFTs to be between 0-1
-		self.fftZ_norm = (self.fftZ - np.min(np.min((self.fftZ))))/(np.max(np.max(self.fftZ)) - np.min(np.min(self.fftZ)))
+		# self.fftZ_norm = (self.fftZ - np.min(np.min((self.fftZ))))/(np.max(np.max(self.fftZ)) - np.min(np.min(self.fftZ)))
  
 
 
@@ -2093,7 +2094,7 @@ class SimulatorWidget(QWidget):
 		# 	extL = -(self.pix-1)*np.pi/self.L
 		# 	extR = (self.pix-1)*np.pi/self.L
 		
-		fig2 = ax01.imshow(np.flipud(self.fftZ_norm), cmap = self.colormap_FFT, extent=[extL, extR, extL, extR])
+		fig2 = ax01.imshow(np.flipud(self.fftZ), cmap = self.colormap_FFT, extent=[extL, extR, extL, extR])
 		ax01.set_xlabel('$k_x$ (1/nm)')
 		ax01.set_ylabel('$k_y$ (1/nm)')
 		ax01.set_title('FFT')
@@ -2217,7 +2218,7 @@ class SimulatorWidget(QWidget):
 		# Define label to display the value of the slider next to the textbox
 		self.sigma_label = QLabel("Sigma:", self)
 
-		# self.sigma_real_label = QLabel("Sigma_real: " + str(self.sigma_real) + " pix", self)
+		self.sigma_real_label = QLabel("     %.2f nm"  % (self.sigma_real), self)
 		# self.sigma_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
 		# self.sigma_label.setMinimumWidth(40)
 		# self.vt_nm_label = QLabel(" nm/s", self)
@@ -2227,7 +2228,7 @@ class SimulatorWidget(QWidget):
 
 		hbox = QHBoxLayout(self)
 		hbox.addWidget(self.filter_btn)
-		# hbox.addWidget(self.sigma_real_label)
+		hbox.addWidget(self.sigma_real_label)
 
 		vlayout = QVBoxLayout(self)
 		# vlayout.addLayout(hbox)
@@ -2259,8 +2260,8 @@ class SimulatorWidget(QWidget):
 					self.sigma = eval(self.sigma_input.text()) #float(self.a_input.text())
 					self.sigma_input.setPlaceholderText(str(self.sigma))
 					self.filter_bool = True
-					# self.sigma_real = self.sigma*self.L/(self.pix-1)
-					# self.sigma_real_label.setText("Real: " + str(self.sigma_real*np.sqrt(2*np.log(2))), self)
+					self.sigma_real = self.sigma*self.L/(self.pix-1)
+					self.sigma_real_label.setText("     %.2f nm"  %(self.sigma_real))
 					self.plotAtoms()
 			except:
 				# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
