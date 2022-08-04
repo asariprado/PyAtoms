@@ -82,6 +82,7 @@ python AtomSimulator_GUI.py
       - `Hexagonal`, `a = 0.3`, `A-site`, `alpha1 = 1`, `beta1 = 0`
     - Lattice 2:
        - `Hexagonal`, `b = 0.3`, `Twist angle = 1.1`, `A-site`, `alpha2 = 1`, `beta2 = 0` 
+       
         <img width="256" alt="Screen Shot 2022-08-03 at 3 42 15 PM" src="https://user-images.githubusercontent.com/62832051/182725015-be33b834-783e-45d2-b6f8-b9d12843235b.png">
         <img width="280" alt="Screen Shot 2022-08-03 at 3 43 14 PM" src="https://user-images.githubusercontent.com/62832051/182725026-1a462df7-9372-4b7e-bd02-6041134966b7.png">
 
@@ -94,6 +95,7 @@ python AtomSimulator_GUI.py
       - `Hexagonal`, `a = 0.3`, `A-site`, `alpha1 = 1`, `beta1 = 0`
     - Lattice 2:
        - `Hexagonal`, `b = 0.3*np.sqrt(13)`, `Twist angle = 13.9`, `A-site`, `alpha2 = 1`, `beta2 = 0` 
+       
     ![1T-TaS2](https://user-images.githubusercontent.com/62832051/182723975-b59e6b83-545a-47fe-8a68-59146fc1879b.png)
     ![1T-TaS2_FFT](https://user-images.githubusercontent.com/62832051/182723980-90b7689d-55c0-466d-8fd7-f993574f8955.png)
 
@@ -119,6 +121,7 @@ python AtomSimulator_GUI.py
       - `Hexagonal`, `a = 0.3`,  `Hollow`, `alpha1 = 1`, `beta1 = 1`
     - Lattice 2:
        - `Hexagonal`, `b = 0.3*sqrt(3)`, `Twist angle = 30`, `Hollow`, `alpha2 = 1`, `beta2 = 0` 
+       
 ![Kekule-O trivial](https://user-images.githubusercontent.com/62832051/182722880-113f3ada-2199-4fe0-926f-73e645fda904.png)
 ![Kekule-O trivial_FFT](https://user-images.githubusercontent.com/62832051/182722894-8a1e5cc1-afaa-41c3-8d5a-ee098aed254d.png)
 
@@ -131,6 +134,7 @@ python AtomSimulator_GUI.py
       - `Hexagonal`, `a = 0.3`,  `Hollow`, `alpha1 = 1`, `beta1 = 1`
     - Lattice 2:
        - `Hexagonal`, `b = 0.3*sqrt(3)`, `Twist angle = 30`, `Hollow`, `alpha2 = 1`, `beta2 = 1`
+       
 ![Topological](https://user-images.githubusercontent.com/62832051/182723054-ede96db1-1f19-4eb9-ab59-3f8a60c52b32.png)
 ![Topological_FFT](https://user-images.githubusercontent.com/62832051/182723064-db5399fb-3dcb-4a23-890f-95ff5b65e9d8.png)
 
