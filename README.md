@@ -57,9 +57,19 @@ Note that all fields accept typical mathematical operations in python and NumPy 
     - The number on top tells you the radius of the mask in nanometers
 
 5. Save files
-    - Click to save the files to a specific directory. Will save a folder with 4 files:
+    - Click to save the files to a specific directory
+      - Clicking will open the file explorer
+      - Navigate to the directory you want to save the files in
+      - Input a `filename` to save as
+    - It will save a folder called `filename` with 4 files:
       - .png images of the real space and FFT, .txt file of the real space image, .txt file of the parameter values
-      - Example of params .txt file: <img width="446" alt="Screen Shot 2022-08-03 at 3 40 46 PM" src="https://user-images.githubusercontent.com/62832051/182724722-b820f3b3-a2e2-413c-8c9d-cb03da7b78ce.png">
+      - `filename.png`, `filename_FFT.png`, `filename.txt`, `filename_params.txt`
+      - Example of folder with saved files: 
+  
+        <img width="700" alt="Screen Shot 2022-08-04 at 1 30 29 PM" src="https://user-images.githubusercontent.com/62832051/182946811-ba2a1e4d-04d7-4658-b013-38dac1c8ef42.png">
+      - Example of params .txt file: 
+  
+        <img width="446" alt="Screen Shot 2022-08-03 at 3 40 46 PM" src="https://user-images.githubusercontent.com/62832051/182724722-b820f3b3-a2e2-413c-8c9d-cb03da7b78ce.png">
 
       
 
