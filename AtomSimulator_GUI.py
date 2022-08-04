@@ -109,10 +109,10 @@ class Window(QDialog):
 
         # if self.SimWidget.moireBtn == 'Yes': # to only display lattice2 widgets if we are plotting moire lattice. THIS doesnt work :(
         # Settings for second lattice
-        grid.addWidget(self.SimWidget.initLattice2Parameters(), 3, 0,2,1)
+        grid.addWidget(self.SimWidget.initLattice2Parameters(), 3, 0,3,1)
 
         # Lattice 3 parameters
-        grid.addWidget(self.SimWidget.initLattice3Parameters(), 5, 0,2,1)
+        grid.addWidget(self.SimWidget.initLattice3Parameters(), 6, 0,3,1)
 
 
         # Add matplotlib fig/toolbar to gui
