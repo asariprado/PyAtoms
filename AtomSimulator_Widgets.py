@@ -1112,7 +1112,7 @@ class SimulatorWidget(QWidget):
 		# self.sublattices_label1 = QLabel("Pick strength of sublattices Z = A + B")
 		# self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
-		self.sublattices_label = QLabel("\nWeight of sublattices")
+		self.sublattices_label = QLabel("\n\nWeight of sublattices")
 		self.sublattices_label.setToolTip("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
 
@@ -1432,7 +1432,7 @@ class SimulatorWidget(QWidget):
 		# self.sublattices_label1 = QLabel("Pick strength of sublattices Z = A + B")
 		# self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
-		self.sublattices_label = QLabel("\nWeight of sublattices")
+		self.sublattices_label = QLabel("\n\nWeight of sublattices")
 		self.sublattices_label.setToolTip("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
 
