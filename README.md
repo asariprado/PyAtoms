@@ -33,6 +33,9 @@ Simulates SPM images ,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 ##
 ## How to use ?
+
+Note that all fields accept typical mathematical operations in python and NumPy such as `+` `-` `*` `/` `sqrt` `log` and all valid NumPy functions `func` can be called via `np.func()`. 
+
 1. Moiré lattice
     - Choose to simulate a 1, 2 or 3 layer lattice
        - Lattice 1 parameters change the single/first layer
@@ -81,12 +84,12 @@ Simulates SPM images ,,,,,,,,,,,,,,,,,,,,,,,,,,
       - If `alpha = 1`, `beta = 0`, the lattice is triangular
       - If `alpha = beta = 1`, the lattice is honeycomb
     - Strain tab
-        - Apply the 2D strain tensor where the $x$-axis is defined as the *local* direction, i.e. the strain tensor rotates with the local axis set by `theta` and `twist angle`.
+        - Apply the 2D strain tensor, $e_{xy}$, where the $x$-axis is defined as the *local* direction of that lattice, i.e. the strain tensor rotates with the local axes set by `theta` or `twist angle`. See https://doi.org/10.1103/PhysRevB.80.045401.
 
 
 ##
 ## Examples
-1. Twisted bilayer graphene
+1. Twisted bilayer graphene with $1.1^\circ$ twist angle.
     - `Moire lattice`: bilayer
     - `L = 35`
     - `Pixels = 1024`
@@ -98,7 +101,7 @@ Simulates SPM images ,,,,,,,,,,,,,,,,,,,,,,,,,,
     <img width="256" alt="Screen Shot 2022-08-03 at 3 42 15 PM" src="https://user-images.githubusercontent.com/62832051/182725015-be33b834-783e-45d2-b6f8-b9d12843235b.png"> <img width="280" alt="Screen Shot 2022-08-03 at 3 43 14 PM" src="https://user-images.githubusercontent.com/62832051/182725026-1a462df7-9372-4b7e-bd02-6041134966b7.png">
 
 
-2. 1T-TaS2
+2. 1T-TaS2 with $(\sqrt{13}\times\sqrt{13})R13.9^\circ$ charge density wave superlattice.
     - `Moire lattice`: bilayer
     - `L = 7`
     - `Pixels = 256`
@@ -111,7 +114,7 @@ Simulates SPM images ,,,,,,,,,,,,,,,,,,,,,,,,,,
     ![1T-TaS2_FFT](https://user-images.githubusercontent.com/62832051/182723980-90b7689d-55c0-466d-8fd7-f993574f8955.png)
 
 
-3. 2H-NbSe2
+3. 2H-NbSe2 with $(3\times 3)R0^\circ$ charge density wave superlattice.
     - `Moire lattice`: bilayer
     - `L = 7`
     - `Pixels = 256`
@@ -124,7 +127,7 @@ Simulates SPM images ,,,,,,,,,,,,,,,,,,,,,,,,,,
    ![2H-NbSe2_FFT](https://user-images.githubusercontent.com/62832051/182723651-0ced0fed-5f33-4a78-bbc4-d9bf321e9811.png)
 
 
-4. Kekule-O (trivial)
+4. Kekule-O (trivial) distorted graphene with $(\sqrt{3}\times\sqrt{3})R30^\circ$ superlattice.
     - `Moire lattice`: bilayer
     - `L = 7`
     - `Pixels = 256`
@@ -137,7 +140,7 @@ Simulates SPM images ,,,,,,,,,,,,,,,,,,,,,,,,,,
     ![Kekule-O trivial_FFT](https://user-images.githubusercontent.com/62832051/182722894-8a1e5cc1-afaa-41c3-8d5a-ee098aed254d.png)
 
 
- 5. Kekule-O (topological)
+ 5. Kekule-O (topological) distorted graphene with $(\sqrt{3}\times\sqrt{3})R30^\circ$ superlattice.
     - `Moire lattice`: bilayer
     - `L = 7`
     - `Pixels = 256`
