@@ -1771,37 +1771,92 @@ class SimulatorWidget(QWidget):
 			x = self.f22_error.exec()
 
 	def updateOrigin1(self):
-		radio_btn = self.sender()
-		if radio_btn.isChecked():
-			if radio_btn.text() == 'Hollow':
-				self.origin1 = "Hollow"
-			elif radio_btn.text() == 'A-site':
-				self.origin1 = 'A-site'
-			elif radio_btn.text() == "B-site":
-				self.origin1 = "B-site"
-		self.plotAtoms() 
+
+		if self.lattice1 == "Square":
+			self.origin1error = QMessageBox()
+			self.origin1error.setWindowTitle("Error")
+			self.origin1error.setText("Choose hexagonal lattice ")
+			self.origin1error.setInformativeText("You have selected a square lattice. These things do not change a square lattice")
+			self.origin1error.setIcon(QMessageBox.Warning)
+			self.origin1error.setStandardButtons(QMessageBox.Ok)
+			self.origin1error.addButton(QPushButton("Change to hex lattice"),QMessageBox.YesRole)
+			x = self.origin1error.exec()
+			print(x)
+			if x == 0:
+				self.hex1btn.setChecked(True)
+				self.lattice1 = "Hexagonal"
+
+		else: 		
+			radio_btn = self.sender()
+			if radio_btn.isChecked():
+				if radio_btn.text() == 'Hollow':
+					self.origin1 = "Hollow"
+				elif radio_btn.text() == 'A-site':
+					self.origin1 = 'A-site'
+				elif radio_btn.text() == "B-site":
+					self.origin1 = "B-site"
+
+
+	
+			self.plotAtoms() 
 
 	def updateOrigin2(self):
-		radio_btn = self.sender()
-		if radio_btn.isChecked():
-			if radio_btn.text() == 'Hollow':
-				self.origin2 = "Hollow"
-			elif radio_btn.text() == 'A-site':
-				self.origin2 = 'A-site'
-			elif radio_btn.text() == "B-site":
-				self.origin2 = "B-site"
-		self.plotAtoms() 
+
+		if self.lattice2 == "Square":
+			self.origin2error = QMessageBox()
+			self.origin2error.setWindowTitle("Error")
+			self.origin2error.setText("Choose hexagonal lattice")
+			self.origin2error.setInformativeText("You have selected a square lattice. These things do not change a square lattice")
+			self.origin2error.setIcon(QMessageBox.Warning)
+			self.origin2error.setStandardButtons(QMessageBox.Ok)
+			self.origin2error.addButton(QPushButton("Change to hex lattice"),QMessageBox.YesRole)
+			x = self.origin2error.exec()
+			print(x)
+			if x == 0:
+				self.hex2btn.setChecked(True)
+				self.lattice2 = "Hexagonal"
+
+
+		else:
+			radio_btn = self.sender()
+			if radio_btn.isChecked():
+				if radio_btn.text() == 'Hollow':
+					self.origin2 = "Hollow"
+				elif radio_btn.text() == 'A-site':
+					self.origin2 = 'A-site'
+				elif radio_btn.text() == "B-site":
+					self.origin2 = "B-site"
+
+			self.plotAtoms() 
 
 	def updateOrigin3(self):
-		radio_btn = self.sender()
-		if radio_btn.isChecked():
-			if radio_btn.text() == 'Hollow':
-				self.origin3 = "Hollow"
-			elif radio_btn.text() == 'A-site':
-				self.origin3 = 'A-site'
-			elif radio_btn.text() == "B-site":
-				self.origin3 = "B-site"
-		self.plotAtoms() 
+
+		if self.lattice3 == "Square":
+			self.origin3error = QMessageBox()
+			self.origin3error.setWindowTitle("Error")
+			self.origin3error.setText("Choose hexagonal lattice")
+			self.origin3error.setInformativeText("You have selected a square lattice. These things do not change a square lattice")
+			self.origin3error.setIcon(QMessageBox.Warning)
+			self.origin3error.setStandardButtons(QMessageBox.Ok)
+			self.origin3error.addButton(QPushButton("Change to hex lattice"),QMessageBox.YesRole)
+			x = self.origin3error.exec()
+			print(x)
+			if x == 0:
+				self.hex2btn.setChecked(True)
+				self.lattice2 = "Hexagonal"
+
+
+		else:
+
+			radio_btn = self.sender()
+			if radio_btn.isChecked():
+				if radio_btn.text() == 'Hollow':
+					self.origin3 = "Hollow"
+				elif radio_btn.text() == 'A-site':
+					self.origin3 = 'A-site'
+				elif radio_btn.text() == "B-site":
+					self.origin3 = "B-site"
+			self.plotAtoms() 
 
 	def update_alpha1(self):
 		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
