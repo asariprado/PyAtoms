@@ -12,10 +12,10 @@ Simulates SPM images ,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 ## Installation instructions
 1. Download folder
-2. Open terminal
-3. Navigate to the directory where the folder is located. Example:
+2. Open terminal (Mac OSX) or command line (Windows).
+3. Navigate to the directory where the AtomSimulator folder is located. Example:
     ```
-    ~/Documents/GitHub/AtomSimulator
+    ~/Downloads/AtomSimulator
     ```
 5. To run program, type: 
     ```
@@ -24,11 +24,12 @@ Simulates SPM images ,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 
 ### For windows users:
-- Make sure python is installed in the enviornment
+- Make sure python is installed and that its path is set in your environment
 - To check if it is, open the command line and type
     ```
     python -V
     ```
+- Alternatively, if you installed python, NumPy, SciPy, etc. through Anaconda for Windows, you can run the above code through the Anaconda prompt.
 
 ##
 ## How to use ?
@@ -60,20 +61,19 @@ Simulates SPM images ,,,,,,,,,,,,,,,,,,,,,,,,,,
       
 
 6. SPM Time estimator
-    - `Tip velocity`: Velocity of the tip across 1 line
-    - 
+    - `Tip velocity`: Velocity of the tip across 1 line in nanometers/second.
+    
 7. dI/dV Time estimator
-    - `Time per spectra`: time per spectra 
-
+    - `Time per spectra`: Total time in seconds (including overhead) to record a single spectrum, i.e. one dI/dV(V) sweep. 
 
 8. Lattices
     - Parameters tab
-       - `symmetry`: Choose to simulate either a hexagonal or square lattice
-       - `Lattice constant`: periodicity/spacing between atoms
+       - `symmetry`: Choose to simulate either a triangular/honeycomb or square lattice.
+       - `Lattice constant`: periodicity/spacing between atoms in nanometers.
        - `Twist angle`: twists the second lattice with respect to the first lattice (in Lattice 2 params) // twists the third lattice with respect to the second lattice (in Lattice 3 params)
 
     - Sublattices tab (only affects hexagonal lattices)
-       - Lattice site at origin: choose whether the origin should be a hollow site, an A-site atom or a B-site atom
+       - Lattice site at the image origin: choose whether the origin should be a hollow site, an A-site atom or a B-site atom
           - To test this, set `L = 1 nm` and click the different options for the origin
       - Weight of sublattices:
           - `alpha1`: weight of A sublattice
@@ -81,7 +81,7 @@ Simulates SPM images ,,,,,,,,,,,,,,,,,,,,,,,,,,
       - If `alpha = 1`, `beta = 0`, the lattice is triangular
       - If `alpha = beta = 1`, the lattice is honeycomb
     - Strain tab
-        - Apply strain to the $k_x$ direction 
+        - Apply the 2D strain tensor where the $x$-axis is defined as the *local* direction, i.e. the strain tensor rotates with the local axis set by `theta` and `twist angle`.
 
 
 ##
@@ -137,7 +137,7 @@ Simulates SPM images ,,,,,,,,,,,,,,,,,,,,,,,,,,
     ![Kekule-O trivial_FFT](https://user-images.githubusercontent.com/62832051/182722894-8a1e5cc1-afaa-41c3-8d5a-ee098aed254d.png)
 
 
- 5. Kekule-Y (topological)
+ 5. Kekule-O (topological)
     - `Moire lattice`: bilayer
     - `L = 7`
     - `Pixels = 256`
