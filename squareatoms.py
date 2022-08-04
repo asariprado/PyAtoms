@@ -51,23 +51,7 @@ def squareatoms(pix, L, a, theta, e11, e12, e22, origin_x = 0, origin_y = 0):
         where o1,o2 are pixel positions of your origin
     """
   
-    # Reciprocal lattice vectors for square crystal WITH STRAIN
-    # k1 = (2*np.pi/a)*np.array([1 + e11, e12])
-    # k2 = (2*np.pi/a)*np.array([e12, 1 + e22]) 
-    k1 = (2*np.pi/a)*np.array([1 - e11, -e12])#/(1+e11+e22+e11*e22 - e12^2)
-    k2 = (2*np.pi/a)*np.array([-e12, 1 - e22])#/(1+e11+e22+e11*e22 - e12^2)
 
-
-
-
-    # Create rotation matrix to the lattice by theta (assuming theta is in degrees)
-    theta_rad = np.deg2rad(theta) # convert theta to radians
-    rotmat = np.array([[cos(theta_rad), -sin(theta_rad)], [sin(theta_rad), cos(theta_rad)]])
-    
-    # Rotate the reciprocal lattice vector by the rotation matrix
-    k1 = np.matmul(k1,rotmat)
-    k2 = np.matmul(k2,rotmat)
-    
     # Create a meshgrid of 'pix' number of points, values from 0 --> L
     xx = np.linspace(0, L, pix)
     [X, Y] = np.meshgrid(xx,xx)
@@ -86,6 +70,27 @@ def squareatoms(pix, L, a, theta, e11, e12, e22, origin_x = 0, origin_y = 0):
     x = X - ctrX  # these are also meshgrids
     y = Y - ctrY
 
+    # Reciprocal lattice vectors for square crystal WITH STRAIN
+    # k1 = (2*np.pi/a)*np.array([1 + e11, e12])
+    # k2 = (2*np.pi/a)*np.array([e12, 1 + e22]) 
+    k1 = (2*np.pi/a)*np.array([1 - e11, -e12])
+    k2 = (2*np.pi/a)*np.array([-e12, 1 - e22])
+
+
+    ## Rotate the lattice by theta (in degrees)
+    # Convert theta to radians
+    theta_rad = np.deg2rad(theta) 
+
+    # Create rotation matrix to multiply reciprocal lattice vectors to rotate the image 
+    rotmat = np.array([[cos(theta_rad), -sin(theta_rad)], [sin(theta_rad), cos(theta_rad)]])
+    
+    # Rotate wavevectors by angle theta, using rotation matrix 
+    k1 = np.matmul(k1,rotmat)
+    k2 = np.matmul(k2,rotmat)
+    
+
+    
+
     # # Set amplitudes to plot lattice as honeycomb or dots ... This basically just changes the phase of the atoms 
     # if honeycomb == 1:
     #     A = 1/2
@@ -95,13 +100,15 @@ def squareatoms(pix, L, a, theta, e11, e12, e22, origin_x = 0, origin_y = 0):
     #     B = 1/4
 
     # removing honeycomb dependence, clean up code later
+    # These amplitudes normalize the image
     A = 1/2
     B = 1/4
+    
     # Create square lattice
     Z = A + B * (cos((k1[0]*x) + (k1[1]*y)) + cos((k2[0]*x) + (k2[1]*y)))
 
     # FFT of lattice:
-    fftZ = np.abs(npf.fftshift(npf.fft2(Z- np.mean(np.mean(Z))))) # subtract by the mean to get rid of bright constant background peak at k=0
-  
+    fftZ = np.abs(npf.fftshift(npf.fft2(Z- np.mean(np.mean(Z)))))  # subtract by mean(mean(Z)) to remove the strong peak at k=0 (DC/constant background)
+
 
     return Z, fftZ
