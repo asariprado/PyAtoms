@@ -113,9 +113,9 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
             if (alpha1 == beta1) or (alpha2 == beta2) or (alpha3==beta3):
                 # Do not normalize FFT bc it gives a divide by 0 error
                 fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))   
-                
                 pass
             else:
+                fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))
                 fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
                 fftZ = fftZ_norm
 
