@@ -102,9 +102,9 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
             Z3, fftZ3 = squareatoms(pix, L, a3, theta_tw23, f11, f12, f22)
       
       # Low pass filter the image if the button is checked:
-        if filter_bool == True:
+        if filter_bool == True: 
             Z = gaussian_filter((Z1 * Z2 * Z3 + Z1 + Z2 + Z3)/4, sigma,mode='mirror') # filter the stacked 3 lattices
-            fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))
+            fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z))))) # If filtering, do not normalize FFT
             
         else:
             # Stack the 3 lattices to create moire superlattice

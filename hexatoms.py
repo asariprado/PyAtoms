@@ -32,8 +32,7 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin):
 
     Creates a (pix x pix) image array of a hexagonal atomic lattice with periodicity 'a' (nm),
     rotated from the x-direction by an angle theta. The image has side length L (nm).
-    If honeycomb == 1, it creates the same image but with honeycomb pattern. 
-    For either choice, the image height is normalized to [0,1].
+    The image height is normalized to [0,1].
 
     
     Args:
@@ -44,9 +43,6 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin):
         e11, e22, e12 [float]: STRAIN tensor components. the amount of strain/distortion to add to each component (default is 0 for each - no distortion)
                                The strain tensor is:   e = (e11  e12) 
                                                            (-e12 e22)
-        honeycomb [0 or 1]: Creates the lattice with (1) or without (0) a honeycomb pattern
-                            0: no honeycomb pattern. 1: honeycomb pattern
-        origin_x, origin_y [int]: sets the origin of the lattice. Default is set to 0,0 ((not really that important?))
         
     """
     
