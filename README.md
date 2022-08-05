@@ -87,12 +87,18 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 
     - Sublattices tab (only affects hexagonal lattices)
        - Lattice site at the image origin: choose whether the origin should be a hollow site, an A-site atom or a B-site atom
-          - To test this, set `L = 1 nm` and click the different options for the origin
+          - To test this, set `L = 1` and click the different options for the origin
       - Weight of sublattices:
           - `alpha1`: weight of A sublattice
           - `beta1`: weight of B sublattice 
-      - If `alpha = 1`, `beta = 0`, the lattice is triangular
-      - If `alpha = beta = 1`, the lattice is honeycomb
+      - For a triangular lattice: `alpha = 1`, `beta = 0`
+      
+        ![triangular](https://user-images.githubusercontent.com/62832051/183219252-90edd400-bd36-46c0-9e39-e5d0c4b0e4c0.png)
+
+      - For a honeycomb lattice: `alpha = 1`, `beta = 1`
+      
+        ![honeycomb](https://user-images.githubusercontent.com/62832051/183219271-329a51b9-b0b9-4e44-a7b2-04bf34960c7c.png)
+     
     - Strain tab
         - Apply the 2D strain tensor, $e_{xy}$, where the $x$-axis is defined as the *local* direction of that lattice, i.e. the strain tensor rotates with the local axes set by `theta` or `twist angle`. See https://doi.org/10.1103/PhysRevB.80.045401.
 
