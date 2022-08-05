@@ -76,7 +76,7 @@ class Window(QDialog):
         self.w = (2*self.width()) // 3 - 100
         self.h = self.height() - 100
         self.SimWidget = SimulatorWidget(self, self.x,self.y,self.w,self.h) # Define an instance of the SimulatorWidget class, which is being imported thus can be accessed in this file
-
+        self.showMaximized() # To open the window fully maximized https://www.geeksforgeeks.org/pyqt5-how-to-open-window-in-maximized-format/
 
 
     # Create a layout to place all the widgets/groupboxes in a grid layout
@@ -107,7 +107,6 @@ class Window(QDialog):
         grid.addWidget(self.SimWidget.initLattice1Parameters(), 0, 0, 3, 1)
 
 
-        # if self.SimWidget.moireBtn == 'Yes': # to only display lattice2 widgets if we are plotting moire lattice. THIS doesnt work :(
         # Settings for second lattice
         grid.addWidget(self.SimWidget.initLattice2Parameters(), 3, 0,3,1)
 
