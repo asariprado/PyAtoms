@@ -104,11 +104,14 @@ Note that all fields accept typical mathematical operations in python and NumPy 
     - `L = 35`
     - `Pixels = 1024`
     - Lattice 1:
-      - `Hexagonal`, `a = 0.3`, `A-site`, `alpha1 = 1`, `beta1 = 0`
+      - `Hexagonal`, `a = 0.3`, `A-site`, `alpha1 = 1`, `beta1 = 1`
     - Lattice 2:
-       - `Hexagonal`, `b = 0.3`, `Twist angle = 1.1`, `A-site`, `alpha2 = 1`, `beta2 = 0` 
-       
-    <img width="256" alt="Screen Shot 2022-08-03 at 3 42 15 PM" src="https://user-images.githubusercontent.com/62832051/182725015-be33b834-783e-45d2-b6f8-b9d12843235b.png"> <img width="280" alt="Screen Shot 2022-08-03 at 3 43 14 PM" src="https://user-images.githubusercontent.com/62832051/182725026-1a462df7-9372-4b7e-bd02-6041134966b7.png">
+       - `Hexagonal`, `b = 0.3`, `Twist angle = 1.1`, `A-site`, `alpha2 = 1`, `beta2 = 1` 
+      
+    <img width="260" alt="Screen Shot 2022-08-05 at 1 41 35 PM" src="https://user-images.githubusercontent.com/62832051/183159495-dc4b4c38-5e67-4cbc-bbe9-55ff9b696ec6.png">
+
+    <img width="280" alt="Screen Shot 2022-08-03 at 3 43 14 PM" src="https://user-images.githubusercontent.com/62832051/182725026-1a462df7-9372-4b7e-bd02-6041134966b7.png">
+
 
 
 2. 1T-TaS2 with $(\sqrt{13}\times\sqrt{13})R13.9^\circ$ charge density wave superlattice.
