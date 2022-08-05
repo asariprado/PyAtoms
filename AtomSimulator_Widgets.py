@@ -603,6 +603,8 @@ class SimulatorWidget(QWidget):
 		self.lat1tabs.addTab(self.tab3a, "Sublattices")
 		# self.lat1tabs.addTab(self.tab4a, "Origin")
 		self.lat1tabs.addTab(self.tab2a, "Strain")
+
+		self.tab3a.setToolTip("Only works for hexagonal lattices")
 		
 
 
@@ -753,12 +755,19 @@ class SimulatorWidget(QWidget):
 		# # # # # # # # # # # # # # # # # # # # # 
 		# ### Pick origin site for lattice 1 ###
 		self.origin1label = QLabel("Lattice site at origin")
+		
 		# Create radiobuttons
-		self.hollowsite1 = QRadioButton("Hollow")
+		self.hollowsite1 = QRadioButton("Hollow") 
 		self.Asite1 = QRadioButton("A-site")
 		self.Bsite1 = QRadioButton("B-site")
 
 		self.hollowsite1.setChecked(True)
+
+		# Set hover tool tips
+		self.origin1label.setToolTip("Only works for hexagonal lattices.")
+		self.hollowsite1.setToolTip("No atom at the origin")
+		self.Asite1.setToolTip("A-atom at the origin")
+		self.Bsite1.setToolTip("B-atom at the origin")
 
 		# # Create QButtonGroup to be mutually exclusive  buttons. This is all u have to do for them to work correctly! 
 		self.origin1_group = QButtonGroup(self)
@@ -786,7 +795,7 @@ class SimulatorWidget(QWidget):
 
 
 		self.sublattices_label = QLabel("\nWeight of sublattices")
-		self.sublattices_label.setToolTip("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+		self.sublattices_label.setToolTip("Only works if hexagonal symmetry is selected.\nHoneycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
 
 
@@ -806,6 +815,7 @@ class SimulatorWidget(QWidget):
 		self.alpha1_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.alpha1_btn.clicked.connect(self.update_alpha1)
 		self.alpha1_btn.setAutoDefault(False)
+		self.alpha1_btn.setToolTip("Weight of sublattice A")
 
 
 		h7box = QHBoxLayout(self)
@@ -831,6 +841,7 @@ class SimulatorWidget(QWidget):
 		self.beta1_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.beta1_btn.clicked.connect(self.update_beta1)
 		self.beta1_btn.setAutoDefault(False)
+		self.beta1_btn.setToolTip("Weight of sublattice B")
 
 
 		h8box = QHBoxLayout(self)
@@ -854,9 +865,8 @@ class SimulatorWidget(QWidget):
 		self.tab3a.layout.addWidget(self.sublattices_label)
 		self.tab3a.layout.addLayout(h7box)
 		self.tab3a.layout.addLayout(h8box)
+
 		
-
-
 
 		
 
@@ -1092,6 +1102,13 @@ class SimulatorWidget(QWidget):
 
 		self.hollowsite2.setChecked(True)
 
+		# Set hover tool tips
+		self.origin2label.setToolTip("Only works for hexagonal lattices.")
+		self.hollowsite2.setToolTip("No atom at the origin")
+		self.Asite2.setToolTip("A-atom at the origin")
+		self.Bsite2.setToolTip("B-atom at the origin")
+		
+
 		# # Create QButtonGroup to be mutually exclusive  buttons. This is all u have to do for them to work correctly! 
 		self.origin2_group = QButtonGroup(self)
 		self.origin2_group.addButton(self.hollowsite2)
@@ -1113,7 +1130,7 @@ class SimulatorWidget(QWidget):
 		# self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
 		self.sublattices_label = QLabel("\n\nWeight of sublattices")
-		self.sublattices_label.setToolTip("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+		self.sublattices_label.setToolTip("Only works if hexagonal symmetry is selected.\nHoneycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
 
 		# # # # # # # # # # # # # # # # # # # # 
@@ -1132,6 +1149,7 @@ class SimulatorWidget(QWidget):
 		self.alpha2_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.alpha2_btn.clicked.connect(self.update_alpha2)
 		self.alpha2_btn.setAutoDefault(False)
+		self.alpha2_btn.setToolTip("Weight of sublattice A")
 
 
 		h7box = QHBoxLayout(self)
@@ -1157,6 +1175,7 @@ class SimulatorWidget(QWidget):
 		self.beta2_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.beta2_btn.clicked.connect(self.update_beta2)
 		self.beta2_btn.setAutoDefault(False)
+		self.beta2_btn.setToolTip("Weight of sublattice B")
 
 
 		h8box = QHBoxLayout(self)
@@ -1174,6 +1193,7 @@ class SimulatorWidget(QWidget):
 		self.tab3b.layout.addLayout(h7box)
 		self.tab3b.layout.addLayout(h8box)
 
+		self.tab3b.setToolTip("Only works for hexagonal lattices")
 
 
 		# Set the layouts for each tab...
@@ -1412,6 +1432,13 @@ class SimulatorWidget(QWidget):
 
 		self.hollowsite3.setChecked(True)
 
+		# Set hover tool tips
+		self.origin3label.setToolTip("Only works for hexagonal lattices.")
+		self.hollowsite3.setToolTip("No atom at the origin")
+		self.Asite3.setToolTip("A-atom at the origin")
+		self.Bsite3.setToolTip("B-atom at the origin")
+		
+
 		# # Create QButtonGroup to be mutually exclusive  buttons. This is all u have to do for them to work correctly! 
 		self.origin3_group = QButtonGroup(self)
 		self.origin3_group.addButton(self.hollowsite3)
@@ -1433,7 +1460,7 @@ class SimulatorWidget(QWidget):
 		# self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
 		self.sublattices_label = QLabel("\n\nWeight of sublattices")
-		self.sublattices_label.setToolTip("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+		self.sublattices_label.setToolTip("Only works if hexagonal symmetry is selected.\nHoneycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
 
 	
@@ -1456,6 +1483,7 @@ class SimulatorWidget(QWidget):
 		self.alpha3_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.alpha3_btn.clicked.connect(self.update_alpha3)
 		self.alpha3_btn.setAutoDefault(False)
+		self.alpha3_btn.setToolTip("Weight of sublattice A")
 
 
 		h7box = QHBoxLayout(self)
@@ -1481,6 +1509,7 @@ class SimulatorWidget(QWidget):
 		self.beta3_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.beta3_btn.clicked.connect(self.update_beta3)
 		self.beta3_btn.setAutoDefault(False)
+		self.beta3_btn.setToolTip("Weight of sublattice B")
 
 
 		h8box = QHBoxLayout(self)
@@ -1503,6 +1532,7 @@ class SimulatorWidget(QWidget):
 		self.tab3c.layout.addLayout(h7box)
 		self.tab3c.layout.addLayout(h8box)
 
+		self.tab3c.setToolTip("Only works for hexagonal lattices")
 
 
 
@@ -2050,7 +2080,6 @@ class SimulatorWidget(QWidget):
 	 
 
 
-
 		# Create an axis for plotting - the matplotlib gridspec figure was defined in self.__init__ in the GUI app
 		ax00 = self.figure.add_subplot(self.grid[0,0])
 		ax01 = self.figure.add_subplot(self.grid[0,1])
@@ -2064,7 +2093,7 @@ class SimulatorWidget(QWidget):
 		ax00.set_title('Real space image')
 		ax00.grid(False)
 		plt.colorbar(fig1, ax=ax00, fraction=0.046, pad=0.04) # fixed colorbar issues, from: https://stackoverflow.com/questions/16702479/matplotlib-colorbar-placement-and-size
-		# plt.tight_layout()
+		plt.tight_layout()
 
 		# Plot a circular with the radius of the half-width at half-max of a 2D gaussian of width w, HWHM = sqrt(2*log(2))*w
 		if self.filter_bool == True and self.sigma != 0:
@@ -2097,14 +2126,12 @@ class SimulatorWidget(QWidget):
 		
 		fig2 = ax01.imshow(np.flipud(self.fftZ), cmap = self.colormap_FFT, extent=[extL, extR, extL, extR])
 		ax01.set_xlabel('$k_x$ (1/nm)')
-		ax01.set_ylabel('$k_y$ (1/nm)')
+		ax01.set_ylabel('$k_y$ (1/nm)', labelpad= -20)
 		ax01.set_title('FFT')
 		ax01.grid(False)
-		# ax01.set_xticks([])
-		# ax01.set_yticks([])
+
 		plt.colorbar(fig2, ax=ax01, fraction=0.046, pad=0.04)
-		# self.make_colorbar(fig1)
-		# self.make_colorbar(fig2)
+
 		plt.tight_layout()
 
 		if self.filter_bool == True and self.sigma != 0:
