@@ -1,6 +1,6 @@
 # AtomSimulator
 
-Simulates SPM images ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Simulates SPM images  
 <img width="900" alt="Screen Shot 2022-08-03 at 5 10 41 PM" src="https://user-images.githubusercontent.com/62832051/182736096-5b4b863d-10f3-4cc2-91c6-e5fd9825a752.png">
 
 ### Dependencies:
@@ -32,7 +32,7 @@ Simulates SPM images ,,,,,,,,,,,,,,,,,,,,,,,,,,
 - Alternatively, if you installed python, NumPy, SciPy, etc. through Anaconda for Windows, you can run the above code through the Anaconda prompt.
 
 ##
-## How to use ?
+## How to use 
 
 Note that all fields accept typical mathematical operations in python and NumPy such as `+` `-` `*` `/` `sqrt` `log` and all valid NumPy functions `func` can be called via `np.func()`. 
 
