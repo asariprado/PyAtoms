@@ -102,7 +102,7 @@ class SimulatorWidget(QWidget):
 
 		self.saveFileName = ''
 
-		self.colormap_RS = 'inferno'
+		self.colormap_RS = 'magma'
 		self.colormap_FFT = 'Blues'
 		self.colormapList = ['viridis', 'viridis_r', 'plasma', 'plasma_r', 'inferno', 'inferno_r', 'magma', 'magma_r','cividis', 'cividis_r',
 							'Greys', 'Greys_r', 'Purples',  'Purples_r', 'Blues', 'Blues_r',  'Greens', 'Greens_r', 'Oranges', 'Oranges_r','Reds','Reds_r',
@@ -2083,6 +2083,17 @@ class SimulatorWidget(QWidget):
 		# Create an axis for plotting - the matplotlib gridspec figure was defined in self.__init__ in the GUI app
 		ax00 = self.figure.add_subplot(self.grid[0,0])
 		ax01 = self.figure.add_subplot(self.grid[0,1])
+
+
+
+		# Fix to correct for issue with Matplotlib version 3.5.1 creating cartoonishly large fonts
+		import matplotlib as mpl
+		mpl_ver = matplotlib.__version__.split('.')
+
+		if mpl_ver[0] == 3 and mpl_ver[1] == 5:
+			# Set new font sizes and spacings
+			plt.rcParams.update({'font.size': 5})
+
 
 
 		### FYI: I do np.flipud(image) and then ax.invert_axes to set the y-axis to be normal like from 0--->N strting at the origin instead of it being reversed, from N ---> 0
