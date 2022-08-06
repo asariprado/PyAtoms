@@ -2088,13 +2088,26 @@ class SimulatorWidget(QWidget):
 
 		# Fix to correct for issue with Matplotlib version 3.5.1 creating cartoonishly large fonts
 		import matplotlib as mpl
-		mpl_ver = matplotlib.__version__.split('.')
+		mpl_ver = mpl.__version__.split('.')
 
-		if mpl_ver[0] == 3 and mpl_ver[1] == 5:
+
+		# if windows system:
+		# 	pass
+		# if mac os:
+			# do the below 
+		if mpl_ver[0] == '3' and mpl_ver[1] == '5':
 			# Set new font sizes and spacings
+			# print(mpl_ver[0])
 			plt.rcParams.update({'font.size': 5})
 
+			plt.xticks(fontsize=5)
+			plt.yticks(fontsize=5)
+			ax01.set_xlabel('$k_x$ (1/nm)',fontsize=5)
+			ax01.set_ylabel('$k_y$ (1/nm)',fontsize=5)
+			ax01.tick_params(labelsize=5)
+			ax00.tick_params(labelsize=5)
 
+			plt.tight_layout(pad=0.5,w_pad = 1,h_pad=1) # nothing workd :( 
 
 		### FYI: I do np.flipud(image) and then ax.invert_axes to set the y-axis to be normal like from 0--->N strting at the origin instead of it being reversed, from N ---> 0
 		# Plot original image
@@ -2137,7 +2150,7 @@ class SimulatorWidget(QWidget):
 		
 		fig2 = ax01.imshow(np.flipud(self.fftZ), cmap = self.colormap_FFT, extent=[extL, extR, extL, extR])
 		ax01.set_xlabel('$k_x$ (1/nm)')
-		ax01.set_ylabel('$k_y$ (1/nm)', labelpad= -20)
+		ax01.set_ylabel('$k_y$ (1/nm)', labelpad= -5)#20) 
 		ax01.set_title('FFT')
 		ax01.grid(False)
 
