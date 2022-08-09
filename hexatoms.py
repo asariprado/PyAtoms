@@ -96,6 +96,7 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin):
     # (The real part is taken since the result has a 0j complex component.)
     Z_un = np.real(T*phase + np.conjugate(T*phase))
 
+    # relative strength of the sublattices, put a number btw  0 & 1
 
     ## Normalize image 
     # First, avoid division by zero
