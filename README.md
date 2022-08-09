@@ -42,8 +42,8 @@ Note that all fields accept typical mathematical operations in python and NumPy 
        - Lattice 1 parameters change the single/first layer.
        - Lattice 2 only works if bilayer/trilayer are selected. These change the second lattice.
        - Lattice 3 only works if trilayer is selected. These change the third lattice.
-   - If $Z_1$ and $Z_2$ are two periodic lattices, the superimposed moiré/superlattice image is approximated as $Z_{moire} = Z_1 + Z_2 + 2*Z_1*Z_2$. This choice balances the strength of the individual lattices and their product and more closely matches experimental STM images and their Fourier transforms.
-   - Similarly, for three periodic lattices, the moiré/superlattice image is approximated as $Z_{moire} = Z_1 + Z_2 + Z_3 + 3*Z_1 *Z_2 *Z_3.
+   - If $Z_1$ and $Z_2$ are two periodic lattices, the superimposed moiré/superlattice image is approximated as $Z_{moire} = Z_1 + Z_2 + 2* Z_1 * Z_2$ This choice balances the strength of the individual lattices and their product and more closely matches experimental STM images and their Fourier transforms.
+   - Similarly, for three periodic lattices, the moiré/superlattice image is approximated as $Z_{moire} = Z_1 + Z_2 + Z_3 + 3* Z_1 * Z_2 * Z_3$.
 
 2. Image parameters
     - `pixels`: number of pixels.
