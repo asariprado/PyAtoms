@@ -4,14 +4,13 @@ Simulates SPM images
 <img width="900" alt="Screen Shot 2022-08-03 at 5 10 41 PM" src="https://user-images.githubusercontent.com/62832051/182736096-5b4b863d-10f3-4cc2-91c6-e5fd9825a752.png">
 
 ### Dependencies:
-- python
-- numpy
-- matplotlib
-- PyQt5
+- Python 3
+- NumPy
+- Matplotlib (optimized for versions < 3.5.1)
+- PyQt5 
 
-
-## Installation instructions
-1. Download folder
+## Installation instructions - Mac OS and Windows. (Not tested on Linux systems)
+1. Download AtomSimulator folder (via Code-> Download .zip)
 2. Open terminal (Mac OSX) or command line (Windows).
 3. Navigate to the directory where the AtomSimulator folder is located. Example:
     ```
@@ -21,7 +20,9 @@ Simulates SPM images
     ```
     python AtomSimulator_GUI.py
     ```
+## Known issues
 
+The most recent version of Matplotlib (3.5.1) on Mac OS systems creates figures with overly large fonts. To correct this, AtomSimulator detects the user's operating system and version of Matplotlib and corrects the fonts and figure properties "by hand." We are monitoring this for a better permanent fix.
 
 ### For windows users:
 - Make sure python is installed and that its path is set in your environment
@@ -38,27 +39,28 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 
 1. Moiré lattice
     - Choose to simulate a 1, 2 or 3 layer lattice
-       - Lattice 1 parameters change the single/first layer
-       - Lattice 2 only works if bilayer/trilayer are selected. These change the second lattice
-       - Lattice 3 only works if trilayer is selected. These change the third lattice
-
+       - Lattice 1 parameters change the single/first layer.
+       - Lattice 2 only works if bilayer/trilayer are selected. These change the second lattice.
+       - Lattice 3 only works if trilayer is selected. These change the third lattice.
+   - If $Z_1$ and $Z_2$ are two periodic lattices, the superimposed moiré/superlattice image is approximated as $Z_{moire} = Z_1 + Z_2 + 2*Z_1*Z_2$. This choice balances the strength of the individual lattices and their product and more closely matches experimental STM images and their Fourier transforms.
+   - Similarly, for three periodic lattices, the moiré/superlattice image is approximated as $Z_{moire} = Z_1 + Z_2 + Z_3 + 3*Z_1 *Z_2 *Z_3.
 
 2. Image parameters
-    - `pixels`: number of pixels
-    - `L`: length of image in nanometers
-    - `theta`: Rotation of image
+    - `pixels`: number of pixels.
+    - `L`: length of the image window in nanometers.
+    - `theta`: Rotation (counter-clockwise) of the atomic lattice.
 
 3. Colormap
-    -  `Real space image`: colormap of the real space image / simulated atomic lattice
-    -  `FFT`: colormap of the FFT
+    -  `Real space image`: colormap of the real space image / simulated atomic lattice.
+    -  `FFT`: colormap of the 2D fast Fourier transform.
     
 4. Low pass filtering
-    - `sigma`: radius of Gaussian mask in real space (pixels)
-    - The number on top tells you the radius of the mask in nanometers
+    - `sigma`: radius of Gaussian mask in real space (pixels) units. The half-width at half-max of the gaussian is shown as a white circle in the bottom left corner of the image.
+    - The radius of the gaussian mask in nanometers is shown in the text box.
 
 5. Save files
-    - Click to save the files to a specific directory
-      - Clicking will open the file explorer
+    - Click to save the files to a specific directory.
+      - Clicking will open the file explorer.
       - Navigate to the directory you want to save the files in
       - Input a `filename` to save as
     - It will save a folder called `filename` with 4 files:
@@ -72,20 +74,19 @@ Note that all fields accept typical mathematical operations in python and NumPy 
         <img width="446" alt="Screen Shot 2022-08-03 at 3 40 46 PM" src="https://user-images.githubusercontent.com/62832051/182724722-b820f3b3-a2e2-413c-8c9d-cb03da7b78ce.png">
 
       
-
-6. SPM Time estimator
-    - `Tip velocity`: Velocity of the tip across 1 line in nanometers/second.
+6. SPM image time estimator
+    - `Tip velocity`: Velocity of the tip, $v_t$ across 1 line in nanometers/second. The total image time is calculated by considering the total pixels, scanning left/right and in a single slow-scan direction (upwards, for example). This time is estimated via $T_{im} = (2 * N_{pix} * L) / v_t$, where $N_{pix}$ is the number of pixels in the image, $L$ is the length of the image in nanometers, and the factor 2 takes into account the left/right fast-scan direction. 
     
-7. dI/dV Time estimator
-    - `Time per spectra`: Total time in seconds (including overhead) to record a single spectrum, i.e. one dI/dV(V) sweep. 
+7. Spectroscopy map Time estimator
+    - `Time per spectra`: Total time in seconds (including overhead) to record a single spectrum, $T_{spec}$ i.e. one dI/dV(V) sweep. We assume that spectra are recorded in one direction along both the fast- and slow-scan direction. The time is estimated via $T_{map} = N_{pix}^2 * T_{spec} + (2 * N_{pix} * L) / v_t$.
 
 8. Lattices
     - Parameters tab
-       - `symmetry`: Choose to simulate either a triangular/honeycomb or square lattice.
+       - `symmetry`: Choose to simulate either a hexagonal (triangular/honeycomb) or square lattice.
        - `Lattice constant`: periodicity/spacing between atoms in nanometers.
        - `Twist angle`: twists the second lattice with respect to the first lattice (in Lattice 2 params) // twists the third lattice with respect to the second lattice (in Lattice 3 params)
 
-    - Sublattices tab (only affects hexagonal lattices)
+    - Sublattices tab -- only affects hexagonal (triangular/honeycomb) lattices
        - Lattice site at the image origin: choose whether the origin should be a hollow site, an A-site atom or a B-site atom
           - To test this, set `L = 1` and click the different options for the origin
       - Weight of sublattices:
