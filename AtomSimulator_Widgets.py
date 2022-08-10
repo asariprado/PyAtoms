@@ -240,7 +240,7 @@ class SimulatorWidget(QWidget):
 		# self.thetaLabel.setAlignment(Qt.AlignCenter | Qt.AlignVCenter) # Idk what this does
 		self.thetaLabel.setMinimumWidth(30)
 
-		self.theta_btn = QPushButton("Rotate", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
+		self.theta_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.theta_btn.clicked.connect(self.updateTheta)
 		self.theta_btn.setAutoDefault(False)
 
@@ -2170,39 +2170,43 @@ class SimulatorWidget(QWidget):
 		ax00 = self.figure.add_subplot(self.grid[0,0])
 		ax01 = self.figure.add_subplot(self.grid[0,1])
 
-
-
-		# Fix to correct for issue with Matplotlib version 3.5.1 creating cartoonishly large fonts
+		# Fix to correct for issue with Matplotlib version 3.5.x creating large fonts, thick lines, etc
 		import matplotlib as mpl
 		mpl_ver = mpl.__version__.split('.')
+		
+		# Get the operating system, since this font issue only affects OSX (at the moment)
+		import platform
+		OS = platform.uname().system
 
-
-		# if windows system:
-		# 	pass
-		# if mac os:
-			# do the below 
-		if mpl_ver[0] == '3' and mpl_ver[1] == '5':
-			# Set new font sizes and spacings
-			# print(mpl_ver[0])
-			plt.rcParams.update({'font.size': 5})
-
+		if OS != 'Windows' and mpl_ver[0] == '3' and mpl_ver[1] == '5':
+			# Set new font sizes and spacings to correct issue with Matplotlib 3.5.x
+			params = {'font.size': 5,
+			'axes.linewidth':0.5,
+			'xtick.major.size': 0.5,
+			'xtick.major.width': 0.5}
+			plt.rcParams.update(params)
 			plt.xticks(fontsize=5)
 			plt.yticks(fontsize=5)
 			ax01.set_xlabel('$k_x$ (1/nm)',fontsize=5)
 			ax01.set_ylabel('$k_y$ (1/nm)',fontsize=5)
 			ax01.tick_params(labelsize=5)
 			ax00.tick_params(labelsize=5)
-
+			ax01.xaxis.set_tick_params(width=0.5)
+			ax01.yaxis.set_tick_params(width=0.5)
 			plt.tight_layout(pad=0.5,w_pad = 1,h_pad=1) # nothing workd :( 
+			
+			for axis in ['top','bottom','left','right']:
+				ax00.spines[axis].set_linewidth(0.5)
+				ax01.spines[axis].set_linewidth(0.5)
 
-		### FYI: I do np.flipud(image) and then ax.invert_axes to set the y-axis to be normal like from 0--->N strting at the origin instead of it being reversed, from N ---> 0
 		# Plot original image
-		fig1 = ax00.imshow(np.flipud(self.Z), cmap = self.colormap_RS, extent=[0,self.L,0,self.L])
+		fig1 = ax00.imshow(self.Z, cmap = self.colormap_RS, extent=[0,self.L,0,self.L])
 		ax00.set_xticks([])
 		ax00.set_yticks([])
 		ax00.set_title('Real space image')
 		ax00.grid(False)
-		plt.colorbar(fig1, ax=ax00, fraction=0.046, pad=0.04) # fixed colorbar issues, from: https://stackoverflow.com/questions/16702479/matplotlib-colorbar-placement-and-size
+		cb_r = plt.colorbar(fig1, ax=ax00, fraction=0.046, pad=0.04) # fixed colorbar issues, from: https://stackoverflow.com/questions/16702479/matplotlib-colorbar-placement-and-size
+		cb_r.ax.tick_params(width=0.5)
 		plt.tight_layout()
 
 		# Plot a circular with the radius of the half-width at half-max of a 2D gaussian of width w, HWHM = sqrt(2*log(2))*w
@@ -2234,13 +2238,13 @@ class SimulatorWidget(QWidget):
 		# 	extL = -(self.pix-1)*np.pi/self.L
 		# 	extR = (self.pix-1)*np.pi/self.L
 		
-		fig2 = ax01.imshow(np.flipud(self.fftZ), cmap = self.colormap_FFT, extent=[extL, extR, extL, extR])
+		fig2 = ax01.imshow(self.fftZ**1, cmap = self.colormap_FFT, extent=[extL, extR, extL, extR])
 		ax01.set_xlabel('$k_x$ (1/nm)')
 		ax01.set_ylabel('$k_y$ (1/nm)', labelpad= -5)#20) 
 		ax01.set_title('FFT')
 		ax01.grid(False)
-
-		plt.colorbar(fig2, ax=ax01, fraction=0.046, pad=0.04)
+		cb_k = plt.colorbar(fig2, ax=ax01, fraction=0.046, pad=0.04)
+		cb_k.ax.tick_params(width=0.5)
 
 		plt.tight_layout()
 
@@ -2253,6 +2257,42 @@ class SimulatorWidget(QWidget):
 		# 			       'lower right', pad=0.5, sep=5, borderpad=0.5, frameon=True, color='black',label_top=True)
 
 		# ax01.add_artist(scalebar_FFT)
+		
+		# Fix to correct for issue with Matplotlib version 3.5.x creating large fonts, thick lines, etc
+		import matplotlib as mpl
+		mpl_ver = mpl.__version__.split('.')
+		
+		# Get the operating system, since this font issue only affects OSX (at the moment)
+		import platform
+		OS = platform.uname().system
+
+		if OS != 'Windows' and mpl_ver[0] == '3' and mpl_ver[1] == '5':
+			# Set new font sizes and spacings to correct issue with Matplotlib 3.5.x
+			params = {'font.size': 5,
+			'axes.linewidth':0.5,
+			'xtick.major.size': 0.5,
+			'xtick.major.width': 0.5}
+			plt.rcParams.update(params)
+			# plt.rcParams['font.size']= 5
+			# plt.rcParams['axes.linewidth'] = 0.5
+			# plt.rcParams['xtick.major.size'] = 0.5
+			# plt.rcParams['xtick.major.width'] = 0.5
+			plt.xticks(fontsize=5)
+			plt.yticks(fontsize=5)
+			ax01.set_xlabel('$k_x$ (1/nm)',fontsize=5)
+			ax01.set_ylabel('$k_y$ (1/nm)',fontsize=5)
+			ax01.tick_params(labelsize=5)
+			ax00.tick_params(labelsize=5)
+			ax01.xaxis.set_tick_params(width=0.5)
+			ax01.yaxis.set_tick_params(width=0.5)
+			cb_r.ax.tick_params(width=0.5)
+			cb_k.ax.tick_params(width=0.5)
+			plt.tight_layout(pad=0.5,w_pad = 1,h_pad=1) # nothing workd :( 
+			
+			for axis in ['top','bottom','left','right']:
+				ax00.spines[axis].set_linewidth(0.5)
+				ax01.spines[axis].set_linewidth(0.5)
+
 		self.canvas.draw() 
 
 	def initSaveButton(self):
