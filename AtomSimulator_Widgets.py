@@ -49,6 +49,9 @@ from hexatoms import hexatoms
 from squareatoms import squareatoms
 from moirelattice import moirelattice
 
+# Unicode chart for greek letters: https://unicode.org/charts/PDF/U0370.pdf
+# type '\u[CODE]'. Example: for alpha, it says 03B1, so type '\u03b1'
+# Found instructions from https://stackoverflow.com/questions/8794839/theta-and-alpha-symbols-in-qlabel
 
 class SimulatorWidget(QWidget):
 
@@ -95,6 +98,7 @@ class SimulatorWidget(QWidget):
 		self.beta2 = 0
 		self.alpha3 = 1
 		self.beta3 = 0
+		self.eta = 1.5
 
 		self.filter_bool = False
 		self.sigma = 0
@@ -259,11 +263,14 @@ class SimulatorWidget(QWidget):
 		# if self.pix_input.hasFocus(): # to only try updating if you are clicked on/typing in the pix_input box. bc otherwise, if you put an invalid input, error messages keep popping up even after you click away from it.. its annoying.. jk it doesnt work :( onnly if you press enter it works, not if you do tab / click away)
 		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
 				# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
-			self.pix = eval(self.pix_input.text()) #float(self.a_input.text())
-			
-			if self.pix >= 8192:
+			# Checking for errors in the input before assigning self.pix to the input, to avoid the program crashing if input is complex number/typo 
+			pix_temp = eval(self.pix_input.text())
+			if pix_temp >= 8192:
+				raise ValueError
+			elif type(pix_temp) == complex:
 				raise ValueError
 			else: 
+				self.pix = eval(self.pix_input.text())
 				self.pix_SliderLabel.setText('pix') 
 				self.pix_input.setPlaceholderText(str(self.pix))
 				self.update_calc()
@@ -273,6 +280,8 @@ class SimulatorWidget(QWidget):
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
 			# Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
+			# self.pix = self.handleError(self.pix_input.text())
+			# print(self.pix)
 			self.pix_error = QMessageBox()
 			self.pix_error.setWindowTitle("Error")
 			# if self.pix >= 8192:
@@ -288,12 +297,23 @@ class SimulatorWidget(QWidget):
 	def updateL(self):
 		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
 				# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
-			self.L = eval(self.L_input.text()) #float(self.a_input.text())
-			self.L_input.setPlaceholderText(str(self.L))
-			self.L_Label.setText('nm') 
-			self.update_calc()
-			self.update_map_calc()
-			self.plotAtoms() 
+			
+			# Checking for errors in the input before assigning self.L to the input, to avoid the program crashing if input is complex number/typo 
+			L_temp = eval(self.L_input.text())
+			print(type(L_temp))
+			if L_temp >= 8192:
+				raise ValueError
+			elif type(L_temp) == complex:
+				raise ValueError
+
+
+			else:
+				self.L = eval(self.L_input.text())
+				self.L_input.setPlaceholderText(str(self.L))
+				self.L_Label.setText('nm') 
+				self.update_calc()
+				self.update_map_calc()
+				self.plotAtoms() 
 		except:
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
@@ -325,7 +345,17 @@ class SimulatorWidget(QWidget):
 		groupBox = QGroupBox("Moire lattice?")
 		groupBox.setToolTip("Choose whether to create a moire pattern with two sublattices, or plot only a single lattice")
 
-		hbox = QHBoxLayout()
+		
+
+
+		# self.moiretabs = QTabWidget(self)
+
+		# self.tab1 = QWidget(self)
+		# self.tab2 = QWidget(self)
+		# self.moiretabs.addTab(self.tab1, "Layers")
+		# self.moiretabs.addTab(self.tab2, "Strength")
+
+
 
 		self.noMoire = QRadioButton("Single")
 		self.noMoire.setToolTip("Create a single lattice using Lattice 1 parameters")
@@ -352,13 +382,50 @@ class SimulatorWidget(QWidget):
 		self.moire_btn_group.addButton(self.trilayer)
 
 
+
+
+		# eta
+		self.eta_label = QLabel("\u03b7:") # Greek letters unicode : https://unicode.org/charts/PDF/U0370.pdf
+		self.eta_label.setToolTip("Relative strength of addition of lattices vs multiplication of lattices\n(1-\u03b7)(Z1+Z2+Z3) + \u03b7Z1Z2Z3")
+		self.eta_input = QLineEdit(self)
+		self.eta_input.returnPressed.connect(self.update_eta) 
+
+		self.eta_input.setPlaceholderText(str(self.eta))
+		self.eta_input.setFixedWidth(65)
+		# self.k1_input.setToolTip("Strength of Z1*Z2")
+		self.eta_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
+
+		self.eta_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update!
+		self.eta_btn.clicked.connect(self.update_eta)
+		self.eta_btn.setAutoDefault(False)
+
+		
+	
+
+
+		hbox = QHBoxLayout()
 		hbox.addWidget(self.noMoire)
 		hbox.addWidget(self.yesMoire)
 		hbox.addWidget(self.trilayer)
 
-		groupBox.setLayout(hbox)
-		groupBox.setContentsMargins(0,0,0,0) # Sets the left , top , right , and bottom margins to use around the layout.
 
+		vlayout = QVBoxLayout(self)
+		vlayout.addLayout(hbox)
+
+		hlayout = QHBoxLayout(self)
+		hlayout.addWidget(self.eta_label)
+		hlayout.addWidget(self.eta_input)
+		hlayout.addWidget(self.eta_btn)
+		vlayout.addLayout(hlayout)
+		groupBox.setLayout(vlayout)
+		vlayout.setSpacing(1)
+
+
+
+
+		groupBox.setLayout(vlayout)
+		# groupBox.setLayout(hbox)
+		# groupBox.setContentsMargins(0,0,0,0) # Sets the left , top , right , and bottom margins to use around the layout.
 
 		return groupBox
 
@@ -803,7 +870,7 @@ class SimulatorWidget(QWidget):
 		### Pick alpha1 weight of sublattice a ###
 		# self.alpha1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.alpha1_param_label.setToolTip("Weight of sublattice a")
-		self.alpha1_label = QLabel("alpha1:", self)
+		self.alpha1_label = QLabel("\u03b11:", self)
 		self.alpha1_label.setToolTip("Weight of sublattice A")
 		self.alpha1_input = QLineEdit(self)
 		self.alpha1_input.returnPressed.connect(self.update_alpha1) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
@@ -829,7 +896,7 @@ class SimulatorWidget(QWidget):
 		### Pick beta1 weight of sublattice b ###
 		# self.beta1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.beta1_param_label.setToolTip("Weight of sublattice B")
-		self.beta1_label = QLabel("beta1:", self)
+		self.beta1_label = QLabel("\u03b21:", self)
 		self.beta1_label.setToolTip("Weight of sublattice B")
 		self.beta1_input = QLineEdit(self)
 		self.beta1_input.returnPressed.connect(self.update_beta1) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
@@ -978,7 +1045,7 @@ class SimulatorWidget(QWidget):
 
 		# # # # # # # # # # # # # # # # # # # # 
 		### Twist angle ###
-		self.thetatw_title = QLabel('Twist angle', self)
+		self.thetatw_title = QLabel('Twist angle \u03b812', self)
 		self.thetatw_input = QLineEdit(self)
 		self.thetatw_input.returnPressed.connect(self.updateThetaTw) # Connect this intput dialog whenever the enter/return button is pressed
 		self.thetatw_input.setPlaceholderText(str(self.theta_tw))
@@ -1137,7 +1204,7 @@ class SimulatorWidget(QWidget):
 		### Pick alpha2 weight of sublattice a ###
 		# self.alpha1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.alpha1_param_label.setToolTip("Weight of sublattice a")
-		self.alpha2_label = QLabel("alpha2:", self)
+		self.alpha2_label = QLabel("\u03b12:", self)
 		self.alpha2_label.setToolTip("Weight of sublattice A")
 		self.alpha2_input = QLineEdit(self)
 		self.alpha2_input.returnPressed.connect(self.update_alpha2) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
@@ -1163,7 +1230,7 @@ class SimulatorWidget(QWidget):
 		### Pick beta2 weight of sublattice b ###
 		# self.beta1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.beta1_param_label.setToolTip("Weight of sublattice B")
-		self.beta2_label = QLabel("beta2:", self)
+		self.beta2_label = QLabel("\u03b22:", self)
 		self.beta2_label.setToolTip("Weight of sublattice B")
 		self.beta2_input = QLineEdit(self)
 		self.beta2_input.returnPressed.connect(self.update_beta2) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
@@ -1307,7 +1374,7 @@ class SimulatorWidget(QWidget):
 
 		# # # # # # # # # # # # # # # # # # # # 
 		### Twist angle ###
-		self.thetatw2_title = QLabel('Twist angle', self)
+		self.thetatw2_title = QLabel('Twist angle \u03b823', self)
 		self.thetatw2_input = QLineEdit(self)
 		self.thetatw2_input.returnPressed.connect(self.updateThetaTw2) # Connect this intput dialog whenever the enter/return button is pressed
 		self.thetatw2_input.setPlaceholderText(str(self.theta_tw2))
@@ -1471,7 +1538,7 @@ class SimulatorWidget(QWidget):
 		### Pick alpha3 weight of sublattice a ###
 		# self.alpha1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.alpha1_param_label.setToolTip("Weight of sublattice a")
-		self.alpha3_label = QLabel("alpha3:", self)
+		self.alpha3_label = QLabel("\u03b13:", self)
 		self.alpha3_label.setToolTip("Weight of sublattice A")
 		self.alpha3_input = QLineEdit(self)
 		self.alpha3_input.returnPressed.connect(self.update_alpha3) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
@@ -1497,7 +1564,7 @@ class SimulatorWidget(QWidget):
 		### Pick beta1 weight of sublattice b ###
 		# self.beta1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.beta1_param_label.setToolTip("Weight of sublattice B")
-		self.beta3_label = QLabel("beta3:", self)
+		self.beta3_label = QLabel("\u03b23:", self)
 		self.beta3_label.setToolTip("Weight of sublattice B")
 		self.beta3_input = QLineEdit(self)
 		self.beta3_input.returnPressed.connect(self.update_beta3) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
@@ -1942,6 +2009,25 @@ class SimulatorWidget(QWidget):
 			self.beta3_error.setStandardButtons(QMessageBox.Retry)
 			x = self.beta3_error.exec()
 
+	def update_eta(self):
+		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
+				# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
+			self.eta = eval(self.eta_input.text()) 
+			self.eta_input.setPlaceholderText(str(self.eta))
+			self.plotAtoms() 
+		except:
+			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
+			# https://www.w3schools.com/python/python_try_except.asp
+			# Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
+			self.eta_error = QMessageBox()
+			self.eta_error.setWindowTitle("Error")
+			self.eta_error.setText("Type in a number or numerical expression")
+			self.eta_error.setInformativeText("Your input for \u03b7 is: " +  str(self.eta_input.text()))
+			self.eta_error.setIcon(QMessageBox.Warning)
+			self.eta_error.setStandardButtons(QMessageBox.Retry)
+			x = self.eta_error.exec()
+
+
 	# CREATING THE MATPLOTLIB FIGURE
 	def initMatplotlibFig(self):
 		# Create a figure instance to plot on
@@ -2066,7 +2152,7 @@ class SimulatorWidget(QWidget):
 
 		# if moire btn is clicked yes, plot a moire lattice
 		if self.moireBtn != 'Single':
-			self.Z, self.fftZ = moirelattice(self.pix, self.L, self.a, self.b, self.c, self.moireBtn, self.lattice1, self.lattice2, self.lattice3, self.theta_im, self.theta_tw, self.theta_tw2, self.e11, self.e12, self.e22, self.d11, self.d12, self.d22, self.f11, self.f12, self.f22, self.alpha1, self.beta1, self.alpha2, self.beta2, self.alpha3, self.beta3, self.origin1, self.origin2, self.origin3, self.filter_bool, self.sigma)
+			self.Z, self.fftZ = moirelattice(self.pix, self.L, self.a, self.b, self.c, self.moireBtn, self.lattice1, self.lattice2, self.lattice3, self.theta_im, self.theta_tw, self.theta_tw2, self.e11, self.e12, self.e22, self.d11, self.d12, self.d22, self.f11, self.f12, self.f22, self.alpha1, self.beta1, self.alpha2, self.beta2, self.alpha3, self.beta3, self.eta, self.origin1, self.origin2, self.origin3, self.filter_bool, self.sigma)
 
 		# if moire btn is clicked no, only plot a single lattice using the lattice1 parameters. all lattice2 inputs are ignored
 		else:
@@ -2538,11 +2624,34 @@ class SimulatorWidget(QWidget):
 		# 	open('HH_ascii.txt')
 
 
-	# TO SUPPRESS QLAYOUT WARNING IN TERMINAL. from: https://stackoverflow.com/questions/25660597/hide-critical-pyqt-warning-when-clicking-a-checkboc
-	def handler(msg_type, msg_log_context, msg_string):
-  	  pass
 
-	qInstallMessageHandler(handler)
+	# def handleError(self, err_in):
+	# 	# split the input
+	# 	# if the input has a 'j' it  will crash bc it reads it as complex
+	# 	# so if it has a j, just remove the j/ignore it
+
+
+	# 	chars_list = list(err_in)
+	# 	print(chars_list)
+	# 	# if 'j' in chars_list:
+	# 	# 	print("Error")
+	# 	# 	chars_list.remove('j')
+	# 	num_list = []
+	# 	for char in chars_list:
+	# 		if not char.isalpha():
+	# 			num_list.append(char)
+	# 	print(num_list)
+	# 	print(chars_list)
+
+	# 	return eval(''.join(num_list))
+
+
+
+	# # TO SUPPRESS QLAYOUT WARNING IN TERMINAL. from: https://stackoverflow.com/questions/25660597/hide-critical-pyqt-warning-when-clicking-a-checkboc
+	# def handler(msg_type, msg_log_context, msg_string):
+ #  	  pass
+
+	# qInstallMessageHandler(handler)
 
 
 
