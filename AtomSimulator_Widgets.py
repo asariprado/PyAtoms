@@ -98,7 +98,7 @@ class SimulatorWidget(QWidget):
 		self.beta2 = 0
 		self.alpha3 = 1
 		self.beta3 = 0
-		self.eta = 1.5
+		self.eta = 0.5
 
 		self.filter_bool = False
 		self.sigma = 0
@@ -386,7 +386,7 @@ class SimulatorWidget(QWidget):
 
 		# eta
 		self.eta_label = QLabel("\u03b7:") # Greek letters unicode : https://unicode.org/charts/PDF/U0370.pdf
-		self.eta_label.setToolTip("Relative strength of addition of lattices vs multiplication of lattices\n(1-\u03b7)(Z1+Z2+Z3) + \u03b7Z1Z2Z3")
+		self.eta_label.setToolTip("Relative strength of addition of lattices vs multiplication of lattices\n(1-\u03b7)(Z1+Z2+Z3) + \u03b7Z1Z2Z3\nPick a value between 0 and 1 for \u03b7")
 		self.eta_input = QLineEdit(self)
 		self.eta_input.returnPressed.connect(self.update_eta) 
 
@@ -400,6 +400,7 @@ class SimulatorWidget(QWidget):
 		self.eta_btn.setAutoDefault(False)
 
 		
+		# self.eta_label_ext = QLabel("Pick a value between 0 and 1 for \u03b7")
 	
 
 
@@ -858,11 +859,11 @@ class SimulatorWidget(QWidget):
 
 
 		self.sublattices_label1 = QLabel("Pick strength of sublattices Z = A + B")
-		self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+		self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: \u03b1 = 1, \u03b2 = 0")
 
 
 		self.sublattices_label = QLabel("\nWeight of sublattices")
-		self.sublattices_label.setToolTip("Only works if hexagonal symmetry is selected.\nHoneycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+		self.sublattices_label.setToolTip("Only works if hexagonal symmetry is selected.\nHoneycomb lattice: \u03b1 = \u03b2 \nTriangular lattice: \u03b1 = 1, \u03b2 = 0")
 
 
 
@@ -1197,7 +1198,7 @@ class SimulatorWidget(QWidget):
 		# self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
 		self.sublattices_label = QLabel("\n\nWeight of sublattices")
-		self.sublattices_label.setToolTip("Only works if hexagonal symmetry is selected.\nHoneycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+		self.sublattices_label.setToolTip("Only works if hexagonal symmetry is selected.\nHoneycomb lattice: \u03b1 = \u03b2 \nTriangular lattice: \u03b1 = 1, \u03b2 = 0")
 
 
 		# # # # # # # # # # # # # # # # # # # # 
@@ -1527,13 +1528,12 @@ class SimulatorWidget(QWidget):
 		# self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
 		self.sublattices_label = QLabel("\n\nWeight of sublattices")
-		self.sublattices_label.setToolTip("Only works if hexagonal symmetry is selected.\nHoneycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
-
+		self.sublattices_label.setToolTip("Only works if hexagonal symmetry is selected.\nHoneycomb lattice: \u03b1 = \u03b2 \nTriangular lattice: \u03b1 = 1, \u03b2 = 0")
 
 	
 
 		self.sublattices_label1 = QLabel("Pick strength of sublattices (Z = A + B)")
-		self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
+		self.sublattices_label2 = QLabel("Honeycomb lattice: \u03b1 = \u03b2 \nTriangular lattice: \u03b1 = 1, \u03b2 = 0")
 		# # # # # # # # # # # # # # # # # # # # 
 		### Pick alpha3 weight of sublattice a ###
 		# self.alpha1_param_label = QLabel("Lattice constant (nm)", self)
