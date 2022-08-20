@@ -98,16 +98,18 @@ class SimulatorWidget(QWidget):
 		self.beta2 = 0
 		self.alpha3 = 1
 		self.beta3 = 0
-		self.eta = 0.5
+		self.eta = 0.8
 
 		self.filter_bool = False
 		self.sigma = 0
-		self.sigma_real = self.sigma*self.L/(self.pix-1)  *np.sqrt(2*np.log(2))
+		self.sigma_real = self.sigma*self.L/(self.pix-1) *np.sqrt(2*np.log(2))
 
 		self.saveFileName = ''
 
+
+		self.vmax_fft = 0.5
 		self.colormap_RS = 'magma'
-		self.colormap_FFT = 'Blues'
+		self.colormap_FFT = 'Blues_r'
 		self.colormapList = ['viridis', 'viridis_r', 'plasma', 'plasma_r', 'inferno', 'inferno_r', 'magma', 'magma_r','cividis', 'cividis_r',
 							'Greys', 'Greys_r', 'Purples',  'Purples_r', 'Blues', 'Blues_r',  'Greens', 'Greens_r', 'Oranges', 'Oranges_r','Reds','Reds_r',
 				            'YlOrBr','YlOrBr_r', 'YlOrRd', 'YlOrRd_r', 'OrRd', 'OrRd_r', 'PuRd', 'PuRd_r', 'RdPu', 'RdPu_r', 'BuPu', 'BuPu_r',
@@ -123,6 +125,7 @@ class SimulatorWidget(QWidget):
 				            'prism','prism_r', 'ocean', 'ocean_r', 'gist_earth', 'gist_earth_r', 'terrain', 'terrain_r', 'gist_stern', 'gist_stern_r',
 				            'gnuplot', 'gnuplot_r', 'gnuplot2','gnuplot2_r', 'CMRmap', 'CMRmap_r', 'cubehelix', 'cubehelix_r', 'brg', 'brg_r',
 				            'gist_rainbow', 'gist_rainbow_r', 'rainbow','rainbow_r', 'jet', 'jet_r', 'nipy_spectral', 'nipy_spectral_r','gist_ncar', 'gist_ncar_r']
+
 
 		self.figure =plt.figure(figsize=(10,10))
 		
@@ -2093,14 +2096,13 @@ class SimulatorWidget(QWidget):
 		self.dropdownColormap_RS.setCurrentText(self.colormap_RS) 
 
 		# This is/updates the label/text to the chosen text from the dropdown/combo list
-		self.colormapLabel_RS= QLabel("Real space image: ", self) # idk what this actually is for
+		self.colormapLabel_RS= QLabel("Image: ", self) # idk what this actually is for
 
 		# This sets the current value of colormap instance variable (the one thats actually used in the plotting functions) to the default / current value
 		self.colormap_RS = self.dropdownColormap_RS.currentText()
 
 		# To update which text appears in the coombo box to the chosen text from the dropdown/combo list
 		self.dropdownColormap_RS.activated[str].connect(self.updateColormap)
-
 
 
 		# Add a dropdown list to choose colormap to use for plotting the REAL SPACE image
@@ -2134,7 +2136,43 @@ class SimulatorWidget(QWidget):
 		vlayout.addLayout(hlayout)
 		vlayout.addLayout(hlayout2)
 
-		groupBox.setLayout(vlayout) # Add the widgets and value text to the groupbox
+		# groupBox.setLayout(vlayout) # Add the widgets and value text to the groupbox
+
+
+
+
+
+
+		self.vmax_fft_label = QLabel("vmax_fft:", self)
+		self.vmax_fft_label.setToolTip("vmax value for fft")
+		self.vmax_fft_input = QLineEdit(self)
+		self.vmax_fft_input.returnPressed.connect(self.update_vmax_fft) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
+		self.vmax_fft_input.setPlaceholderText(str(self.vmax_fft))
+		self.vmax_fft_input.setToolTip("vmax value for fft")
+		# self.cmax_fft_input.setFixedWidth(60)
+
+		
+		self.vmax_fft_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
+		self.vmax_fft_btn.clicked.connect(self.update_vmax_fft)
+		self.vmax_fft_btn.setAutoDefault(False)
+		self.vmax_fft_btn.setToolTip("vmax value for fft")
+
+
+
+		#### NOTE: if you do QVBoxLayout(self) --> SOMETIMES will place widgets at the top left corner, VERY annoying
+		vlayout2 = QVBoxLayout() # do NOT put self in here, otherwise the vmax stuff is in the wrong place and inaccessible
+		vlayout2.addWidget(self.vmax_fft_label)
+		vlayout2.addWidget(self.vmax_fft_input)
+		vlayout2.addWidget(self.vmax_fft_btn)
+
+		hlayout3 = QHBoxLayout(self)
+		hlayout3.addLayout(vlayout)
+		hlayout3.addLayout(vlayout2)
+
+
+		groupBox.setLayout(hlayout3)
+
+
 
 		return groupBox
 
@@ -2145,17 +2183,38 @@ class SimulatorWidget(QWidget):
 		self.colormap_FFT = self.dropdownColormap_FFT.currentText()
 		self.plotAtoms()
 
+	def update_vmax_fft(self):
+
+		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
+				# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
+			self.vmax_fft = eval(self.vmax_fft_input.text()) 
+			self.vmax_fft_input.setPlaceholderText(str(self.vmax_fft))
+			self.plotAtoms() 
+		except:
+			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
+			# https://www.w3schools.com/python/python_try_except.asp
+			# Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
+			self.vmax_fft_error = QMessageBox()
+			self.vmax_fft_error.setWindowTitle("Error")
+			self.vmax_fft_error.setText("Type in a number or numerical expression")
+			self.vmax_fft_error.setInformativeText("Your input for vmax_fft is: " +  str(self.vmax_fft_input.text()))
+			self.vmax_fft_error.setIcon(QMessageBox.Warning)
+			self.vmax_fft_error.setStandardButtons(QMessageBox.Retry)
+			x = self.vmax_fft_error.exec()
+
+
+
 	# THIS IS THE ACTUAL PLOTTING FUNCTION
 	def plotAtoms(self):
 		# clearing old figure
 		self.figure.clear()
 
-		# if moire btn is clicked yes, plot a moire lattice
+		# if moire btn is  NOT single (ie, bilayer or trilayer), then run the moirelattice code
 		if self.moireBtn != 'Single':
 			self.Z, self.fftZ = moirelattice(self.pix, self.L, self.a, self.b, self.c, self.moireBtn, self.lattice1, self.lattice2, self.lattice3, self.theta_im, self.theta_tw, self.theta_tw2, self.e11, self.e12, self.e22, self.d11, self.d12, self.d22, self.f11, self.f12, self.f22, self.alpha1, self.beta1, self.alpha2, self.beta2, self.alpha3, self.beta3, self.eta, self.origin1, self.origin2, self.origin3, self.filter_bool, self.sigma)
 
 		# if moire btn is clicked no, only plot a single lattice using the lattice1 parameters. all lattice2 inputs are ignored
-		else:
+		else: # if moirebtn is clicked to SINGLE layer, just run hexatoms/squareatoms, 
 			if self.lattice1 == 'Hexagonal':
 				self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.alpha1, self.beta1, self.origin1)
 			elif self.lattice1 == 'Square':
@@ -2164,6 +2223,13 @@ class SimulatorWidget(QWidget):
 			# Normalize the FFTs to be between 0-1 (bc hexatoms only normalizes Z, moirelattice is what normalizes fftZ, but if you chose single lattice, moirelattice code isnt run. so need to normalize the FFT here)
 			self.fftZ = (self.fftZ - np.min(np.min((self.fftZ))))/(np.max(np.max(self.fftZ)) - np.min(np.min(self.fftZ)))
 	 
+			# # Normalize the single layer real space image (multi-layer Z is normalized in moirelattice.py)
+			# self.Z = (self.Z - np.min(np.min(self.Z)))/(np.max(np.max(self.Z)) - np.min(np.min(self.Z))) 
+
+		# # Normalize the real space image
+		# self.Z = (self.Z - np.min(np.min(self.Z)))/(np.max(np.max(self.Z)) - np.min(np.min(self.Z))) 
+
+
 
 
 		# Create an axis for plotting - the matplotlib gridspec figure was defined in self.__init__ in the GUI app
@@ -2248,7 +2314,7 @@ class SimulatorWidget(QWidget):
 		# 	extR = (self.pix-1)*np.pi/self.L
 		
 
-		fig2 = ax01.imshow(self.fftZ**1, cmap = self.colormap_FFT, extent=[extL, extR, extL, extR])		
+		fig2 = ax01.imshow(self.fftZ**1, cmap = self.colormap_FFT, extent=[extL, extR, extL, extR],vmax = self.vmax_fft)		
 		ax01.set_xlabel('$k_x$ (1/nm)')
 		ax01.set_ylabel('$k_y$ (1/nm)', labelpad= -5)#20) 
 		ax01.set_title('FFT')
@@ -2369,7 +2435,7 @@ class SimulatorWidget(QWidget):
 
 			# Also save a .txt file with the input parameter values: (IN THE FUTURE maybe make this a pandas dataframe or csv file or something?)
 			param_file = open(self.filePath + '/' + self.fileName +'_params.txt', "w+") # Open a new blank text file where we will write the input parameters
-			param_file.write("# of layers: " + (self.moireBtn) + "\nPix: " + str(self.pix) + "\nL: " + str(self.L) +  "\nImage offset angle: " + str(self.theta_im) + "\nLow pass filter: " + str(self.filter_bool) + '\nSigma: ' + str(self.sigma) +
+			param_file.write("# of layers: " + (self.moireBtn) + "\neta: " + str(self.eta) + " (relative strength of sum vs product of sublattices)" + "\nPix: " + str(self.pix) + "\nL: " + str(self.L) +  "\nImage offset angle: " + str(self.theta_im) + "\nLow pass filter: " + str(self.filter_bool) + '\nSigma: ' + str(self.sigma) +
 					'\n\n--------------------------------\nLattice 1:\n--------------------------------\n' + self.lattice1 + '\na: ' + str(self.a) + '\ne11: ' + str(self.e11) +
 					'\ne12: ' + str(self.e12) + '\ne22: ' + str(self.e22) + "\nAlpha1: " + str(self.alpha1) + "\nBeta1: " + str(self.beta1) + "\nOrigin1: " + str(self.origin1) + 
 					'\n\n--------------------------------\nLattice 2:\n--------------------------------\n' + self.lattice2 + '\nb: ' + str(self.b) + '\nd11: ' + str(self.d11) + 
