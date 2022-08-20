@@ -69,7 +69,7 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
     # If only doing bilayer, create the moire lattice: Z = Z1*Z2 and filter it if filter btn is checked
     if moireBtn == 'Bilayer': 
 
-        Z = (eta*(Z1 * Z2) + (1-eta)*(Z1 + Z2))
+        Z = (eta * Z1 * Z2) + (1-eta)*(Z1 + Z2)
 
         if filter_bool == True: 
             # Filter the stacked lattices: multiply the two and then add each one individually. divide by 3 to normalize bc each one has max of 1, so 1*1 + 1 + 1 = 3 
@@ -110,7 +110,7 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
             Z3, fftZ3 = squareatoms(pix, L, a3, theta_tw23, f11, f12, f22)
       
 
-        Z = (eta*(Z1 * Z2 * Z3) + (1-eta)*(Z1 + Z2 + Z3))
+        Z = (eta * Z1 * Z2 * Z3) + (1-eta)*(Z1 + Z2 + Z3)
 
       # Low pass filter the image if the button is checked:
         if filter_bool == True: 
