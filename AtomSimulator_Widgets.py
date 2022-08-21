@@ -141,7 +141,7 @@ class SimulatorWidget(QWidget):
 		self.mins = int(self.remain // 60)
 		self.sec = int(self.time_tot - (3600*self.hrs) - (60*self.mins))
 
-		# dI/dV Map time estimator
+		# Spectroscopy Map time estimator
 		self.tps = 1 # time per spectra..
 		self.time_map_tot = (self.tps*self.pix*self.pix) + self.time_tot #+ ((2* self.L) / (self.pix*self.vt))# Total time in seconds
 		self.days_map = int(self.time_map_tot // 86400)
@@ -345,8 +345,8 @@ class SimulatorWidget(QWidget):
 			x = self.theta_im_error.exec()
 
 	def initMoireBtn(self):
-		groupBox = QGroupBox("Moire lattice?")
-		groupBox.setToolTip("Choose whether to create a moire pattern with two sublattices, or plot only a single lattice")
+		groupBox = QGroupBox("Moir\u00e9 lattice?")
+		groupBox.setToolTip("Choose whether to create a moir\u00e9 pattern with two sublattices, or plot only a single lattice")
 
 		
 
@@ -363,9 +363,9 @@ class SimulatorWidget(QWidget):
 		self.noMoire = QRadioButton("Single")
 		self.noMoire.setToolTip("Create a single lattice using Lattice 1 parameters")
 		self.yesMoire = QRadioButton("Bilayer")
-		self.yesMoire.setToolTip("Creates a moire pattern with two overlayed lattices")
+		self.yesMoire.setToolTip("Create a bilayer moir\u00e9 lattice")
 		self.trilayer = QRadioButton("Trilayer")
-		self.trilayer.setToolTip("Create a trilayer moire lattice")
+		self.trilayer.setToolTip("Create a trilayer moir\u00e9 lattice")
 
 		self.noMoire.setChecked(True) # Default value is no moire lattice. plot only 1 lattice
 		
@@ -388,8 +388,10 @@ class SimulatorWidget(QWidget):
 
 
 		# eta
-		self.eta_label = QLabel("\u03b7:") # Greek letters unicode : https://unicode.org/charts/PDF/U0370.pdf
-		self.eta_label.setToolTip("Relative strength of addition of lattices vs multiplication of lattices\n(1-\u03b7)(Z1+Z2+Z3) + \u03b7Z1Z2Z3\nPick a value between 0 and 1 for \u03b7")
+		self.eta_label = QLabel("0 \u2264 \u03b7 \u2264 1:") # Greek letters unicode : https://unicode.org/charts/PDF/U0370.pdf
+		# self.eta_label = QLabel("0 ≤ \u03b7 ≤ 1:") # Greek letters unicode : https://unicode.org/charts/PDF/U0370.pdf
+
+		self.eta_label.setToolTip("Relative strength of the sum of lattices vs. multiplication of lattices\n\u03b7*(Z1*Z2) + (1-\u03b7)*(Z1+Z2)\nPick a value between 0 and 1 for \u03b7")
 		self.eta_input = QLineEdit(self)
 		self.eta_input.returnPressed.connect(self.update_eta) 
 
@@ -447,7 +449,7 @@ class SimulatorWidget(QWidget):
 		self.plotAtoms() 
 
 	def initCalcWidget(self):
-		groupBox = QGroupBox("SPM Time Estimator")
+		groupBox = QGroupBox("SPM image time estimator")
 		groupBox.setToolTip("Calculate estimated time to take STM topography")
 		vlayout = QVBoxLayout(self)
 
@@ -548,8 +550,8 @@ class SimulatorWidget(QWidget):
 			pass
 
 	def initMapCalcWidget(self):
-		groupBox = QGroupBox("Spectroscopy Map Time Estimator")
-		groupBox.setToolTip("Calculate estimated time to take dI/dV map")
+		groupBox = QGroupBox("Spectroscopy map time estimator")
+		groupBox.setToolTip("Calculate estimated time to take spectroscopy map")
 		vlayout = QVBoxLayout(self)
 
 		self.calc_map_btn = QCheckBox("Calculate     ")
@@ -607,7 +609,7 @@ class SimulatorWidget(QWidget):
 
 	def update_map_calc(self):
 		if (self.calc_map_btn).isChecked():
-			# Calculate the estimated time it will take to take a dI/dV map 
+			# Calculate the estimated time it will take to take a spectroscopy map 
 			self.time_map_tot = (self.tps*self.pix*self.pix) + self.time_tot # This is the total time in seconds
 
 			# Convert time in seconds to days, hours, mins:
@@ -755,7 +757,7 @@ class SimulatorWidget(QWidget):
 		self.e11_input = QLineEdit(self)
 		self.e11_input.setPlaceholderText(str(self.e11))
 		self.e11_input.setFixedWidth(60)
-		self.e11_label = QLabel("e11", self)
+		self.e11_label = QLabel("e<sub>11", self)
 		self.e11_SliderLabel = QLabel(str("%"), self) 
 		self.e11_input.returnPressed.connect(self.update_e11)
 		self.e11_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
@@ -768,7 +770,7 @@ class SimulatorWidget(QWidget):
 		self.e12_input = QLineEdit(self)
 		self.e12_input.setPlaceholderText(str(self.e12))
 		self.e12_input.setFixedWidth(60)
-		self.e12_label = QLabel("e12", self)
+		self.e12_label = QLabel("e<sub>12", self)
 		self.e12_SliderLabel = QLabel(str("%"), self) 
 		self.e12_input.returnPressed.connect(self.update_e12)
 		self.e12_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
@@ -781,7 +783,7 @@ class SimulatorWidget(QWidget):
 		self.e22_input = QLineEdit(self)
 		self.e22_input.setPlaceholderText(str(self.e22))
 		self.e22_input.setFixedWidth(60)
-		self.e22_label = QLabel("e22", self)
+		self.e22_label = QLabel("e<sub>22", self)
 		self.e22_SliderLabel = QLabel(str("%"), self) 
 		self.e22_input.returnPressed.connect(self.update_e22)
 		self.e22_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
@@ -874,7 +876,7 @@ class SimulatorWidget(QWidget):
 		### Pick alpha1 weight of sublattice a ###
 		# self.alpha1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.alpha1_param_label.setToolTip("Weight of sublattice a")
-		self.alpha1_label = QLabel("\u03b11:", self)
+		self.alpha1_label = QLabel("\u03b1<sub>1</sub>:", self)
 		self.alpha1_label.setToolTip("Weight of sublattice A")
 		self.alpha1_input = QLineEdit(self)
 		self.alpha1_input.returnPressed.connect(self.update_alpha1) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
@@ -900,7 +902,7 @@ class SimulatorWidget(QWidget):
 		### Pick beta1 weight of sublattice b ###
 		# self.beta1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.beta1_param_label.setToolTip("Weight of sublattice B")
-		self.beta1_label = QLabel("\u03b21:", self)
+		self.beta1_label = QLabel("\u03b2<sub>1</sub>:", self)
 		self.beta1_label.setToolTip("Weight of sublattice B")
 		self.beta1_input = QLineEdit(self)
 		self.beta1_input.returnPressed.connect(self.update_beta1) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
@@ -1049,7 +1051,7 @@ class SimulatorWidget(QWidget):
 
 		# # # # # # # # # # # # # # # # # # # # 
 		### Twist angle ###
-		self.thetatw_title = QLabel('Twist angle \u03b812', self)
+		self.thetatw_title = QLabel('Twist angle \u03b8<sub>12', self)
 		self.thetatw_input = QLineEdit(self)
 		self.thetatw_input.returnPressed.connect(self.updateThetaTw) # Connect this intput dialog whenever the enter/return button is pressed
 		self.thetatw_input.setPlaceholderText(str(self.theta_tw))
@@ -1089,7 +1091,7 @@ class SimulatorWidget(QWidget):
 		self.d11_input = QLineEdit(self)
 		self.d11_input.setPlaceholderText(str(self.d11))
 		self.d11_input.setFixedWidth(60) # Shorten the width of the text box
-		self.d11_label = QLabel("d11", self)
+		self.d11_label = QLabel("d<sub>11", self)
 		# self.d11_label.setFixedWidth(20)
 		self.d11_SliderLabel = QLabel(str("%"), self) 
 		# self.d11_SliderLabel.setFixedWidth(20)
@@ -1104,7 +1106,7 @@ class SimulatorWidget(QWidget):
 		self.d12_input = QLineEdit(self)
 		self.d12_input.setPlaceholderText(str(self.d12))
 		self.d12_input.setFixedWidth(60)
-		self.d12_label = QLabel("d12", self)
+		self.d12_label = QLabel("d<sub>12", self)
 		# self.d12_label.setFixedWidth(20)
 		self.d12_SliderLabel = QLabel(str("%"), self) 
 		# self.d12_SliderLabel.setFixedWidth(20)
@@ -1119,7 +1121,7 @@ class SimulatorWidget(QWidget):
 		self.d22_input = QLineEdit(self)
 		self.d22_input.setPlaceholderText(str(self.d22))
 		self.d22_input.setFixedWidth(60)
-		self.d22_label = QLabel("d22", self)
+		self.d22_label = QLabel("d<sub>22", self)
 		# self.d22_label.setFixedWidth(20)
 		self.d22_SliderLabel = QLabel(str("%"), self) 
 		# self.d22_SliderLabel.setFixedWidth(20)
@@ -1208,7 +1210,7 @@ class SimulatorWidget(QWidget):
 		### Pick alpha2 weight of sublattice a ###
 		# self.alpha1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.alpha1_param_label.setToolTip("Weight of sublattice a")
-		self.alpha2_label = QLabel("\u03b12:", self)
+		self.alpha2_label = QLabel("\u03b1<sub>2</sub>:", self)
 		self.alpha2_label.setToolTip("Weight of sublattice A")
 		self.alpha2_input = QLineEdit(self)
 		self.alpha2_input.returnPressed.connect(self.update_alpha2) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
@@ -1234,7 +1236,7 @@ class SimulatorWidget(QWidget):
 		### Pick beta2 weight of sublattice b ###
 		# self.beta1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.beta1_param_label.setToolTip("Weight of sublattice B")
-		self.beta2_label = QLabel("\u03b22:", self)
+		self.beta2_label = QLabel("\u03b2<sub>2</sub>:", self)
 		self.beta2_label.setToolTip("Weight of sublattice B")
 		self.beta2_input = QLineEdit(self)
 		self.beta2_input.returnPressed.connect(self.update_beta2) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
@@ -1378,7 +1380,7 @@ class SimulatorWidget(QWidget):
 
 		# # # # # # # # # # # # # # # # # # # # 
 		### Twist angle ###
-		self.thetatw2_title = QLabel('Twist angle \u03b823', self)
+		self.thetatw2_title = QLabel('Twist angle \u03b8<sub>23', self)
 		self.thetatw2_input = QLineEdit(self)
 		self.thetatw2_input.returnPressed.connect(self.updateThetaTw2) # Connect this intput dialog whenever the enter/return button is pressed
 		self.thetatw2_input.setPlaceholderText(str(self.theta_tw2))
@@ -1420,7 +1422,7 @@ class SimulatorWidget(QWidget):
 		self.f11_input = QLineEdit(self)
 		self.f11_input.setPlaceholderText(str(self.f11))
 		self.f11_input.setFixedWidth(60) # Shorten the width of the text box
-		self.f11_label = QLabel("f11", self)
+		self.f11_label = QLabel("f<sub>11", self)
 		# self.d11_label.setFixedWidth(20)
 		self.f11_SliderLabel = QLabel(str("%"), self) 
 		# self.d11_SliderLabel.setFixedWidth(20)
@@ -1435,7 +1437,7 @@ class SimulatorWidget(QWidget):
 		self.f12_input = QLineEdit(self)
 		self.f12_input.setPlaceholderText(str(self.f12))
 		self.f12_input.setFixedWidth(60)
-		self.f12_label = QLabel("f12", self)
+		self.f12_label = QLabel("f<sub>12", self)
 		# self.d12_label.setFixedWidth(20)
 		self.f12_SliderLabel = QLabel(str("%"), self) 
 		# self.d12_SliderLabel.setFixedWidth(20)
@@ -1450,7 +1452,7 @@ class SimulatorWidget(QWidget):
 		self.f22_input = QLineEdit(self)
 		self.f22_input.setPlaceholderText(str(self.f22))
 		self.f22_input.setFixedWidth(60)
-		self.f22_label = QLabel("f22", self)
+		self.f22_label = QLabel("f<sub>22", self)
 		# self.d22_label.setFixedWidth(20)
 		self.f22_SliderLabel = QLabel(str("%"), self) 
 		# self.d22_SliderLabel.setFixedWidth(20)
@@ -1541,7 +1543,7 @@ class SimulatorWidget(QWidget):
 		### Pick alpha3 weight of sublattice a ###
 		# self.alpha1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.alpha1_param_label.setToolTip("Weight of sublattice a")
-		self.alpha3_label = QLabel("\u03b13:", self)
+		self.alpha3_label = QLabel("\u03b1<sub>3</sub>:", self)
 		self.alpha3_label.setToolTip("Weight of sublattice A")
 		self.alpha3_input = QLineEdit(self)
 		self.alpha3_input.returnPressed.connect(self.update_alpha3) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
@@ -1567,7 +1569,7 @@ class SimulatorWidget(QWidget):
 		### Pick beta1 weight of sublattice b ###
 		# self.beta1_param_label = QLabel("Lattice constant (nm)", self)
 		# self.beta1_param_label.setToolTip("Weight of sublattice B")
-		self.beta3_label = QLabel("\u03b23:", self)
+		self.beta3_label = QLabel("\u03b2<sub>3</sub>:", self)
 		self.beta3_label.setToolTip("Weight of sublattice B")
 		self.beta3_input = QLineEdit(self)
 		self.beta3_input.returnPressed.connect(self.update_beta3) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
@@ -1715,7 +1717,7 @@ class SimulatorWidget(QWidget):
 			self.theta_tw_error = QMessageBox()
 			self.theta_tw_error.setWindowTitle("Error")
 			self.theta_tw_error.setText("Type in a number or numerical expression")
-			self.theta_tw_error.setInformativeText("Your input for theta_twist is: " +  str(self.thetatw_input.text()))
+			self.theta_tw_error.setInformativeText("Your input for \u03b8<sub>12 is: " +  str(self.thetatw_input.text()))
 			self.theta_tw_error.setIcon(QMessageBox.Warning)
 			self.theta_tw_error.setStandardButtons(QMessageBox.Retry)
 			x = self.theta_tw_error.exec()
@@ -1730,7 +1732,7 @@ class SimulatorWidget(QWidget):
 			self.theta_tw2_error = QMessageBox()
 			self.theta_tw2_error.setWindowTitle("Error")
 			self.theta_tw2_error.setText("Type in a number or numerical expression")
-			self.theta_tw2_error.setInformativeText("Your input for theta_twist2 is: " +  str(self.thetatw2_input.text()))
+			self.theta_tw2_error.setInformativeText("Your input for \u03b8<sub>23 is: " +  str(self.thetatw2_input.text()))
 			self.theta_tw2_error.setIcon(QMessageBox.Warning)
 			self.theta_tw2_error.setStandardButtons(QMessageBox.Retry)
 			x = self.theta_tw2_error.exec()
@@ -1745,7 +1747,7 @@ class SimulatorWidget(QWidget):
 			self.e11_error = QMessageBox()
 			self.e11_error.setWindowTitle("Error")
 			self.e11_error.setText("Type in a number or numerical expression")
-			self.e11_error.setInformativeText("Your input for e11 is: " +  str(self.e11_input.text()))
+			self.e11_error.setInformativeText("Your input for e<sub>11</sub> is: " +  str(self.e11_input.text()))
 			self.e11_error.setIcon(QMessageBox.Warning)
 			self.e11_error.setStandardButtons(QMessageBox.Retry)
 			x = self.e11_error.exec()
@@ -1760,7 +1762,7 @@ class SimulatorWidget(QWidget):
 			self.e12_error = QMessageBox()
 			self.e12_error.setWindowTitle("Error")
 			self.e12_error.setText("Type in a number or numerical expression")
-			self.e12_error.setInformativeText("Your input for e12 is: " +  str(self.e12_input.text()))
+			self.e12_error.setInformativeText("Your input for e<sub>12</sub> is: " +  str(self.e12_input.text()))
 			self.e12_error.setIcon(QMessageBox.Warning)
 			self.e12_error.setStandardButtons(QMessageBox.Retry)
 			x = self.e12_error.exec()
@@ -1775,7 +1777,7 @@ class SimulatorWidget(QWidget):
 			self.e22_error = QMessageBox()
 			self.e22_error.setWindowTitle("Error")
 			self.e22_error.setText("Type in a number or numerical expression")
-			self.e22_error.setInformativeText("Your input for e22 is: " +  str(self.e22_input.text()))
+			self.e22_error.setInformativeText("Your input for e<sub>22</sub> is: " +  str(self.e22_input.text()))
 			self.e22_error.setIcon(QMessageBox.Warning)
 			self.e22_error.setStandardButtons(QMessageBox.Retry)
 			x = self.e22_error.exec()
@@ -1790,7 +1792,7 @@ class SimulatorWidget(QWidget):
 			self.d11_error = QMessageBox()
 			self.d11_error.setWindowTitle("Error")
 			self.d11_error.setText("Type in a number or numerical expression")
-			self.d11_error.setInformativeText("Your input for d11 is: " +  str(self.d11_input.text()))
+			self.d11_error.setInformativeText("Your input for d<sub>11</sub> is: " +  str(self.d11_input.text()))
 			self.d11_error.setIcon(QMessageBox.Warning)
 			self.d11_error.setStandardButtons(QMessageBox.Retry)
 			x = self.d11_error.exec()
@@ -1805,7 +1807,7 @@ class SimulatorWidget(QWidget):
 			self.d12_error = QMessageBox()
 			self.d12_error.setWindowTitle("Error")
 			self.d12_error.setText("Type in a number or numerical expression")
-			self.d12_error.setInformativeText("Your input for d12 is: " +  str(self.d12_input.text()))
+			self.d12_error.setInformativeText("Your input for d<sub>12</sub> is: " +  str(self.d12_input.text()))
 			self.d12_error.setIcon(QMessageBox.Warning)
 			self.d12_error.setStandardButtons(QMessageBox.Retry)
 			x = self.d12_error.exec()
@@ -1820,7 +1822,7 @@ class SimulatorWidget(QWidget):
 			self.d22_error = QMessageBox()
 			self.d22_error.setWindowTitle("Error")
 			self.d22_error.setText("Type in a number or numerical expression")
-			self.d22_error.setInformativeText("Your input for d22 is: " +  str(self.d22_input.text()))
+			self.d22_error.setInformativeText("Your input for d<sub>22</sub> is: " +  str(self.d22_input.text()))
 			self.d22_error.setIcon(QMessageBox.Warning)
 			self.d22_error.setStandardButtons(QMessageBox.Retry)
 			x = self.d22_error.exec()
@@ -1835,7 +1837,7 @@ class SimulatorWidget(QWidget):
 			self.f11_error = QMessageBox()
 			self.f11_error.setWindowTitle("Error")
 			self.f11_error.setText("Type in a number or numerical expression")
-			self.f11_error.setInformativeText("Your input for d11 is: " +  str(self.f11_input.text()))
+			self.f11_error.setInformativeText("Your input for d<sub>11</sub> is: " +  str(self.f11_input.text()))
 			self.f11_error.setIcon(QMessageBox.Warning)
 			self.f11_error.setStandardButtons(QMessageBox.Retry)
 			x = self.f11_error.exec()
@@ -1850,7 +1852,7 @@ class SimulatorWidget(QWidget):
 			self.f12_error = QMessageBox()
 			self.f12_error.setWindowTitle("Error")
 			self.f12_error.setText("Type in a number or numerical expression")
-			self.f12_error.setInformativeText("Your input for f12 is: " +  str(self.f12_input.text()))
+			self.f12_error.setInformativeText("Your input for f<sub>12</sub> is: " +  str(self.f12_input.text()))
 			self.f12_error.setIcon(QMessageBox.Warning)
 			self.f12_error.setStandardButtons(QMessageBox.Retry)
 			x = self.f12_error.exec()
@@ -1865,7 +1867,7 @@ class SimulatorWidget(QWidget):
 			self.f22_error = QMessageBox()
 			self.f22_error.setWindowTitle("Error")
 			self.f22_error.setText("Type in a number or numerical expression")
-			self.f22_error.setInformativeText("Your input for f22 is: " +  str(self.f22_input.text()))
+			self.f22_error.setInformativeText("Your input for f<sub>22</sub> is: " +  str(self.f22_input.text()))
 			self.f22_error.setIcon(QMessageBox.Warning)
 			self.f22_error.setStandardButtons(QMessageBox.Retry)
 			x = self.f22_error.exec()
@@ -2143,19 +2145,19 @@ class SimulatorWidget(QWidget):
 
 
 
-		self.vmax_fft_label = QLabel("vmax_fft:", self)
-		self.vmax_fft_label.setToolTip("vmax value for fft")
+		self.vmax_fft_label = QLabel("FFT<sub>max", self)
+		self.vmax_fft_label.setToolTip("Max value for FFT")
 		self.vmax_fft_input = QLineEdit(self)
 		self.vmax_fft_input.returnPressed.connect(self.update_vmax_fft) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
 		self.vmax_fft_input.setPlaceholderText(str(self.vmax_fft))
-		self.vmax_fft_input.setToolTip("vmax value for fft")
+		self.vmax_fft_input.setToolTip("Max value for FFT")
 		# self.cmax_fft_input.setFixedWidth(60)
 
 		
 		self.vmax_fft_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.vmax_fft_btn.clicked.connect(self.update_vmax_fft)
 		self.vmax_fft_btn.setAutoDefault(False)
-		self.vmax_fft_btn.setToolTip("vmax value for fft")
+		self.vmax_fft_btn.setToolTip("Max value for FFT")
 
 
 
@@ -2389,7 +2391,7 @@ class SimulatorWidget(QWidget):
 		# self.saveFileName.returnPressed.connect(self.updateSaveButton) # Connect this intput dialog whenever the enter/return button is pressed
 		# self.saveFileName.setPlaceholderText('Save as...')
 
-		self.saveLabel = QLabel("Input file name only (no extension)")
+		self.saveLabel = QLabel("Input file name only\n(no extension)")
 		self.saveLabel.setWordWrap(True)
 		self.saveLabel.setMinimumHeight(20)
 		# Add QPushButton to open file directory whenever you want to save
@@ -2444,7 +2446,7 @@ class SimulatorWidget(QWidget):
 					'\nf12: ' + str(self.f12) + '\nf22: ' + str(self.f22) + "\nAlpha3: " + str(self.alpha3) + "\nBeta3: " + str(self.beta3) + "\nOrigin3: " + str(self.origin3) + 
 					'\nTwist angle (btwn lattice 2 & 3): ' + str(self.theta_tw2) + 
 					'\n\n--------------------------------\nEstimated time to take STM topography: ' + str(self.hrs) + 'h ' + str(self.mins) + 'min ' + str(self.sec) + ' s\nTip scanner speed: ' + str(self.vt) + ' nm/s'
-					'\nEstimated time to take dI/dV map: ' + str(self.days_map) + 'days ' + str(self.hrs_map) + 'h ' + str(self.mins_map) +  'min\nTime per spectra: ' + str(self.tps) + ' s')
+					'\nEstimated time to take spectroscopy map: ' + str(self.days_map) + 'days ' + str(self.hrs_map) + 'h ' + str(self.mins_map) +  'min\nTime per spectra: ' + str(self.tps) + ' s')
 					
 			param_file.close() # Close the text file
 		
