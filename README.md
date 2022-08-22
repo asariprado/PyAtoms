@@ -1,7 +1,9 @@
 # AtomSimulator
 
 Simulates SPM images  
-<img width="900" alt="Screen Shot 2022-08-03 at 5 10 41 PM" src="https://user-images.githubusercontent.com/62832051/182736096-5b4b863d-10f3-4cc2-91c6-e5fd9825a752.png">
+
+<img width="900" alt="image" src="https://user-images.githubusercontent.com/62832051/186005147-f2597f19-aa75-4967-9a7f-ddda06bf7613.png">
+
 
 ### Dependencies:
 - Python 3
