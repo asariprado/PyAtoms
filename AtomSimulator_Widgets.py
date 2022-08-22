@@ -303,7 +303,7 @@ class SimulatorWidget(QWidget):
 			
 			# Checking for errors in the input before assigning self.L to the input, to avoid the program crashing if input is complex number/typo 
 			L_temp = eval(self.L_input.text())
-			print(type(L_temp))
+			# print(type(L_temp))
 			if L_temp >= 8192:
 				raise ValueError
 			elif type(L_temp) == complex:
@@ -2752,33 +2752,33 @@ class SimulatorWidget(QWidget):
 
 
 
-	# def handleError(self, err_in):
-	# 	# split the input
-	# 	# if the input has a 'j' it  will crash bc it reads it as complex
-	# 	# so if it has a j, just remove the j/ignore it
+		# def handleError(self, err_in):
+		# 	# split the input
+		# 	# if the input has a 'j' it  will crash bc it reads it as complex
+		# 	# so if it has a j, just remove the j/ignore it
 
 
-	# 	chars_list = list(err_in)
-	# 	print(chars_list)
-	# 	# if 'j' in chars_list:
-	# 	# 	print("Error")
-	# 	# 	chars_list.remove('j')
-	# 	num_list = []
-	# 	for char in chars_list:
-	# 		if not char.isalpha():
-	# 			num_list.append(char)
-	# 	print(num_list)
-	# 	print(chars_list)
+		# 	chars_list = list(err_in)
+		# 	print(chars_list)
+		# 	# if 'j' in chars_list:
+		# 	# 	print("Error")
+		# 	# 	chars_list.remove('j')
+		# 	num_list = []
+		# 	for char in chars_list:
+		# 		if not char.isalpha():
+		# 			num_list.append(char)
+		# 	print(num_list)
+		# 	print(chars_list)
 
-	# 	return eval(''.join(num_list))
+		# 	return eval(''.join(num_list))
 
 
 
-	# # TO SUPPRESS QLAYOUT WARNING IN TERMINAL. from: https://stackoverflow.com/questions/25660597/hide-critical-pyqt-warning-when-clicking-a-checkboc
-	# def handler(msg_type, msg_log_context, msg_string):
- #  	  pass
+	# TO SUPPRESS QLAYOUT WARNING IN TERMINAL. from: https://stackoverflow.com/questions/25660597/hide-critical-pyqt-warning-when-clicking-a-checkboc
+	def handler(msg_type, msg_log_context, msg_string):
+  	  pass
 
-	# qInstallMessageHandler(handler)
+	qInstallMessageHandler(handler)
 
 
 
