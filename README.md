@@ -1,7 +1,9 @@
 # AtomSimulator
 
 Simulates SPM images  
-<img width="900" alt="Screen Shot 2022-08-03 at 5 10 41 PM" src="https://user-images.githubusercontent.com/62832051/182736096-5b4b863d-10f3-4cc2-91c6-e5fd9825a752.png">
+
+<img width="900" alt="image" src="https://user-images.githubusercontent.com/62832051/186005147-f2597f19-aa75-4967-9a7f-ddda06bf7613.png">
+
 
 ### Dependencies:
 - Python 3
@@ -42,7 +44,7 @@ Note that all fields accept typical mathematical operations in python and NumPy 
        - Lattice 1 parameters change the single/first layer.
        - Lattice 2 only works if bilayer/trilayer are selected. These change the second lattice.
        - Lattice 3 only works if trilayer is selected. These change the third lattice.
-   - `eta`, $\eta$: relative strength of the sum of lattices vs the product of lattices
+   - `eta`, $\eta$: relative strength of the sum of lattices vs the product of lattices (input a value between 0 and 1)
    - If $Z_1$ and $Z_2$ are two periodic lattices, the superimposed moiré/superlattice image is approximated as $Z_{moire} = (1-\eta)(Z_1 + Z_2) + \eta Z_1Z_2$ This choice balances the strength of the individual lattices and their product and more closely matches experimental STM images and their Fourier transforms.
    - Similarly, for three periodic lattices, the moiré/superlattice image is approximated as $Z_{moire} = (1-\eta)(Z_1 + Z_2 + Z_3) + \eta Z_1Z_2Z_3$.
 
