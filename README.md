@@ -46,8 +46,8 @@ Note that all fields accept typical mathematical operations in python and NumPy 
        - Lattice 1 parameters change the single/first layer.
        - Lattice 2 only works if bilayer/trilayer are selected. These change the second lattice.
        - Lattice 3 only works if trilayer is selected. These change the third lattice.
-   - `eta`, $\eta$: relative strength of the sum of lattices vs the product of lattices (input a value between 0 and 1)
-   - If $Z_1$ and $Z_2$ are two periodic lattices, the superimposed moiré/superlattice image is approximated as $Z_{moire} = (1-\eta)(Z_1 + Z_2) + \eta Z_1Z_2$ This choice balances the strength of the individual lattices and their product and more closely matches experimental STM images and their Fourier transforms.
+   - `eta`, $\eta$ : A phenomenological parameter we use to weigh the relative strength of the sum of lattices, $Z_1 + Z_2$, versus the product of lattices, $Z_1 * Z_2$. $\eta$ is a real number between 0 and 1: The moiré image for $\eta=1$ is purely the product and $\eta=0$ purely the sum.
+   - If $Z_1$ and $Z_2$ are two periodic lattices, the superimposed moiré/superlattice image is approximated as $Z_{moire} = (1-\eta)(Z_1 + Z_2) + \eta Z_1Z_2$ This toy model provides a good match to both experimental STM images and their Fourier transforms.
    - Similarly, for three periodic lattices, the moiré/superlattice image is approximated as $Z_{moire} = (1-\eta)(Z_1 + Z_2 + Z_3) + \eta Z_1Z_2Z_3$.
 
 2. Image parameters
