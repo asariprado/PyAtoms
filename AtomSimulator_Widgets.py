@@ -446,7 +446,17 @@ class SimulatorWidget(QWidget):
 				self.moireBtn = "Trilayer"
 
 			# Update the plot every time user changes the button choice
-		self.plotAtoms() 
+		try:
+			self.plotAtoms() 
+		except:
+			self.moire_btn_error = QMessageBox()
+			self.moire_btn_error.setWindowTitle("Error")
+			self.moire_btn_error.setText("Check all text line inputs.")
+			self.moire_btn_error.setInformativeText("There may be a typo somewhere.")
+			self.moire_btn_error.setIcon(QMessageBox.Warning)
+			self.moire_btn_error.setStandardButtons(QMessageBox.Retry)
+			x = self.moire_btn_error.exec()
+
 
 	def initCalcWidget(self):
 		groupBox = QGroupBox("SPM image time estimator")
@@ -2539,6 +2549,8 @@ class SimulatorWidget(QWidget):
 				self.sigma_error.setIcon(QMessageBox.Warning)
 				self.sigma_error.setStandardButtons(QMessageBox.Retry)
 				x = self.sigma_error.exec()
+
+				
 		else:
 			self.filter_bool = False
 			self.plotAtoms()
