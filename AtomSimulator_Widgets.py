@@ -767,7 +767,7 @@ class SimulatorWidget(QWidget):
 		self.e11_input = QLineEdit(self)
 		self.e11_input.setPlaceholderText(str(self.e11))
 		self.e11_input.setFixedWidth(60)
-		self.e11_label = QLabel("e<sub>11", self)
+		self.e11_label = QLabel("e<sub>11</sub>", self)
 		self.e11_SliderLabel = QLabel(str("%"), self) 
 		self.e11_input.returnPressed.connect(self.update_e11)
 		self.e11_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
@@ -780,7 +780,7 @@ class SimulatorWidget(QWidget):
 		self.e12_input = QLineEdit(self)
 		self.e12_input.setPlaceholderText(str(self.e12))
 		self.e12_input.setFixedWidth(60)
-		self.e12_label = QLabel("e<sub>12", self)
+		self.e12_label = QLabel("e<sub>12</sub>", self)
 		self.e12_SliderLabel = QLabel(str("%"), self) 
 		self.e12_input.returnPressed.connect(self.update_e12)
 		self.e12_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
@@ -793,7 +793,7 @@ class SimulatorWidget(QWidget):
 		self.e22_input = QLineEdit(self)
 		self.e22_input.setPlaceholderText(str(self.e22))
 		self.e22_input.setFixedWidth(60)
-		self.e22_label = QLabel("e<sub>22", self)
+		self.e22_label = QLabel("e<sub>22</sub>", self)
 		self.e22_SliderLabel = QLabel(str("%"), self) 
 		self.e22_input.returnPressed.connect(self.update_e22)
 		self.e22_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
@@ -1061,7 +1061,7 @@ class SimulatorWidget(QWidget):
 
 		# # # # # # # # # # # # # # # # # # # # 
 		### Twist angle ###
-		self.thetatw_title = QLabel('Twist angle \u03b8<sub>12', self)
+		self.thetatw_title = QLabel('Twist angle \u03b8<sub>12</sub>', self)
 		self.thetatw_input = QLineEdit(self)
 		self.thetatw_input.returnPressed.connect(self.updateThetaTw) # Connect this intput dialog whenever the enter/return button is pressed
 		self.thetatw_input.setPlaceholderText(str(self.theta_tw))
@@ -1101,7 +1101,7 @@ class SimulatorWidget(QWidget):
 		self.d11_input = QLineEdit(self)
 		self.d11_input.setPlaceholderText(str(self.d11))
 		self.d11_input.setFixedWidth(60) # Shorten the width of the text box
-		self.d11_label = QLabel("d<sub>11", self)
+		self.d11_label = QLabel("d<sub>11</sub>", self)
 		# self.d11_label.setFixedWidth(20)
 		self.d11_SliderLabel = QLabel(str("%"), self) 
 		# self.d11_SliderLabel.setFixedWidth(20)
@@ -1116,7 +1116,7 @@ class SimulatorWidget(QWidget):
 		self.d12_input = QLineEdit(self)
 		self.d12_input.setPlaceholderText(str(self.d12))
 		self.d12_input.setFixedWidth(60)
-		self.d12_label = QLabel("d<sub>12", self)
+		self.d12_label = QLabel("d<sub>12</sub>", self)
 		# self.d12_label.setFixedWidth(20)
 		self.d12_SliderLabel = QLabel(str("%"), self) 
 		# self.d12_SliderLabel.setFixedWidth(20)
@@ -1131,7 +1131,7 @@ class SimulatorWidget(QWidget):
 		self.d22_input = QLineEdit(self)
 		self.d22_input.setPlaceholderText(str(self.d22))
 		self.d22_input.setFixedWidth(60)
-		self.d22_label = QLabel("d<sub>22", self)
+		self.d22_label = QLabel("d<sub>22</sub>", self)
 		# self.d22_label.setFixedWidth(20)
 		self.d22_SliderLabel = QLabel(str("%"), self) 
 		# self.d22_SliderLabel.setFixedWidth(20)
@@ -1390,7 +1390,7 @@ class SimulatorWidget(QWidget):
 
 		# # # # # # # # # # # # # # # # # # # # 
 		### Twist angle ###
-		self.thetatw2_title = QLabel('Twist angle \u03b8<sub>23', self)
+		self.thetatw2_title = QLabel('Twist angle \u03b8<sub>23</sub>', self)
 		self.thetatw2_input = QLineEdit(self)
 		self.thetatw2_input.returnPressed.connect(self.updateThetaTw2) # Connect this intput dialog whenever the enter/return button is pressed
 		self.thetatw2_input.setPlaceholderText(str(self.theta_tw2))
@@ -1432,7 +1432,7 @@ class SimulatorWidget(QWidget):
 		self.f11_input = QLineEdit(self)
 		self.f11_input.setPlaceholderText(str(self.f11))
 		self.f11_input.setFixedWidth(60) # Shorten the width of the text box
-		self.f11_label = QLabel("f<sub>11", self)
+		self.f11_label = QLabel("f<sub>11</sub>", self)
 		# self.d11_label.setFixedWidth(20)
 		self.f11_SliderLabel = QLabel(str("%"), self) 
 		# self.d11_SliderLabel.setFixedWidth(20)
@@ -1447,7 +1447,7 @@ class SimulatorWidget(QWidget):
 		self.f12_input = QLineEdit(self)
 		self.f12_input.setPlaceholderText(str(self.f12))
 		self.f12_input.setFixedWidth(60)
-		self.f12_label = QLabel("f<sub>12", self)
+		self.f12_label = QLabel("f<sub>12</sub>", self)
 		# self.d12_label.setFixedWidth(20)
 		self.f12_SliderLabel = QLabel(str("%"), self) 
 		# self.d12_SliderLabel.setFixedWidth(20)
@@ -1462,7 +1462,7 @@ class SimulatorWidget(QWidget):
 		self.f22_input = QLineEdit(self)
 		self.f22_input.setPlaceholderText(str(self.f22))
 		self.f22_input.setFixedWidth(60)
-		self.f22_label = QLabel("f<sub>22", self)
+		self.f22_label = QLabel("f<sub>22</sub>", self)
 		# self.d22_label.setFixedWidth(20)
 		self.f22_SliderLabel = QLabel(str("%"), self) 
 		# self.d22_SliderLabel.setFixedWidth(20)
@@ -1727,7 +1727,7 @@ class SimulatorWidget(QWidget):
 			self.theta_tw_error = QMessageBox()
 			self.theta_tw_error.setWindowTitle("Error")
 			self.theta_tw_error.setText("Type in a number or numerical expression")
-			self.theta_tw_error.setInformativeText("Your input for \u03b8<sub>12 is: " +  str(self.thetatw_input.text()))
+			self.theta_tw_error.setInformativeText("Your input for \u03b8<sub>12</sub> is: " +  str(self.thetatw_input.text()))
 			self.theta_tw_error.setIcon(QMessageBox.Warning)
 			self.theta_tw_error.setStandardButtons(QMessageBox.Retry)
 			x = self.theta_tw_error.exec()
@@ -1742,7 +1742,7 @@ class SimulatorWidget(QWidget):
 			self.theta_tw2_error = QMessageBox()
 			self.theta_tw2_error.setWindowTitle("Error")
 			self.theta_tw2_error.setText("Type in a number or numerical expression")
-			self.theta_tw2_error.setInformativeText("Your input for \u03b8<sub>23 is: " +  str(self.thetatw2_input.text()))
+			self.theta_tw2_error.setInformativeText("Your input for \u03b8<sub>23</sub> is: " +  str(self.thetatw2_input.text()))
 			self.theta_tw2_error.setIcon(QMessageBox.Warning)
 			self.theta_tw2_error.setStandardButtons(QMessageBox.Retry)
 			x = self.theta_tw2_error.exec()
@@ -2155,7 +2155,7 @@ class SimulatorWidget(QWidget):
 
 
 
-		self.vmax_fft_label = QLabel("FFT<sub>max", self)
+		self.vmax_fft_label = QLabel("FFT<sub>max</sub>", self)
 		self.vmax_fft_label.setToolTip("Max value for FFT")
 		self.vmax_fft_input = QLineEdit(self)
 		self.vmax_fft_input.returnPressed.connect(self.update_vmax_fft) # Connect this intput dialog whenever the enter/return/tab button is pressed or you click away from the widget box
