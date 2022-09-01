@@ -52,7 +52,7 @@ class Window(QDialog):
         # Use 'self.' when defining basically any thing in the class - these are class member variables (?) they can be accessed in all functions throughout the class
 
         # Call functions to initialize everything else
-        self.setWindowTitle('Atom Simulator GUI - Version 1') # Sets the title on the external window that pops up when you run the code
+        self.setWindowTitle('SPM Simulator - beta release') # Sets the title on the external window that pops up when you run the code
         self.initGeo() # Sets size of the popup gui window
         self.initWidgetsGrid() # For placing multiple widgets in the popup gui in a grid layout
         self.show()
@@ -92,9 +92,10 @@ class Window(QDialog):
         # Settings for all lattices
         grid.addWidget(self.SimWidget.initMoireBtn(), 0, 1)
         grid.addWidget(self.SimWidget.initColormapDropdown(),1,1)
-        # grid.addWidget(self.SimWidget.initSpotifyButton(),1,1)
+        # grid.addWidget(self.SimWidget.initSpotifyButton(),9, 0, 1,1)
 
         grid.addWidget(self.SimWidget.initImageParameters(), 0,2,2,1)
+
         
         grid.addWidget(self.SimWidget.initFiltering(), 0, 3)
         grid.addWidget(self.SimWidget.initSaveButton(),1, 3)

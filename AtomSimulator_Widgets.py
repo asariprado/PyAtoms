@@ -588,7 +588,7 @@ class SimulatorWidget(QWidget):
 		self.tps_btn.setAutoDefault(False)
 
 		# Define label to display the value of the slider next to the textbox
-		self.tps_label = QLabel("Time per spectra: ", self)
+		self.tps_label = QLabel("Time per\nspectra: ", self)
 		self.tps_label.setToolTip("Time per spectra")
 		# self.tps_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
 		self.tps_label.setMinimumWidth(30)
@@ -2403,16 +2403,24 @@ class SimulatorWidget(QWidget):
 
 		self.saveLabel = QLabel("Input file name only\n(no extension)")
 		self.saveLabel.setWordWrap(True)
-		self.saveLabel.setMinimumHeight(20)
+		self.saveLabel.setMinimumHeight(35)
 		# Add QPushButton to open file directory whenever you want to save
 		self.save_btn = QPushButton("Click to save", self)
 		self.save_btn.clicked.connect(self.updateSaveButton)
 		self.save_btn.setAutoDefault(False) # This is so its not default on, you can press enter on other widgets and this window wont pop up
 		
+
+		
+
+
 		vlayout = QVBoxLayout()
 		vlayout.addWidget(self.saveLabel)
+
 		vlayout.addWidget(self.save_btn)
+
+		# vlayout.setSpacing(2)
 		groupBox.setLayout(vlayout)
+
 
 		return groupBox
 
@@ -2570,7 +2578,7 @@ class SimulatorWidget(QWidget):
 
 		# self.saveLabel = QLabel("Input file name only (no extension)")
 		# Add QPushButton to open file directory whenever you want to save
-		self.spotify_btn = QPushButton("Click", self)
+		self.spotify_btn = QPushButton(":)", self)
 		self.spotify_btn.clicked.connect(self.updateSpotifyButton)
 		# self.spotify_btn.clicked.connect(self.openAscii)
 		self.spotify_btn.setAutoDefault(False) # This is so its not default on, you can press enter on other widgets and this window wont pop up
