@@ -2209,7 +2209,7 @@ class SimulatorWidget(QWidget):
 			self.vmax_fft_error = QMessageBox()
 			self.vmax_fft_error.setWindowTitle("Error")
 			self.vmax_fft_error.setText("Type in a number or numerical expression")
-			self.vmax_fft_error.setInformativeText("Your input for vmax_fft is: " +  str(self.vmax_fft_input.text()))
+			self.vmax_fft_error.setInformativeText("Your input for FFT<sub>max</sub> is: " +  str(self.vmax_fft_input.text()))
 			self.vmax_fft_error.setIcon(QMessageBox.Warning)
 			self.vmax_fft_error.setStandardButtons(QMessageBox.Retry)
 			x = self.vmax_fft_error.exec()
@@ -2550,6 +2550,8 @@ class SimulatorWidget(QWidget):
 				self.sigma_error.setStandardButtons(QMessageBox.Retry)
 				x = self.sigma_error.exec()
 
+				# if typo in sigma input, just set self.sigma = 0 (default value) to avoid crashes when changing to bilayer/trilayer
+				self.sigma = 0
 				
 		else:
 			self.filter_bool = False
