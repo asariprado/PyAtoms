@@ -148,8 +148,8 @@ if hasattr(Qt, 'AA_UseHighDpiPixmaps'):
     
 # To run, go to the file path location in terminal and type  'python AtomSimulator_GUI.py'
 # driver code
-if __name__ == '__main__':
-       
+if __name__ == '__main__':  # this won't be run when imported... https://stackoverflow.com/questions/6523791/why-is-python-running-my-module-when-i-import-it-and-how-do-i-stop-it
+                            # # code here will only run when you invoke 'python main.py'
     # creating apyqt5 application
     app = QApplication(sys.argv)
 

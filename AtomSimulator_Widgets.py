@@ -150,6 +150,7 @@ class SimulatorWidget(QWidget):
 		self.mins_map = int(self.time_map_tot - (self.days_map*86400) - (3600*self.hrs_map)) // 60
 		
 
+		self.harry_counter = 0 
 		# self.initMoireBtn()
 		# self.initImageParameters()
 
@@ -279,6 +280,8 @@ class SimulatorWidget(QWidget):
 				self.update_calc()
 				self.update_map_calc()
 				self.plotAtoms() 
+				self.harry_counter += 1
+				self.updateHarryCounter()
 		except:
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
@@ -317,6 +320,8 @@ class SimulatorWidget(QWidget):
 				self.update_calc()
 				self.update_map_calc()
 				self.plotAtoms() 
+				self.harry_counter += 1
+				self.updateHarryCounter()
 		except:
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
@@ -335,6 +340,8 @@ class SimulatorWidget(QWidget):
 			self.thetaLabel.adjustSize()
 			self.theta_im_input.setPlaceholderText(str(self.theta_im))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.theta_im_error = QMessageBox()
 			self.theta_im_error.setWindowTitle("Error")
@@ -444,10 +451,11 @@ class SimulatorWidget(QWidget):
 				self.moireBtn = "Single"
 			elif radio_btn.text() == "Trilayer":
 				self.moireBtn = "Trilayer"
-
 			# Update the plot every time user changes the button choice
 		try:
 			self.plotAtoms() 
+			self.harry_counter += 0.5 # because for radio buttons, it runs the code twice for some reason. so add a TOTAL of 1 each time the user changes the radio btn 
+			self.updateHarryCounter()
 		except:
 			self.moire_btn_error = QMessageBox()
 			self.moire_btn_error.setWindowTitle("Error")
@@ -544,6 +552,8 @@ class SimulatorWidget(QWidget):
 
 				self.update_calc()
 				self.update_map_calc()
+				self.harry_counter += 1
+				self.updateHarryCounter()
 
 			except:
 				# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
@@ -652,6 +662,9 @@ class SimulatorWidget(QWidget):
 				self.tps_input.setPlaceholderText(str(self.tps))
 
 				self.update_map_calc()
+				self.harry_counter += 1
+				self.updateHarryCounter()
+
 				# total time estimated in hrs.mins.sec format
 				# print(str(hrs) + 'h ' + str(mins) + 'min ' + str(sec) + 's')
 
@@ -1647,6 +1660,9 @@ class SimulatorWidget(QWidget):
 				self.lattice1 = "Square"
 		 # Will update lattice1 to "Hexagonal" or "Square" depending on which is clicked
 		self.plotAtoms()
+		self.harry_counter += 0.5 # because for radio buttons, it runs the code twice for some reason. so add a TOTAL of 1 each time the user changes the radio btn 
+		self.updateHarryCounter()
+
 
 	def updateLattice2(self):
 		radio_btn = self.sender()
@@ -1657,6 +1673,8 @@ class SimulatorWidget(QWidget):
 				self.lattice2 = "Square"
 		 # Will update lattice2 to "Hexagonal" or "Square" depending on which is clicked
 		self.plotAtoms()
+		self.harry_counter += 0.5 # because for radio buttons, it runs the code twice for some reason. so add a TOTAL of 1 each time the user changes the radio btn 
+		self.updateHarryCounter()
 
 	def updateLattice3(self):
 		radio_btn = self.sender()
@@ -1667,6 +1685,8 @@ class SimulatorWidget(QWidget):
 				self.lattice3 = "Square"
 		 # Will update lattice3 to "Hexagonal" or "Square" depending on which is clicked
 		self.plotAtoms()
+		self.harry_counter += 0.5 # because for radio buttons, it runs the code twice for some reason. so add a TOTAL of 1 each time the user changes the radio btn 
+		self.updateHarryCounter()
 
 	def update_a(self):
 		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
@@ -1675,6 +1695,8 @@ class SimulatorWidget(QWidget):
 			self.a_nm_Label.setText('nm') 
 			self.a_input.setPlaceholderText(str(self.a))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
@@ -1693,6 +1715,8 @@ class SimulatorWidget(QWidget):
 			self.b_nm_Label.setText('nm')
 			self.b_input.setPlaceholderText(str(self.b))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.b_error = QMessageBox()
 			self.b_error.setWindowTitle("Error")
@@ -1708,6 +1732,8 @@ class SimulatorWidget(QWidget):
 			self.c_nm_Label.setText('nm')
 			self.c_input.setPlaceholderText(str(self.c))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.c_error = QMessageBox()
 			self.c_error.setWindowTitle("Error")
@@ -1723,6 +1749,8 @@ class SimulatorWidget(QWidget):
 			self.thetatwLabel.adjustSize()
 			self.thetatw_input.setPlaceholderText(str(self.theta_tw))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.theta_tw_error = QMessageBox()
 			self.theta_tw_error.setWindowTitle("Error")
@@ -1738,6 +1766,8 @@ class SimulatorWidget(QWidget):
 			self.thetatwLabel.adjustSize()
 			self.thetatw2_input.setPlaceholderText(str(self.theta_tw2))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.theta_tw2_error = QMessageBox()
 			self.theta_tw2_error.setWindowTitle("Error")
@@ -1753,6 +1783,8 @@ class SimulatorWidget(QWidget):
 			self.e11 /= 100 # Divide by 100 to scale the strain down to percent
 			self.e11_input.setPlaceholderText(str(self.e11))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.e11_error = QMessageBox()
 			self.e11_error.setWindowTitle("Error")
@@ -1768,6 +1800,8 @@ class SimulatorWidget(QWidget):
 			self.e12 /=100 # Divide by 100 to scale the strain down to percent
 			self.e12_input.setPlaceholderText(str(self.e12))
 			self.plotAtoms()
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.e12_error = QMessageBox()
 			self.e12_error.setWindowTitle("Error")
@@ -1783,6 +1817,8 @@ class SimulatorWidget(QWidget):
 			self.e22_input.setPlaceholderText(str(self.e22))
 			self.e22 /= 100 # Divide by 100 to scale the strain down to percent
 			self.plotAtoms()
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.e22_error = QMessageBox()
 			self.e22_error.setWindowTitle("Error")
@@ -1798,6 +1834,8 @@ class SimulatorWidget(QWidget):
 			self.d11_input.setPlaceholderText(str(self.d11))
 			self.d11 /= 100 # Divide by 100 to scale the strain down to percent
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.d11_error = QMessageBox()
 			self.d11_error.setWindowTitle("Error")
@@ -1813,6 +1851,8 @@ class SimulatorWidget(QWidget):
 			self.d12_input.setPlaceholderText(str(self.d12))
 			self.d12 /= 100 # Divide by 100 to scale the strain down to percent
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.d12_error = QMessageBox()
 			self.d12_error.setWindowTitle("Error")
@@ -1828,6 +1868,8 @@ class SimulatorWidget(QWidget):
 			self.d22_input.setPlaceholderText(str(self.d22))
 			self.d22 /= 100 # Divide by 100 to scale the strain down to percent
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.d22_error = QMessageBox()
 			self.d22_error.setWindowTitle("Error")
@@ -1843,6 +1885,8 @@ class SimulatorWidget(QWidget):
 			self.f11_input.setPlaceholderText(str(self.f11))
 			self.f11 /= 100 # Divide by 100 to scale the strain down to percent
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.f11_error = QMessageBox()
 			self.f11_error.setWindowTitle("Error")
@@ -1858,6 +1902,8 @@ class SimulatorWidget(QWidget):
 			self.f12_input.setPlaceholderText(str(self.f12))
 			self.f12 /= 100 # Divide by 100 to scale the strain down to percent
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.f12_error = QMessageBox()
 			self.f12_error.setWindowTitle("Error")
@@ -1873,6 +1919,8 @@ class SimulatorWidget(QWidget):
 			self.f22_input.setPlaceholderText(str(self.f22))
 			self.f22 /= 100 # Divide by 100 to scale the strain down to percent
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			self.f22_error = QMessageBox()
 			self.f22_error.setWindowTitle("Error")
@@ -1892,6 +1940,8 @@ class SimulatorWidget(QWidget):
 			elif radio_btn.text() == "B-site":
 				self.origin1 = "B-site"
 		self.plotAtoms() 
+		self.harry_counter += 0.5 # because for radio buttons, it runs the code twice for some reason. so add a TOTAL of 1 each time the user changes the radio btn 
+		self.updateHarryCounter()
 
 	def updateOrigin2(self):
 		radio_btn = self.sender()
@@ -1904,6 +1954,8 @@ class SimulatorWidget(QWidget):
 				self.origin2 = "B-site"
 
 		self.plotAtoms() 
+		self.harry_counter += 0.5 # because for radio buttons, it runs the code twice for some reason. so add a TOTAL of 1 each time the user changes the radio btn 
+		self.updateHarryCounter()
 
 	def updateOrigin3(self):
 		radio_btn = self.sender()
@@ -1914,7 +1966,9 @@ class SimulatorWidget(QWidget):
 				self.origin3 = 'A-site'
 			elif radio_btn.text() == "B-site":
 				self.origin3 = "B-site"
-		self.plotAtoms() 
+		self.plotAtoms()
+		self.harry_counter += 0.5 # because for radio buttons, it runs the code twice for some reason. so add a TOTAL of 1 each time the user changes the radio btn 
+		self.updateHarryCounter()
 
 	def update_alpha1(self):
 		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
@@ -1922,6 +1976,8 @@ class SimulatorWidget(QWidget):
 			self.alpha1 = eval(self.alpha1_input.text()) 
 			self.alpha1_input.setPlaceholderText(str(self.alpha1))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
@@ -1940,6 +1996,8 @@ class SimulatorWidget(QWidget):
 			self.beta1 = eval(self.beta1_input.text()) 
 			self.beta1_input.setPlaceholderText(str(self.beta1))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
@@ -1958,6 +2016,8 @@ class SimulatorWidget(QWidget):
 			self.alpha2 = eval(self.alpha2_input.text()) 
 			self.alpha2_input.setPlaceholderText(str(self.alpha2))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
@@ -1976,6 +2036,8 @@ class SimulatorWidget(QWidget):
 			self.beta2 = eval(self.beta2_input.text()) 
 			self.beta2_input.setPlaceholderText(str(self.beta2))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
@@ -1994,6 +2056,8 @@ class SimulatorWidget(QWidget):
 			self.alpha3 = eval(self.alpha3_input.text()) 
 			self.alpha3_input.setPlaceholderText(str(self.alpha3))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
@@ -2012,6 +2076,8 @@ class SimulatorWidget(QWidget):
 			self.beta3 = eval(self.beta3_input.text()) 
 			self.beta3_input.setPlaceholderText(str(self.beta3))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
@@ -2030,6 +2096,8 @@ class SimulatorWidget(QWidget):
 			self.eta = eval(self.eta_input.text()) 
 			self.eta_input.setPlaceholderText(str(self.eta))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
@@ -2194,6 +2262,8 @@ class SimulatorWidget(QWidget):
 		self.colormap_RS = self.dropdownColormap_RS.currentText()
 		self.colormap_FFT = self.dropdownColormap_FFT.currentText()
 		self.plotAtoms()
+		self.harry_counter += 1
+		self.updateHarryCounter()
 
 	def update_vmax_fft(self):
 
@@ -2202,6 +2272,8 @@ class SimulatorWidget(QWidget):
 			self.vmax_fft = eval(self.vmax_fft_input.text()) 
 			self.vmax_fft_input.setPlaceholderText(str(self.vmax_fft))
 			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
 		except:
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
@@ -2546,6 +2618,8 @@ class SimulatorWidget(QWidget):
 					self.sigma_real = self.sigma*self.L/(self.pix-1)
 					self.sigma_real_label.setText("     %.2f nm"  %(self.sigma_real))
 					self.plotAtoms()
+					self.harry_counter += 1
+					self.updateHarryCounter()
 			except:
 				# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 				# https://www.w3schools.com/python/python_try_except.asp
@@ -2595,6 +2669,28 @@ class SimulatorWidget(QWidget):
 		webbrowser.open(self.url)
 
 	
+	def updateHarryCounter(self): # Open harry spotify link after every 250 changes a user makes :) 
+		# print(self.harry_counter)
+		if self.harry_counter % 250 == 0:
+
+
+			self.harry_window = QMessageBox()
+			# self.harry_window.setWindowTitle("Congratulations")
+			self.harry_window.setText("Thank you for using SPM simulator! Enjoy some Harry Styles :)")
+			self.harry_window.setInformativeText("Music recommendation courtesy of asariprado@physics.ucla.edu")
+			self.harry_window.setIcon(QMessageBox.Information)
+			self.harry_window.setStandardButtons(QMessageBox.Open | QMessageBox.Cancel)
+			x = self.harry_window.exec()
+			# print(x)
+			
+
+			if x == 8192: # 8192 is the code corresponding to the 'Open' button being clicked
+				self.url = 'https://open.spotify.com/album/5r36AJ6VOJtp00oxSkBZ5h?si=RVB4b2eNR6iBZH4vQln6rQ'
+				webbrowser.open(self.url)
+
+
+
+
 	def ignore_this(self):
 		pass
 		# def initInstructionsBtn(self):
