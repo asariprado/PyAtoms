@@ -93,8 +93,11 @@ Note that all fields accept typical mathematical operations in python and NumPy 
        - `Twist angle`: twists the second lattice with respect to the first lattice (in Lattice 2 params) // twists the third lattice with respect to the second lattice (in Lattice 3 params)
 
     - Sublattices tab -- only affects hexagonal (triangular/honeycomb) lattices
-       - Lattice site at the image origin: choose whether the origin should be a hollow site, an A-site atom or a B-site atom
+       - Lattice site at the image `origin`: choose whether the `origin` should be a hollow site, an A-site atom or a B-site atom
           - To test this, set `L = 1` and click the different options for the origin
+          <img width="600" alt="Screen Shot 2022-10-03 at 4 26 18 PM" src="https://user-images.githubusercontent.com/62832051/193703355-855b46de-f020-428f-af81-0ae4fee0bf57.png">
+
+          
       - Weight of sublattices:
           - `alpha1`, $\alpha_1$ : weight of A sublattice
           - `beta1`, $\beta_1$: weight of B sublattice 
