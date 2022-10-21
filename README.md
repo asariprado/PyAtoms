@@ -1,6 +1,9 @@
-# AtomSimulator
+# PyAtoms
 
-Simulates SPM images  
+
+Simulates scanning probe microscopy (SPM) images
+
+(Formerly named: SPM Simulator, Atom Simulator)
 
 <img width="900" alt="image" src="https://user-images.githubusercontent.com/62832051/186005147-f2597f19-aa75-4967-9a7f-ddda06bf7613.png">
 
