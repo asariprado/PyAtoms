@@ -1,6 +1,9 @@
-# AtomSimulator
+# PyAtoms
 
-Simulates SPM images  
+
+Simulates scanning probe microscopy (SPM) images
+
+(Formerly named: SPM Simulator, Atom Simulator)
 
 <img width="900" alt="image" src="https://user-images.githubusercontent.com/62832051/186005147-f2597f19-aa75-4967-9a7f-ddda06bf7613.png">
 
@@ -49,6 +52,7 @@ Note that all fields accept typical mathematical operations in python and NumPy 
    - `eta`, $\eta$ : A phenomenological parameter we use to weigh the relative strength of the sum of lattices, $Z_1 + Z_2$, versus the product of lattices, $Z_1 * Z_2$. $\eta$ is a real number between 0 and 1: The moiré image for $\eta=1$ is purely the product and $\eta=0$ purely the sum.
    - If $Z_1$ and $Z_2$ are two periodic lattices, the superimposed moiré/superlattice image is approximated as $Z_{moire} = (1-\eta)(Z_1 + Z_2) + \eta Z_1Z_2$ This toy model provides a good match to both experimental STM images and their Fourier transforms.
    - Similarly, for three periodic lattices, the moiré/superlattice image is approximated as $Z_{moire} = (1-\eta)(Z_1 + Z_2 + Z_3) + \eta Z_1Z_2Z_3$.
+   - For an alternative method for simulating SPM images that may be implemented in future releases, see F. Joucken, et al. <a href="https://doi.org/10.1016/j.carbon.2014.11.030" target="_blank" rel="noopener noreferrer"> *Carbon* **83**, 48 (2015). </a>
 
 2. Image parameters
     - `pixels`: number of pixels.
@@ -92,8 +96,11 @@ Note that all fields accept typical mathematical operations in python and NumPy 
        - `Twist angle`: twists the second lattice with respect to the first lattice (in Lattice 2 params) // twists the third lattice with respect to the second lattice (in Lattice 3 params)
 
     - Sublattices tab -- only affects hexagonal (triangular/honeycomb) lattices
-       - Lattice site at the image origin: choose whether the origin should be a hollow site, an A-site atom or a B-site atom
+       - Lattice site at the image `origin`: choose whether the `origin` should be a hollow site, an A-site atom or a B-site atom
           - To test this, set `L = 1` and click the different options for the origin
+          <img width="400" alt="Screen Shot 2022-10-03 at 4 26 18 PM" src="https://user-images.githubusercontent.com/62832051/193703355-855b46de-f020-428f-af81-0ae4fee0bf57.png">
+
+          
       - Weight of sublattices:
           - `alpha1`, $\alpha_1$ : weight of A sublattice
           - `beta1`, $\beta_1$: weight of B sublattice 
