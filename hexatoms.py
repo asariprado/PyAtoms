@@ -78,7 +78,7 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin):
     T = exp(1j*(k1x*X + k1y*Y)) + exp(1j*(k2x*X + k2y*Y)) + exp(1j*(k3x*X + k3y*Y))
 
     ## Amplitude (alpha, beta) and phase-offsets on the A and B sublattices, respectively.
-    phase = alpha + beta*exp(-1j*2*pi/3)
+    phase = alpha + beta*exp(1j*2*pi/3)
 
 
     ## To shift origin to hollowsite or B-sublattice
@@ -86,10 +86,10 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin):
         phase = phase # Keep as is
         
     elif origin == "Hollow":
-        phase *= exp(-1j*2*pi/3) # Muliply by phase shift to bring hollow site down to origin
+        phase *= exp(1j*2*pi/3) # Muliply by phase shift to bring hollow site down to origin
 
     elif origin == "B-site":
-        phase *= exp(-1j*2*pi/3)**2 # Multiply by phase shift again to bring B-site to origin
+        phase *= exp(1j*2*pi/3)**2 # Multiply by phase shift again to bring B-site to origin
 
 
     ## Multiply the lattice by the phase , add the conjugate to get rid of imaginary.

@@ -52,7 +52,7 @@ class Window(QDialog):
         # Use 'self.' when defining basically any thing in the class - these are class member variables (?) they can be accessed in all functions throughout the class
 
         # Call functions to initialize everything else
-        self.setWindowTitle('SPM Simulator - beta release') # Sets the title on the external window that pops up when you run the code
+        self.setWindowTitle('PyAtoms v. 1.0') # Sets the title on the external window that pops up when you run the code
         self.initGeo() # Sets size of the popup gui window
         self.initWidgetsGrid() # For placing multiple widgets in the popup gui in a grid layout
         self.show()
