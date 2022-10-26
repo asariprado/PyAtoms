@@ -1,7 +1,6 @@
 import numpy as np
 
 from numpy import fft as npf
-import math as m
 from numpy import cos as cos
 from numpy import sin as sin
 
@@ -48,8 +47,8 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin):
     ## Reciprocal lattice vectors for hexagonal crystal WITH STRAIN defined in local coordinates
     # to see how the strain tensor is defined and how this affects the recip lattice vectors, 
     # look at paper: https://journals.aps.org/prb/abstract/10.1103/PhysRevB.80.045401 
-    k1 = (2*np.pi/a)* np.array([1 - e11 - (e12/m.sqrt(3)), (1/m.sqrt(3)) - e12 - (e22/m.sqrt(3))])
-    k2 = (2*np.pi/a)* np.array([-1 + e11 - (e12/m.sqrt(3)), (1/m.sqrt(3)) + e12 - (e22/m.sqrt(3))])
+    k1 = (2*np.pi/a)* np.array([1 - e11 - (e12/sqrt(3)), (1/sqrt(3)) - e12 - (e22/sqrt(3))])
+    k2 = (2*np.pi/a)* np.array([-1 + e11 - (e12/sqrt(3)), (1/sqrt(3)) + e12 - (e22/sqrt(3))])
     k3 = -(k1 + k2) # Get the 3rd wavevector by taking a linear combo of k1,k2 
     
  

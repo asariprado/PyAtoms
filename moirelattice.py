@@ -17,7 +17,6 @@ Created on Mon Nov 15 14:45:06 2021
 import numpy as np
 
 from numpy import fft as npf
-import math as m
 from numpy import cos as cos
 from numpy import sin as sin
 from numpy import tan as tan
