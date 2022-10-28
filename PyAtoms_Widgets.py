@@ -2672,10 +2672,9 @@ class SimulatorWidget(QWidget):
 		# print(self.harry_counter)
 		if self.harry_counter % 250 == 0:
 
-
 			self.harry_window = QMessageBox()
 			# self.harry_window.setWindowTitle("Congratulations")
-			self.harry_window.setText("Thank you for using SPM simulator! Enjoy some Harry Styles :)")
+			self.harry_window.setText("Thank you for using PyAtoms! Enjoy some Harry Styles :)")
 			self.harry_window.setInformativeText("Music recommendation courtesy of asariprado@physics.ucla.edu")
 			self.harry_window.setIcon(QMessageBox.Information)
 			self.harry_window.setStandardButtons(QMessageBox.Open | QMessageBox.Cancel)
