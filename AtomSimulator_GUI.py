@@ -173,7 +173,7 @@ if __name__ == '__main__':  # this won't be run when imported... https://stackov
     progressBar.setGeometry(0, splash_pix.height() - 50, splash_pix.width(), 20)
 
     splash.show()
-    splash.showMessage("<h1><font color='cyan'>Loading...</font></h1>",Qt.AlignCenter, Qt.black)
+    splash.showMessage("<h1><font color='white'>Loading...</font></h1>",Qt.AlignBottom, Qt.black)
     
 
     for i in range(1, 12):
