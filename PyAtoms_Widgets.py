@@ -1,6 +1,6 @@
  # -*- coding: utf-8 -*-
 """
-ATOM SIMULATOR WIDGETS
+PyAtoms SIMULATOR WIDGETS
 Created on Mon Nov 15 14:45:06 2021
 @author: Asari
 """

@@ -1,6 +1,6 @@
  # -*- coding: utf-8 -*-
 """
-ATOM SIMULATOR
+PYATOMS ATOM SIMULATOR
 Created on Mon Nov 15 14:45:06 2021
 @author: Asari
 """
@@ -30,7 +30,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 
 # IMPORT OTHER FILES:
-from AtomSimulator_Widgets import SimulatorWidget
+from PyAtoms_Widgets import SimulatorWidget
 from hexatoms import hexatoms
 from squareatoms import squareatoms
 from moirelattice import moirelattice
@@ -146,7 +146,7 @@ if hasattr(Qt, 'AA_EnableHighDpiScaling'):
 if hasattr(Qt, 'AA_UseHighDpiPixmaps'):
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
     
-# To run, go to the file path location in terminal and type  'python AtomSimulator_GUI.py'
+# To run, go to the file path location in terminal and type  'python PyAtoms_GUI.py'
 # driver code
 if __name__ == '__main__':  # this won't be run when imported... https://stackoverflow.com/questions/6523791/why-is-python-running-my-module-when-i-import-it-and-how-do-i-stop-it
                             # # code here will only run when you invoke 'python main.py'

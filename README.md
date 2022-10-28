@@ -120,12 +120,23 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 ## Examples
 1. Twisted bilayer graphene with $1.1^\circ$ twist angle.
     - `Moire lattice`: bilayer
+    -  `eta` $\eta$ : 0.5
     - `L = 35`
     - `Pixels = 1024`
     - Lattice 1:
-      - `Hexagonal`, `a = 0.3`, `A-site`, `alpha1 = 1`, `beta1 = 1`
+      - Parameters:
+           - `Hexagonal`, `a = 0.3`
+       - Sublattices:
+           - `A-site`, `alpha1 = 1`, `beta1 = 1`
+       - Strain: 
+            - `e11` = `e12` = `e22` = `0`
     - Lattice 2:
-       - `Hexagonal`, `b = 0.3`, `Twist angle = 1.1`, `A-site`, `alpha2 = 1`, `beta2 = 1` 
+      - Parameters: 
+           - `Hexagonal`, `b = 0.3`, `Twist angle = 1.1`
+       - Sublattices:  
+           - `A-site`, `alpha2 = 1`, `beta2 = 1` 
+      - Strain: 
+           - `d11` = `d12` = `d22` = `0`
       
     <img width="260" alt="Screen Shot 2022-08-05 at 1 41 35 PM" src="https://user-images.githubusercontent.com/62832051/183159495-dc4b4c38-5e67-4cbc-bbe9-55ff9b696ec6.png">
 
@@ -135,12 +146,24 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 
 2. 1T-TaS2 with $(\sqrt{13}\times\sqrt{13})R13.9^\circ$ charge density wave superlattice.
     - `Moire lattice`: bilayer
+    - `eta` $\eta$ : 0.5
     - `L = 7`
     - `Pixels = 256`
+    - `Theta = 0 `
     - Lattice 1:
-      - `Hexagonal`, `a = 0.3`, `A-site`, `alpha1 = 1`, `beta1 = 0`
+      - Parameters: 
+          - `Hexagonal`, `a = 0.3` 
+      - Sublattices:  
+          - `A-site`, `alpha1 = 1`, `beta1 = 0`
+      - Strain: 
+           - `e11` = `e12` = `e22` = `0`
     - Lattice 2:
-       - `Hexagonal`, `b = 0.3*np.sqrt(13)`, `Twist angle = 13.9`, `A-site`, `alpha2 = 1`, `beta2 = 0` 
+       - Parameters: 
+            - `Hexagonal`, `b = 0.3*np.sqrt(13)`, `Twist angle = 13.9`
+        - Sublattices:
+            -  `A-site`, `alpha2 = 1`, `beta2 = 0` 
+        -  Strain: 
+           - `d11` = `d12` = `d22` = `0`
        
     ![1T-TaS2](https://user-images.githubusercontent.com/62832051/182723975-b59e6b83-545a-47fe-8a68-59146fc1879b.png)
     ![1T-TaS2_FFT](https://user-images.githubusercontent.com/62832051/182723980-90b7689d-55c0-466d-8fd7-f993574f8955.png)
@@ -148,12 +171,24 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 
 3. 2H-NbSe2 with $(3\times 3)R0^\circ$ charge density wave superlattice.
     - `Moire lattice`: bilayer
+    - `eta` $\eta$ : 0.5
     - `L = 7`
     - `Pixels = 256`
+    - `Theta = 0`
     - Lattice 1:
-      - `Hexagonal`, `a = 0.3`, `A-site`, `alpha1 = 1`, `beta1 = 0`
+      - Parameters:
+         - `Hexagonal`, `a = 0.3`
+      - Sublattices:
+         - `A-site`, `alpha1 = 1`, `beta1 = 0`
+       - Strain: 
+         - `e11` = `e12` = `e22` = `0`
     - Lattice 2:
-       - `Hexagonal`, `b = 0.3*3`, `Twist angle = 0`, `A-site`, `alpha2 = 1`, `beta2 = 0` 
+       - Parameters:
+           - `Hexagonal`, `b = 0.3*3`, `Twist angle = 0`
+       -  Sublattices: 
+           - `A-site`, `alpha2 = 1`, `beta2 = 0` 
+       - Strain: 
+           - `d11` = `d12` = `d22` = `0`
       
    ![2H-NbSe2](https://user-images.githubusercontent.com/62832051/182723639-dc7b7277-1328-4ecd-8913-8428cc38331f.png)
    ![2H-NbSe2_FFT](https://user-images.githubusercontent.com/62832051/182723651-0ced0fed-5f33-4a78-bbc4-d9bf321e9811.png)
@@ -161,12 +196,24 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 
 4. Kekule-O (trivial) distorted graphene with $(\sqrt{3}\times\sqrt{3})R30^\circ$ superlattice.
     - `Moire lattice`: bilayer
+    - `eta` $\eta$ : 0.5
     - `L = 7`
     - `Pixels = 256`
+    - `Theta = 0`
     - Lattice 1:
-      - `Hexagonal`, `a = 0.3`,  `Hollow`, `alpha1 = 1`, `beta1 = 1`
+      - Parameters:
+        - `Hexagonal`, `a = 0.3`
+      - Sublattices: 
+        - `Hollow`, `alpha1 = 1`, `beta1 = 1`
+      - Strain: 
+           - `e11` = `e12` = `e22` = `0`
     - Lattice 2:
-       - `Hexagonal`, `b = 0.3*sqrt(3)`, `Twist angle = 30`, `Hollow`, `alpha2 = 1`, `beta2 = 0` 
+       - Parameters:
+           - `Hexagonal`, `b = 0.3*sqrt(3)`, `Twist angle = 30`
+       - Sublattices:
+           - `Hollow`, `alpha2 = 1`, `beta2 = 0` 
+       - Strain: 
+           - `d11` = `d12` = `d22` = `0`
        
     ![Kekule-O trivial](https://user-images.githubusercontent.com/62832051/182722880-113f3ada-2199-4fe0-926f-73e645fda904.png)
     ![Kekule-O trivial_FFT](https://user-images.githubusercontent.com/62832051/182722894-8a1e5cc1-afaa-41c3-8d5a-ee098aed254d.png)
@@ -174,12 +221,24 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 
  5. Kekule-O (topological) distorted graphene with $(\sqrt{3}\times\sqrt{3})R30^\circ$ superlattice.
     - `Moire lattice`: bilayer
+    - `eta` $\eta$ : 0.5
     - `L = 7`
     - `Pixels = 256`
+    - `Theta = 0`
     - Lattice 1:
-      - `Hexagonal`, `a = 0.3`,  `Hollow`, `alpha1 = 1`, `beta1 = 1`
+      - Parameters: 
+        - `Hexagonal`, `a = 0.3`
+      - Sublattices: 
+        - `Hollow`, `alpha1 = 1`, `beta1 = 1`
+      - Strain: 
+         - `e11` = `e12` = `e22` = `0`
     - Lattice 2:
-       - `Hexagonal`, `b = 0.3*sqrt(3)`, `Twist angle = 30`, `Hollow`, `alpha2 = 1`, `beta2 = 1`
+       - Parameters:
+            - `Hexagonal`, `b = 0.3*sqrt(3)`, `Twist angle = 30`
+        - Sublattices:
+            -  `Hollow`, `alpha2 = 1`, `beta2 = 1`
+       - Strain: 
+           - `d11` = `d12` = `d22` = `0`
        
     ![Topological](https://user-images.githubusercontent.com/62832051/182723054-ede96db1-1f19-4eb9-ab59-3f8a60c52b32.png)
     ![Topological_FFT](https://user-images.githubusercontent.com/62832051/182723064-db5399fb-3dcb-4a23-890f-95ff5b65e9d8.png)
