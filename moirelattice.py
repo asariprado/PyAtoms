@@ -5,15 +5,6 @@ Created on Mon Nov 15 14:45:06 2021
 @author: Asari
 """
 
-# Use notebook for zoom/pan
-# %matplotlib notebook
-#Use inline for interactive feats
-# %matplotlib inline
-# from matplotlib.gridspec import GridSpec
-# from ipywidgets import interactive
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-# import pylab as pl
 import numpy as np
 
 from numpy import fft as npf
@@ -71,29 +62,11 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
         Z = (eta * Z1 * Z2) + (1-eta)*(Z1 + Z2)
 
         if filter_bool == True: 
-            # Filter the stacked lattices: multiply the two and then add each one individually. divide by 3 to normalize bc each one has max of 1, so 1*1 + 1 + 1 = 3 
-            # Z = gaussian_filter((Z1 * Z2 + Z1 + Z2)/3, sigma,mode='mirror')
-            # Z = gaussian_filter((eta*(Z1 * Z2) + (1-eta)(Z1 + Z2))/3, sigma,mode='mirror')
+
             Z = gaussian_filter(Z, sigma,mode='mirror')
        
         fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))
-            # Normalize the FFT:
-            # fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
 
-
-        # else:
-        #     # Just stack the 2 lattices to create moire superlattice
-        #     # Z = (Z1 * Z2 + Z1 + Z2)/3
-        #     # Z = (eta*(Z1 * Z2) + (1-eta)*(Z1 + Z2))/3
-        #     # Take the fft     
-        #     fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))    
-        #     # Normalize the FFT to be betweeen 0-1. this is so the plots dont move around much 
-        #     # fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
-        #     if (alpha1 == beta1) or (alpha2 == beta2):
-        #         # Do not normalize FFT bc it gives a divide by 0 error
-
-        #         pass
-        #     else:
         fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
         fftZ = fftZ_norm
 
@@ -113,31 +86,14 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
 
       # Low pass filter the image if the button is checked:
         if filter_bool == True: 
-            # Z = gaussian_filter((eta*(Z1 * Z2 * Z3) + (1-eta)*(Z1 + Z2 + Z3))/4, sigma,mode='mirror') # filter the stacked 3 lattices
+
             Z = gaussian_filter(Z, sigma,mode='mirror') # filter the stacked 3 lattices
-        #     fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z))))) # If filtering, do not normalize FFT
-            
-        # else:
-            # Stack the 3 lattices to create moire superlattice
-            # Z = (eta*(Z1 * Z2 * Z3) + (1-eta)*(Z1 + Z2 + Z3))/4 #Normalize after this line, but need if statement for alpha AND beta ==0
-         
-            # if (alpha1 == beta1) or (alpha2 == beta2) or (alpha3==beta3):
-            #     # Do not normalize FFT bc it gives a divide by 0 error
-            #     fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))   
-            #     pass
-            # else:
+
         fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))
 
 
         fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
         fftZ = fftZ_norm
-
-
-            
-
-            # Take the fft     
-            # fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))   
-            # fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
  
     # Normalize the real space image
     Z = (Z - np.min(np.min(Z)))/(np.max(np.max(Z)) - np.min(np.min(Z))) 

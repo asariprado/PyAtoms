@@ -150,20 +150,6 @@ class SimulatorWidget(QWidget):
 		
 
 		self.harry_counter = 0 
-		# self.initMoireBtn()
-		# self.initImageParameters()
-
-		# self.initCalcWidget()
-		# self.initMapCalcWidget()
-
-		# self.initLattice1Parameters()
-		# self.initLattice2Parameters()
-		# self.initLattice3Parameters()
-
-		# self.initColormapDropdown()
-		# self.initMatplotlibFig()
-	
-		# self.plotAtoms() # Uncommenting this makes an error because of the self.figure.clear() part...
 
 	def initImageParameters(self):
 		groupBox = QGroupBox("Image parameters")
@@ -354,18 +340,6 @@ class SimulatorWidget(QWidget):
 		groupBox = QGroupBox("Moir\u00e9 lattice?")
 		groupBox.setToolTip("Choose whether to create a moir\u00e9 pattern with two sublattices, or plot only a single lattice")
 
-		
-
-
-		# self.moiretabs = QTabWidget(self)
-
-		# self.tab1 = QWidget(self)
-		# self.tab2 = QWidget(self)
-		# self.moiretabs.addTab(self.tab1, "Layers")
-		# self.moiretabs.addTab(self.tab2, "Strength")
-
-
-
 		self.noMoire = QRadioButton("Single")
 		self.noMoire.setToolTip("Create a single lattice using Lattice 1 parameters")
 		self.yesMoire = QRadioButton("Bilayer")
@@ -395,7 +369,6 @@ class SimulatorWidget(QWidget):
 
 		# eta
 		self.eta_label = QLabel("0 \u2264 \u03b7 \u2264 1:") # Greek letters unicode : https://unicode.org/charts/PDF/U0370.pdf
-		# self.eta_label = QLabel("0 ≤ \u03b7 ≤ 1:") # Greek letters unicode : https://unicode.org/charts/PDF/U0370.pdf
 
 		self.eta_label.setToolTip("Relative strength of the sum of lattices vs. multiplication of lattices\n\u03b7*(Z1*Z2) + (1-\u03b7)*(Z1+Z2)\nPick a value between 0 and 1 for \u03b7")
 		self.eta_input = QLineEdit(self)
@@ -403,16 +376,11 @@ class SimulatorWidget(QWidget):
 
 		self.eta_input.setPlaceholderText(str(self.eta))
 		self.eta_input.setFixedWidth(65)
-		# self.k1_input.setToolTip("Strength of Z1*Z2")
 		self.eta_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
 
 		self.eta_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update!
 		self.eta_btn.clicked.connect(self.update_eta)
-		self.eta_btn.setAutoDefault(False)
-
-		
-		# self.eta_label_ext = QLabel("Pick a value between 0 and 1 for \u03b7")
-	
+		self.eta_btn.setAutoDefault(False)	
 
 
 		hbox = QHBoxLayout()
@@ -474,8 +442,6 @@ class SimulatorWidget(QWidget):
 		self.calc_topo_btn.setChecked(False)
 		self.calc_topo_btn.stateChanged.connect(self.update_calc)
 		self.calc_topo_btn.setToolTip("Check to calculate")
-		# self.calc_btn_grp = QButtonGroup()
-		# self.calc_btn_grp.addButton(self.calc_topo_btn, 1)
 
 		hbox = QHBoxLayout(self)
 		hbox.addWidget(self.calc_topo_btn)
@@ -577,8 +543,6 @@ class SimulatorWidget(QWidget):
 		self.calc_map_btn.setChecked(False)
 		self.calc_map_btn.stateChanged.connect(self.update_map_calc)
 		self.calc_map_btn.setToolTip("Check to calculate")
-		# self.calc_btn_grp = QButtonGroup()
-		# self.calc_btn_grp.addButton(self.calc_topo_btn, 1)
 
 		hbox = QHBoxLayout(self)
 		hbox.addWidget(self.calc_map_btn)
@@ -599,15 +563,14 @@ class SimulatorWidget(QWidget):
 		# Define label to display the value of the slider next to the textbox
 		self.tps_label = QLabel("Time per\nspectra: ", self)
 		self.tps_label.setToolTip("Time per spectra")
-		# self.tps_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
+
 		self.tps_label.setMinimumWidth(30)
 		self.tps_s_label = QLabel(" s", self)
-		# self.tps_s_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
+
 		self.tps_s_label.setMinimumWidth(30)
 
 		self.map_eta_label = QLabel("Est. time: " + str(self.days_map) + 'd' + str(self.hrs_map) + 'h' + str(self.mins_map) + 'm')
 
-		# hbox3 = QHBoxLayout(self)
 		hbox.addWidget(self.map_eta_label)
 
 
@@ -637,13 +600,6 @@ class SimulatorWidget(QWidget):
 			self.hrs_map = int(self.remain_map // (60*60)) # Calculate the hours by modding by 60*60, bc 60 secs in a min, 60 min in an hour
 			self.mins_map = int(self.time_map_tot - (self.days_map*60*60*24) - (60*60*self.hrs_map)) // 60 # Calculate the number of minutes after subtracting for the days/hours we already accounted for. mod by 60  bc 60 secs in a minute,
 			## These calculations are correct, verified I got the right seconds --> days/hrs/mins from this website converter https://www.satsig.net/training/seconds-days-hours-minutes-calculator.htm 
-			
-			# self.hrs_map = int(self.time_map_tot // (60*60)) # converting to hours . 3600 sec in an hour
-			# self.remain_map = self.time_map_tot - self.hrs_map*3600
-			# self.mins_map = int(self.remain_map // 60)
-			# self.sec_map = int(self.time_map_tot - (3600*self.hrs_map) - (60*self.mins_map))
-			# self.topo_calc_params.setText("pix: " + str(self.pix) + '\nL: ' + str(self.L) +'\nvt: ' + str(self.vt))
-			# self.map_eta_label.setText("Est. time: " + str(self.hrs_map) + 'h ' + str(self.mins_map) + 'min ' + str(self.sec_map) + 's')
 
 			self.map_eta_label.setText("Est. time: " + str(self.days_map) + 'd' + str(self.hrs_map) + 'h' + str(self.mins_map) + 'm')
 
@@ -652,7 +608,6 @@ class SimulatorWidget(QWidget):
 		
 	def update_tps(self):
 
-		# if self.vt_input.hasFocus(): # commenting out bc it doesnt work like i wanted it to :(
 
 		if self.calc_map_btn.isChecked():
 			try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
@@ -664,8 +619,6 @@ class SimulatorWidget(QWidget):
 				self.harry_counter += 1
 				self.updateHarryCounter()
 
-				# total time estimated in hrs.mins.sec format
-				# print(str(hrs) + 'h ' + str(mins) + 'min ' + str(sec) + 's')
 
 			except:
 				# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
@@ -955,8 +908,7 @@ class SimulatorWidget(QWidget):
 		self.tab3a.layout = QVBoxLayout(self)
 		self.tab3a.layout.addWidget(self.origin1label)
 		self.tab3a.layout.addLayout(h6box)
-		# self.tab3a.layout.addWidget(self.sublattices_label1)
-		# self.tab3a.layout.addWidget(self.sublattices_label2)
+
 		self.tab3a.layout.addWidget(self.sublattices_label)
 		self.tab3a.layout.addLayout(h7box)
 		self.tab3a.layout.addLayout(h8box)
@@ -978,8 +930,6 @@ class SimulatorWidget(QWidget):
 		vlayout.addWidget(self.lat1tabs)
 		lat1groupBox.setLayout(vlayout)
 		vlayout.setSpacing(1)
-
-		# lat1groupBox.setContentsMargins(0,15,0,0) # Sets the left , top , right , and bottom margins to use around the layout.
 
 
 		return lat1groupBox
@@ -1033,14 +983,14 @@ class SimulatorWidget(QWidget):
 		### Pick lattice 2 periodicity b ###
 		self.b_param_label = QLabel("\nLattice constant (nm)", self)
 		self.b_label = QLabel("b:", self)
-		# self.b_label.setFixedWidth(20)
+
 		self.b_input = QLineEdit(self)
 		self.b_input.returnPressed.connect(self.update_b) # Connect this intput dialog whenever the enter/return button is pressed
 		self.b_input.setPlaceholderText(str(self.b))
 		self.b_param_label.setToolTip("Periodicity of 2nd lattice (spacing between atoms) in nm")
 		self.b_label.setToolTip("Periodicity of 2nd lattice (spacing between atoms) in nm")
 		self.b_input.setToolTip("Periodicity of 2nd lattice (spacing between atoms) in nm")
-		# self.b_label.setBuddy(self.b_input)
+
 		self.b_input.setMinimumWidth(85)
 
 		self.b_label.setMinimumHeight(15)
@@ -1049,7 +999,7 @@ class SimulatorWidget(QWidget):
 
 		# Define label to display the value of the slider next to the slider
 		self.b_nm_Label = QLabel(" nm", self) # Display the corrected value. only up to 2 decimal pts
-		# self.b_nm_Label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
+
 		self.b_nm_Label.setMinimumWidth(30)
 		self.b_nm_Label.setMinimumHeight(15)
 
@@ -1084,7 +1034,7 @@ class SimulatorWidget(QWidget):
 		# Define label to display the value of the slider next to the slider
 		self.thetatwLabel = QLabel(' deg', self)
 		self.thetatwLabel.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
-		# self.thetatwLabel.setMinimumWidth(30)
+
 		self.thetatwLabel.setFixedWidth(30)
 		self.thetatwLabel.setMinimumHeight(15)
 
@@ -1114,9 +1064,9 @@ class SimulatorWidget(QWidget):
 		self.d11_input.setPlaceholderText(str(self.d11))
 		self.d11_input.setFixedWidth(60) # Shorten the width of the text box
 		self.d11_label = QLabel("d<sub>11</sub>", self)
-		# self.d11_label.setFixedWidth(20)
+
 		self.d11_SliderLabel = QLabel(str("%"), self) 
-		# self.d11_SliderLabel.setFixedWidth(20)
+
 		self.d11_input.returnPressed.connect(self.update_d11)
 		self.d11_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.d11_btn.clicked.connect(self.update_d11)
@@ -1129,9 +1079,9 @@ class SimulatorWidget(QWidget):
 		self.d12_input.setPlaceholderText(str(self.d12))
 		self.d12_input.setFixedWidth(60)
 		self.d12_label = QLabel("d<sub>12</sub>", self)
-		# self.d12_label.setFixedWidth(20)
+
 		self.d12_SliderLabel = QLabel(str("%"), self) 
-		# self.d12_SliderLabel.setFixedWidth(20)
+
 		self.d12_input.returnPressed.connect(self.update_d12)
 		self.d12_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.d12_btn.clicked.connect(self.update_d12)
@@ -1144,9 +1094,9 @@ class SimulatorWidget(QWidget):
 		self.d22_input.setPlaceholderText(str(self.d22))
 		self.d22_input.setFixedWidth(60)
 		self.d22_label = QLabel("d<sub>22</sub>", self)
-		# self.d22_label.setFixedWidth(20)
+
 		self.d22_SliderLabel = QLabel(str("%"), self) 
-		# self.d22_SliderLabel.setFixedWidth(20)
+
 		self.d22_input.returnPressed.connect(self.update_d22)
 		self.d22_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.d22_btn.clicked.connect(self.update_d22)
@@ -1220,9 +1170,6 @@ class SimulatorWidget(QWidget):
 		h6box.addWidget(self.Asite2)
 		h6box.addWidget(self.Bsite2)
 
-
-		# self.sublattices_label1 = QLabel("Pick strength of sublattices Z = A + B")
-		# self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
 		self.sublattices_label = QLabel("\n\nWeight of sublattices")
 		self.sublattices_label.setToolTip("Only works if hexagonal symmetry is selected.\nHoneycomb lattice: \u03b1 = \u03b2 \nTriangular lattice: \u03b1 = 1, \u03b2 = 0")
@@ -1358,7 +1305,7 @@ class SimulatorWidget(QWidget):
 		### Pick lattice 3 periodicity a3 ###
 		self.c_param_label = QLabel("\nLattice constant (nm)", self)
 		self.c_label = QLabel("c:", self)
-		# self.b_label.setFixedWidth(20)
+
 		self.c_input = QLineEdit(self)
 		self.c_input.returnPressed.connect(self.update_c) # Connect this intput dialog whenever the enter/return button is pressed
 		self.c_input.setPlaceholderText(str(self.c))
@@ -1369,7 +1316,7 @@ class SimulatorWidget(QWidget):
 
 		# Define label to display the value of the slider next to the slider
 		self.c_nm_Label = QLabel(" nm", self) # Display the corrected value. only up to 2 decimal pts
-		# self.b_nm_Label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
+
 		self.c_nm_Label.setMinimumWidth(30)
 		self.c_nm_Label.setMinimumHeight(15)
 
@@ -1412,7 +1359,7 @@ class SimulatorWidget(QWidget):
 		# Define label to display the value of the slider next to the slider
 		self.thetatwLabel = QLabel(' deg', self)
 		self.thetatwLabel.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
-		# self.thetatwLabel.setMinimumWidth(30)
+
 		self.thetatwLabel.setFixedWidth(30)
 
 		self.theta_tw2_btn = QPushButton("Twist", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
@@ -1445,9 +1392,9 @@ class SimulatorWidget(QWidget):
 		self.f11_input.setPlaceholderText(str(self.f11))
 		self.f11_input.setFixedWidth(60) # Shorten the width of the text box
 		self.f11_label = QLabel("f<sub>11</sub>", self)
-		# self.d11_label.setFixedWidth(20)
+
 		self.f11_SliderLabel = QLabel(str("%"), self) 
-		# self.d11_SliderLabel.setFixedWidth(20)
+
 		self.f11_input.returnPressed.connect(self.update_f11)
 		self.f11_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.f11_btn.clicked.connect(self.update_f11)
@@ -1460,9 +1407,9 @@ class SimulatorWidget(QWidget):
 		self.f12_input.setPlaceholderText(str(self.f12))
 		self.f12_input.setFixedWidth(60)
 		self.f12_label = QLabel("f<sub>12</sub>", self)
-		# self.d12_label.setFixedWidth(20)
+
 		self.f12_SliderLabel = QLabel(str("%"), self) 
-		# self.d12_SliderLabel.setFixedWidth(20)
+
 		self.f12_input.returnPressed.connect(self.update_f12)
 		self.f12_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.f12_btn.clicked.connect(self.update_f12)
@@ -1475,9 +1422,7 @@ class SimulatorWidget(QWidget):
 		self.f22_input.setPlaceholderText(str(self.f22))
 		self.f22_input.setFixedWidth(60)
 		self.f22_label = QLabel("f<sub>22</sub>", self)
-		# self.d22_label.setFixedWidth(20)
 		self.f22_SliderLabel = QLabel(str("%"), self) 
-		# self.d22_SliderLabel.setFixedWidth(20)
 		self.f22_input.returnPressed.connect(self.update_f22)
 		self.f22_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update! connect to the same update function!
 		self.f22_btn.clicked.connect(self.update_f22)
@@ -1550,9 +1495,6 @@ class SimulatorWidget(QWidget):
 		h6box.addWidget(self.Asite3)
 		h6box.addWidget(self.Bsite3)
 
-
-		# self.sublattices_label1 = QLabel("Pick strength of sublattices Z = A + B")
-		# self.sublattices_label2 = QLabel("Honeycomb lattice: alpha = beta \nTriangular lattice: alpha = 1, beta = 0")
 
 		self.sublattices_label = QLabel("\n\nWeight of sublattices")
 		self.sublattices_label.setToolTip("Only works if hexagonal symmetry is selected.\nHoneycomb lattice: \u03b1 = \u03b2 \nTriangular lattice: \u03b1 = 1, \u03b2 = 0")
@@ -2306,13 +2248,6 @@ class SimulatorWidget(QWidget):
 			# Normalize the FFTs to be between 0-1 (bc hexatoms only normalizes Z, moirelattice is what normalizes fftZ, but if you chose single lattice, moirelattice code isnt run. so need to normalize the FFT here)
 			self.fftZ = (self.fftZ - np.min(np.min((self.fftZ))))/(np.max(np.max(self.fftZ)) - np.min(np.min(self.fftZ)))
 	 
-			# # Normalize the single layer real space image (multi-layer Z is normalized in moirelattice.py)
-			# self.Z = (self.Z - np.min(np.min(self.Z)))/(np.max(np.max(self.Z)) - np.min(np.min(self.Z))) 
-
-		# # Normalize the real space image
-		# self.Z = (self.Z - np.min(np.min(self.Z)))/(np.max(np.max(self.Z)) - np.min(np.min(self.Z))) 
-
-
 
 
 		# Create an axis for plotting - the matplotlib gridspec figure was defined in self.__init__ in the GUI app
@@ -2642,22 +2577,15 @@ class SimulatorWidget(QWidget):
 	def initSpotifyButton(self):
 		groupBox = QGroupBox(":)")
 		# groupBox.setToolTip("Saves the real space image array as a .txt file,\na new .txt file with the input parameters\nand a .png of the displayed matplotlib figure")
-		
-		# # Add Qline Edit to enter file name
-		# self.harryLabel = QLabel("HH")
-		# self.harryLabel.setPixmap(QPixmap('HH.png'))
-		# self.harryLabel.returnPressed.connect(self.updateSaveButton) # Connect this intput dialog whenever the enter/return button is pressed
-		# self.harryLabel.setPlaceholderText('Save as...')
+
 
 		# self.saveLabel = QLabel("Input file name only (no extension)")
 		# Add QPushButton to open file directory whenever you want to save
 		self.spotify_btn = QPushButton(":)", self)
 		self.spotify_btn.clicked.connect(self.updateSpotifyButton)
-		# self.spotify_btn.clicked.connect(self.openAscii)
 		self.spotify_btn.setAutoDefault(False) # This is so its not default on, you can press enter on other widgets and this window wont pop up
 		self.spotify_btn.setIcon(QIcon("HH.png"))
 		vlayout = QVBoxLayout()
-		# vlayout.addWidget(self.harryLabel)
 		vlayout.addWidget(self.spotify_btn)
 		groupBox.setLayout(vlayout)
 
@@ -2673,7 +2601,6 @@ class SimulatorWidget(QWidget):
 		if self.harry_counter % 250 == 0:
 
 			self.harry_window = QMessageBox()
-			# self.harry_window.setWindowTitle("Congratulations")
 			self.harry_window.setText("Thank you for using PyAtoms! Enjoy some Harry Styles :)")
 			self.harry_window.setInformativeText("Music recommendation courtesy of asariprado@physics.ucla.edu")
 			self.harry_window.setIcon(QMessageBox.Information)
@@ -2685,210 +2612,6 @@ class SimulatorWidget(QWidget):
 			if x == 8192: # 8192 is the code corresponding to the 'Open' button being clicked
 				self.url = 'https://open.spotify.com/album/5r36AJ6VOJtp00oxSkBZ5h?si=RVB4b2eNR6iBZH4vQln6rQ'
 				webbrowser.open(self.url)
-
-
-
-
-	def ignore_this(self):
-		pass
-		# def initInstructionsBtn(self):
-		# 	groupBox = QGroupBox()
-		# 	self.instruct_btn = QPushButton("Click for instructions", self)
-		# 	self.instruct_btn.clicked.connect(self.showInstructionsBtn)
-		# 	self.instruct_btn.setAutoDefault(False) # This is so its not default on, you can press enter on other widgets and this window wont pop up
-		# 	# self.instruct_btn.adjustSize()
-		# 	# self.instruct_btn.setGeometry(100,50,500,650)
-		# 	hlayout = QHBoxLayout()
-		# 	hlayout.addWidget(self.instruct_btn)
-		# 	groupBox.setLayout(hlayout)
-
-		# 	return groupBox
-
-		# def showInstructionsBtn(self, s): # Popup button syntax https://www.techwithtim.net/tutorials/pyqt5-tutorial/messageboxes/
-		# 	self.instruct = QMessageBox()
-		# 	self.instruct.setText("Instructions")
-		# 	self.instruct.setInformativeText("Press enter after typing in an input.")
-		# 	self.instruct.setDetailedText("Moire lattice: Choose yes or no. If 'No' is selected, changing the lattice 2 parameters won't affect anything until you select 'Yes'."\
-		# 									"\nPixels: Creates a [pix x pix] atomic topography."	)
-		# 	self.instruct.setIcon(QMessageBox.Information)
-		# 	self.instruct.setStandardButtons(QMessageBox.Ok)
-		# 	x = self.instruct.exec()
-		# def init_vt(self):
-		# 	groupBox = QGroupBox("Estimated time calculator:")
-		# 	groupBox.setToolTip("Set velocity of scanner tip to estimate how long the measurement should take on the STM")
-		# 	vlayout = QVBoxLayout(self)
-
-		# 	self.calc_btn = QPushButton("Click to estimate time to take image")
-		# 	self.calc_btn.clicked.connect(self.popup_calc)
-		# 	self.calc_btn.setAutoDefault(False) 
-
-		# 	vlayout.addWidget(self.calc_btn)
-
-		# 	groupBox.setLayout(vlayout)
-
-			
-
-		# 	return groupBox # Adds this groupbox to the grid of widgets
-
-
-		# def popup_calc(self):
-		# 	self.calculator_window = CalculatorWindow(SimulatorWidget)
-		# 	# self.calculator_window.setGeometry(500,150,600,600)
-		# 	self.calculator_window.show()
-		# 	# try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
-		# 	# 		# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
-		# 	# 	self.vt = eval(self.vt_input.text()) #float(self.a_input.text())
-		# 	# 	self.vt_units.setText(' nm/s') 
-		# 	# 	self.vt_input.setPlaceholderText(str(self.vt))
-		# 	# 	# self.plotAtoms() 
-		# 	# 	self.time_est = (2 * self.pix * self.L) / self.vt
-
-
-		# 	# 	# self.time_mins = self.time_est / 60
-		# 	# 	# self.time_hrs = self.time_est / 60 /
-
-		# 	# 	self.time_label.setText("Estimated time: %.2f s" % (self.time_est))
-
-		# 	# except :
-		# 	# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
-		# 	# https://www.w3schools.com/python/python_try_except.asp
-		# 	# # Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
-		# 	# self.calc_window = QMessageBox()
-		# 	# # self.calc_window.setWindowTitle("Click")
-		# 	# # if self.pix >= 8192:
-		# 	# # self.pix_error.setText('Number of pixels exceeds 8192. Please enter a smaller number.')
-		# 	# # else:
-		# 	# self.calc_window.setText("Type in the tip scanner velocity.")
-			
-		# 	# self.vt_error.setInformativeText("Your input for vt is: " +  str(self.vt_input.text()))
-		# 	# self.vt_error.setIcon(QMessageBox.Warning)
-		# 	# self.vt_error.setStandardButtons(QMessageBox.Retry)
-
-			# self.vt_label = QLabel("vt")
-			# self.vt_input = QLineEdit(self)
-			# self.vt_input.returnPressed.connect(self.update_vt) # Connect this intput dialog whenever the enter/return button is pressed
-			# self.vt_input.setPlaceholderText(str(self.vt))
-
-			# # Define label to display the value of the slider next to the slider
-			# self.vt_units = QLabel(" nm/s", self) # Display the corrected value. only up to 2 decimal pts
-			# self.vt_units.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
-			# self.vt_units.setMinimumWidth(30)
-
-
-			# hbox = QHBoxLayout(self)
-			# hbox.addWidget(self.vt_label)
-			# hbox.addWidget(self.vt_input)
-			# hbox.addWidget(self.vt_units)
-
-			# self.time_tot = (2 * self.pix * self.L) / self.vt # Total time in seconds
-			# # self.time_label = QLabel("Estimated time: %.2f s" % (self.time_est), self)
-			# self.hrs = self.time_tot // 3600
-			# self.remain = self.time_tot - self.hrs*3600
-			# self.mins = self.remain // 60
-			# self.sec = self.tot - (3600*hrs) - (60*mins)
-
-			# # total time estimated in hrs.mins.sec format
-			# # print(str(hrs) + 'h ' + str(mins) + 'min ' + str(sec) + 's')
-
-			# vlayout = QVBoxLayout(self)
-			# # vlayout.addWidget(self._param_label)
-			# vlayout.addLayout(hbox)
-			# vlayout.addWidget(self.time_label)
-
-			# groupBox = QGroupBox("Calculator")
-			# groupBox.setLayout(vlayout)
-
-
-
-			# x = self.calc_window.exec()
-
-
-			# def update_vt(self):
-
-			# # 	# self.vt_label = QLabel("vt")
-			# # 	# self.vt_input = QLineEdit(self)
-			# # 	# self.vt_input.returnPressed.connect(self.update_vt) # Connect this intput dialog whenever the enter/return button is pressed
-			# # 	# self.vt_input.setPlaceholderText(str(self.vt))
-
-			# # 	# # Define label to display the value of the slider next to the slider
-			# # 	# self.vt_units = QLabel(" nm/s", self) # Display the corrected value. only up to 2 decimal pts
-			# # 	# self.vt_units.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
-			# # 	# self.vt_units.setMinimumWidth(30)
-
-			# # 	# hbox = QHBoxLayout(self)
-			# # 	# hbox.addWidget(self.vt_label)
-			# # 	# hbox.addWidget(self.vt_input)
-			# # 	# hbox.addWidget(self.vt_units)
-
-			# # 	# self.time_est = (2 * self.pix * self.L) / self.vt
-			# # 	# self.time_label = QLabel("Estimated time: %.2f s" % (self.time_est), self)
-
-
-			# # 	# # vlayout.addWidget(self._param_label)
-			# # 	# vlayout.addLayout(hbox)
-			# # 	# vlayout.addWidget(self.time_label)
-
-			# # 	# groupBox.setLayout(vlayout)
-			# 	try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
-			# 	# 		# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
-			# 		self.vt = eval(self.vt_input.text()) #float(self.a_input.text())
-			# 		self.vt_units.setText(' nm/s') 
-			# 		self.vt_input.setPlaceholderText(str(self.vt))
-			# 	# 	# self.plotAtoms() 
-			# 		self.time_est = (2 * self.pix * self.L) / self.vt
-
-
-			# 	# 	# self.time_mins = self.time_est / 60
-			# 	# 	# self.time_hrs = self.time_est / 60 /
-
-			# 		self.time_label.setText("Estimated time: %.2f s" % (self.time_est))
-
-			# 	except :
-			# 	# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
-			# 	# https://www.w3schools.com/python/python_try_except.asp
-			# 	# Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
-			# 		self.vt_error = QMessageBox()
-			# 		self.vt_error.setWindowTitle("Error")
-			# 		# if self.pix >= 8192:
-			# 		# self.pix_error.setText('Number of pixels exceeds 8192. Please enter a smaller number.')
-			# 		# else:
-			# 		self.vt_error.setText("Please enter a number or numerical expression.")
-					
-			# 		self.vt_error.setInformativeText("Your input for vt is: " +  str(self.vt_input.text()))
-			# 		self.vt_error.setIcon(QMessageBox.Warning)
-			# 		self.vt_error.setStandardButtons(QMessageBox.Retry)
-
-		# def openAscii(self): # found how to open a txt file in a seperate window from here https://stackoverflow.com/questions/22829078/opening-a-text-file-in-another-window-using-push-button-in-pyqt
-		# 	# openFile = QAction("Open file", self) 
-		# 	# openFile.setShortcut("Ctrl+O")
-		# 	# openFile.setStatusTip("Open file")
-		# 	# openFile.triggered.connect(self.file_open)
-
-		# 	open('HH_ascii.txt')
-
-
-
-		# def handleError(self, err_in):
-		# 	# split the input
-		# 	# if the input has a 'j' it  will crash bc it reads it as complex
-		# 	# so if it has a j, just remove the j/ignore it
-
-
-		# 	chars_list = list(err_in)
-		# 	print(chars_list)
-		# 	# if 'j' in chars_list:
-		# 	# 	print("Error")
-		# 	# 	chars_list.remove('j')
-		# 	num_list = []
-		# 	for char in chars_list:
-		# 		if not char.isalpha():
-		# 			num_list.append(char)
-		# 	print(num_list)
-		# 	print(chars_list)
-
-		# 	return eval(''.join(num_list))
-
-
 
 	# TO SUPPRESS QLAYOUT WARNING IN TERMINAL. from: https://stackoverflow.com/questions/25660597/hide-critical-pyqt-warning-when-clicking-a-checkboc
 	def handler(msg_type, msg_log_context, msg_string):

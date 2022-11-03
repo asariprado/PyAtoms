@@ -5,15 +5,6 @@ Created on Mon Nov 15 14:45:06 2021
 @author: Asari
 """
 
-# Use notebook for zoom/pan
-# %matplotlib notebook
-#Use inline for interactive feats
-# %matplotlib inline
-# from matplotlib.gridspec import GridSpec
-# from ipywidgets import interactive
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-# import pylab as pl
 import numpy as np
 
 from numpy import fft as npf

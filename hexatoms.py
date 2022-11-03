@@ -105,8 +105,6 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin):
     # Then normalize so that image values are between 0<Z<1.
     else:
         Z = (Z_un - np.min(np.min(Z_un)))/(np.max(np.max(Z_un)) - np.min(np.min(Z_un))) 
-        # Z = Z_un # normalize in the _Widgets.py file instead? 
-        # pass
 
     ## Take 2d FFT of the lattice 
     fftZ = np.abs((npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z))))))
