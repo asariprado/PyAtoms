@@ -23,7 +23,7 @@ Simulates scanning probe microscopy (SPM) images
     ```
 5. To run program, type: 
     ```
-    python AtomSimulator_GUI.py
+    python PyAtoms_GUI.py
     ```
 ## Known issues
 
