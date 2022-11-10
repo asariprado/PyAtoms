@@ -15,11 +15,11 @@ Simulates scanning probe microscopy (SPM) images
 - PyQt5 
 
 ## Installation instructions - Mac OS and Windows. (Not tested on Linux systems)
-1. Download AtomSimulator folder (via Code-> Download .zip)
+1. Download PyAtoms folder (via Code-> Download .zip)
 2. Open terminal (Mac OSX) or command line (Windows).
-3. Navigate to the directory where the AtomSimulator folder is located. Example:
+3. Navigate to the directory where the PyAtoms folder is located. Example:
     ```
-    ~/Downloads/AtomSimulator
+    ~/Downloads/PyAtoms
     ```
 5. To run program, type: 
     ```
@@ -27,7 +27,7 @@ Simulates scanning probe microscopy (SPM) images
     ```
 ## Known issues
 
-The most recent version of Matplotlib (3.5.1) on Mac OS systems creates figures with overly large fonts. To correct this, AtomSimulator detects the user's operating system and version of Matplotlib and corrects the fonts and figure properties "by hand." We are monitoring this for a better permanent fix.
+The most recent version of Matplotlib (3.5.1) on Mac OS systems creates figures with overly large fonts. To correct this, PyAtoms detects the user's operating system and version of Matplotlib and corrects the fonts and figure properties "by hand." We are monitoring this for a better permanent fix.
 
 ### For windows users:
 - Make sure python is installed and that its path is set in your environment
