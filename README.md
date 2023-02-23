@@ -5,8 +5,7 @@ Simulates scanning probe microscopy (SPM) images
 
 (Formerly named: SPM Simulator, Atom Simulator)
 
-<img width="900" alt="image" src="https://user-images.githubusercontent.com/62832051/186005147-f2597f19-aa75-4967-9a7f-ddda06bf7613.png">
-
+<img width="350" alt="image" src="https://user-images.githubusercontent.com/38303099/220842967-6bba9f6e-c6bb-4c8b-ba37-f24e27c49212.png">
 
 ### Dependencies:
 - Python 3
@@ -41,6 +40,8 @@ For any other issues or crash reports, contact asariprado@physics.ucla.edu
 
 ##
 ## How to use 
+
+<img width="900" alt="image" src="https://user-images.githubusercontent.com/62832051/186005147-f2597f19-aa75-4967-9a7f-ddda06bf7613.png">
 
 Note that all fields accept typical mathematical operations in python and NumPy such as `+` `-` `*` `/` `sqrt` `log` and all valid NumPy functions `func` can be called via `np.func()`. 
 
