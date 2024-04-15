@@ -36,7 +36,7 @@ The most recent version of Matplotlib (3.5.1) on Mac OS systems creates figures 
     ```
 - Alternatively, if you installed python, NumPy, SciPy, etc. through Anaconda for Windows, you can run the above code through the Anaconda prompt.
 
-For any other issues or crash reports, contact asariprado@physics.ucla.edu
+For any other issues or crash reports, suggestions, contact asariprado@physics.ucla.edu or gutierrez@physics.ucla.edu
 
 ##
 ## How to use 
