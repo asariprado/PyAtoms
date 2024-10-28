@@ -11,7 +11,7 @@ Simulates scanning probe microscopy (SPM) images
 ### Dependencies:
 - Python 3
 - NumPy
-- Matplotlib (optimized for versions < 3.5.1)
+- Matplotlib
 - PyQt5 
 
 ## Installation instructions - Mac OS and Windows. (Not tested on Linux systems)
@@ -27,7 +27,7 @@ Simulates scanning probe microscopy (SPM) images
     ```
 ## Known issues
 
-The most recent version of Matplotlib (3.5.1) on Mac OS systems creates figures with overly large fonts. To correct this, PyAtoms detects the user's operating system and version of Matplotlib and corrects the fonts and figure properties "by hand." We are monitoring this for a better permanent fix.
+28-Oct-2024: No known issues. Works correctly with latest version of Matplotlib (3.9.2)
 
 ### For windows users:
 - Make sure python is installed and that its path is set in your environment
