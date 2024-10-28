@@ -5,6 +5,7 @@ Simulates scanning probe microscopy (SPM) images
 
 (Formerly named: SPM Simulator, Atom Simulator)
 
+
 <img width="350" alt="image" src="https://user-images.githubusercontent.com/38303099/220842967-6bba9f6e-c6bb-4c8b-ba37-f24e27c49212.png">
 
 ### Dependencies:
@@ -41,31 +42,34 @@ For any other issues or crash reports, suggestions, contact asariprado@physics.u
 ##
 ## How to use 
 
-<img width="900" alt="image" src="https://user-images.githubusercontent.com/62832051/186005147-f2597f19-aa75-4967-9a7f-ddda06bf7613.png">
+<img width="900" alt="image" src="https://github.com/user-attachments/assets/d3758b78-b696-4f70-9617-48d13223fcc9">
 
 Note that all fields accept typical mathematical operations in python and NumPy such as `+` `-` `*` `/` `sqrt` `log` and all valid NumPy functions `func` can be called via `np.func()`. 
 
-1. Moiré lattice
+1. Number of lattices (moiré, CDW, superlattice)
     - Choose to simulate a 1, 2 or 3 layer lattice
        - Lattice 1 parameters change the single/first layer.
        - Lattice 2 only works if bilayer/trilayer are selected. These change the second lattice.
        - Lattice 3 only works if trilayer is selected. These change the third lattice.
-   - `eta`, $\eta$ : A phenomenological parameter we use to weigh the relative strength of the sum of lattices, $Z_1 + Z_2$, versus the product of lattices, $Z_1 * Z_2$. $\eta$ is a real number between 0 and 1: The moiré image for $\eta=1$ is purely the product and $\eta=0$ purely the sum.
+   - `eta`, $\eta$ : A phenomenological parameter we use to weigh the relative strength of the sum of lattices, $Z_1 + Z_2$, versus the product of lattices, $Z_1 * Z_2$. $\eta$ is a real number between 0 and 1: The moiré/superlattice image for $\eta=1$ is purely the product and $\eta=0$ purely the sum.
    - If $Z_1$ and $Z_2$ are two periodic lattices, the superimposed moiré/superlattice image is approximated as $Z_{moire} = (1-\eta)(Z_1 + Z_2) + \eta Z_1Z_2$ This toy model provides a good match to both experimental STM images and their Fourier transforms.
    - Similarly, for three periodic lattices, the moiré/superlattice image is approximated as $Z_{moire} = (1-\eta)(Z_1 + Z_2 + Z_3) + \eta Z_1Z_2Z_3$.
    - For an alternative method for simulating SPM images that may be implemented in future releases, see F. Joucken, et al. <a href="https://doi.org/10.1016/j.carbon.2014.11.030" target="_blank" rel="noopener noreferrer"> *Carbon* **83**, 48 (2015). </a>
 
 2. Image parameters
-    - `pixels`: number of pixels.
-    - `L`: length of the image window in nanometers.
-    - `theta`: Rotation (counter-clockwise) of the atomic lattice.
+    - `Real resolution`: Current spatial resolution, defined as L/pix, in units of nm/pix.
+    - `K-space resolution`: Current spatial resolution in reciprocal space, defined as 2π/L, in units of nm⁻¹/pix.
+    - `pixels`: number of pixels. Must be an integer or a mathematical expression of integers.
+    - `L`: length of the image window in nanometers. Must be a real number or a mathematical expression of real numbers.
+    - `theta`: Rotation (counter-clockwise) of the atomic lattice. Must be a real number or a mathematical expression of real numbers.
+    - `Offset`: Location of center of image. Must be a pair of real numbers, or a mathematical expression of real numbers, separated by a comma, e.g. -1.2,4.5.
 
 3. Colormap
-    -  `Real space image`: colormap of the real space image / simulated atomic lattice.
+    -  `Real space image`: colormap of the real space simulated atomic lattice.
     -  `FFT`: colormap of the 2D fast Fourier transform.
     
 4. Low pass filtering
-    - `sigma`: radius of Gaussian mask in real space (pixels) units. The half-width at half-max of the gaussian is shown as a white circle in the bottom left corner of the image.
+    - `sigma`: radius of a Gaussian mask in real space in units of pixels. The half-width at half-max of the gaussian is shown as a white circle in the bottom left corner of the image.
     - The radius of the gaussian mask in nanometers is shown in the text box.
 
 5. Save files
