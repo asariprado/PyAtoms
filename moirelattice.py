@@ -26,7 +26,7 @@ from hexatoms import hexatoms
 from squareatoms import squareatoms
 
 
-def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, theta_offset, theta_tw, theta_tw2, e11, e12, e22, d11, d12, d22, f11, f12, f22,  alpha1, beta1, alpha2, beta2, alpha3, beta3, eta, origin1, origin2, origin3, filter_bool, sigma):
+def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, theta_offset, theta_tw, theta_tw2, e11, e12, e22, d11, d12, d22, f11, f12, f22,  alpha1, beta1, alpha2, beta2, alpha3, beta3, eta, origin1, origin2, origin3, filter_bool, sigma,center):
    
     ### Define the rotation angles
 
@@ -42,18 +42,18 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
 
     ## CREATE FIRST LATTICE ##
     if lattice1 == 'Hexagonal':
-        Z1, fftZ1 = hexatoms(pix, L, a1, theta_im, e11, e12, e22, alpha1, beta1, origin1)
+        Z1, fftZ1 = hexatoms(pix, L, a1, theta_im, e11, e12, e22, alpha1, beta1, origin1,center)
 
     elif lattice1 == 'Square':
-        Z1, fftZ1 = squareatoms(pix, L, a1, theta_im, d11, d12, d22)
+        Z1, fftZ1 = squareatoms(pix, L, a1, theta_im, d11, d12, d22,center)
 
 
     ## CREATE SECOND LATTICE ##
     if lattice2 == 'Hexagonal':
-        Z2, fftZ2 = hexatoms(pix, L, a2, theta_tw12, d11, d12, d22, alpha2, beta2, origin2)
+        Z2, fftZ2 = hexatoms(pix, L, a2, theta_tw12, d11, d12, d22, alpha2, beta2, origin2,center)
    
     elif lattice2 == 'Square':
-        Z2, fftZ2 = squareatoms(pix, L, a2, theta_tw12, d11, d12, d22)
+        Z2, fftZ2 = squareatoms(pix, L, a2, theta_tw12, d11, d12, d22,center)
   
 
     # If only doing bilayer, create the moire lattice: Z = Z1*Z2 and filter it if filter btn is checked
@@ -75,11 +75,11 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
     ## CREATE THIRD LATTICE IF TRILAYER MOIRE BUTTON IS CHOSEN ## 
     elif moireBtn == 'Trilayer': 
         if lattice3 == 'Hexagonal':
-            Z3, fftZ3 = hexatoms(pix, L, a3, theta_tw23, f11, f12, f22, alpha3, beta3, origin3)
+            Z3, fftZ3 = hexatoms(pix, L, a3, theta_tw23, f11, f12, f22, alpha3, beta3, origin3,center)
 
             
         elif lattice3 == 'Square':
-            Z3, fftZ3 = squareatoms(pix, L, a3, theta_tw23, f11, f12, f22)
+            Z3, fftZ3 = squareatoms(pix, L, a3, theta_tw23, f11, f12, f22,center)
       
 
         Z = (eta * Z1 * Z2 * Z3) + (1-eta)*(Z1 + Z2 + Z3)
