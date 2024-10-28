@@ -15,7 +15,7 @@ from numpy import pi as pi
 from numpy import exp as exp
 
 
-def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin): 
+def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin,center): 
     """
     
     Returns np.arrays of  hexagonal atomic lattice and its FFT (absolute value)
@@ -41,7 +41,10 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin):
     
     ## Create 2D meshgrid of points. Make sure there is *always* a dedicated pixel for the origin (0,0) for pix even or odd
     x = np.arange(-(pix//2),(pix-1)//2 + 1)*L/(pix-1) 
-    [X,Y] = np.meshgrid(x,x) 
+    [X,Y] = np.meshgrid(x,x)
+    X0 = center[0]
+    Y0 = center[1] 
+    
     # ^^ IMPORTANT: make sure its typed [X,Y] instead of [Y,X], otherwise you might need to transpose the output
     
     ## Reciprocal lattice vectors for hexagonal crystal WITH STRAIN defined in local coordinates
@@ -74,7 +77,7 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin):
 
 
     ## Create plain lattice
-    T = exp(1j*(k1x*X + k1y*Y)) + exp(1j*(k2x*X + k2y*Y)) + exp(1j*(k3x*X + k3y*Y))
+    T = exp(1j*(k1x*(X-X0) + k1y*(Y-Y0))) + exp(1j*(k2x*(X-X0) + k2y*(Y-Y0))) + exp(1j*(k3x*(X-X0) + k3y*(Y-Y0)))
 
     ## Amplitude (alpha, beta) and phase-offsets on the A and B sublattices, respectively.
     phase = alpha + beta*exp(1j*2*pi/3)

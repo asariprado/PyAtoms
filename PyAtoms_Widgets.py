@@ -61,18 +61,23 @@ class SimulatorWidget(QWidget):
 		self.moireBtn = "Single"
 		self.pix = 256
 		self.L = 7
+		self.center = 0,0
 	
 		self.theta_im = 0
 		self.theta_tw = 0
 		self.theta_tw2 = 0 
 
-		self.a = 0.3
-		self.b = 0.3
-		self.c = 0.3
+		self.a = 0.246
+		self.b = 0.246
+		self.c = 0.246
 
 		self.lattice1 = "Hexagonal"
 		self.lattice2 = "Hexagonal"
 		self.lattice3 = "Hexagonal"
+
+		self.freq = np.fft.fftfreq(self.pix, self.L/self.pix)
+		self.realResolution = self.L/self.pix
+		self.kResolution = 2*pi/self.L
 
 		self.e11 = 0
 		self.e12 = 0
@@ -84,9 +89,6 @@ class SimulatorWidget(QWidget):
 		self.f12 = 0
 		self.f22 = 0 
 
-		# self.honeycomb = 0
-		# self.honeycomb2 = 0
-		# self.honeycomb3 = 0
 		self.origin1 = "Hollow"
 		self.origin2 = "Hollow"
 		self.origin3 = "Hollow"
@@ -123,7 +125,7 @@ class SimulatorWidget(QWidget):
 
 		self.figure =plt.figure(figsize=(10,10))
 		
-		self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.alpha1, self.beta1, self.origin1)
+		self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.alpha1, self.beta1, self.origin1, self.center)
 		
 		
 
@@ -149,6 +151,16 @@ class SimulatorWidget(QWidget):
 	def initImageParameters(self):
 		groupBox = QGroupBox("Image parameters")
 		vlayout = QVBoxLayout(self)
+
+		# Pixels
+		self.pix_res_label = QLabel("Real resolution: " + "       %.3f nm/pix"  % (self.realResolution) +
+		 "\nK-space resolution: " + "%.3f nm⁻¹/pix"  % (self.kResolution), self)
+
+		hbox0 = QHBoxLayout(self)
+		hbox0.addWidget(self.pix_res_label)
+
+		vlayout.addLayout(hbox0)
+		vlayout.setSpacing(3) # To reduce the spacing (vertical?) between the widgets. saves so much space
 
 		# Pixels
 		self.pix_label = QLabel("Pixels:")
@@ -238,6 +250,36 @@ class SimulatorWidget(QWidget):
 
 		vlayout.addLayout(hbox3) # Add the widgets and value text to the groupbox
 
+				# Center or image offset
+		self.center_label = QLabel("Offset:")
+		self.center_label.setToolTip("x,y distance (nm) to offset the center of the image. Default is no offset: 0,0")
+		self.center_input = QLineEdit(self)
+		self.center_input.returnPressed.connect(self.updateCenter) # Connect this input dialog whenever the enter/return button is pressed
+		## !!!! use # .editingFinished.connect instead of .returnPressed.connect because it detects when enter/tab is pressed or if you click on a different widget in the gui. then it'll update  
+		## From https://doc.qt.io/qt-6/qlineedit.html#editingFinished
+		# self.pix_input.editingFinished.connect(self.updatePix) # nvm it doesnt work correctly
+		self.center_input.setPlaceholderText(str(self.center))
+		self.center_input.setFixedWidth(100)
+		self.center_input.setToolTip("Input the offset (nm, nm) for the image. Default is (0,0)")
+
+		self.center_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update!
+		self.center_btn.clicked.connect(self.updateCenter)
+		self.center_btn.setAutoDefault(False)
+
+		# Define label to display the value of the slider next to the textbox
+		self.center_SliderLabel = QLabel(" nm", self)
+		# self.pix_SliderLabel.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
+		self.center_SliderLabel.setMinimumWidth(30)
+
+		hbox4 = QHBoxLayout(self)
+		hbox4.addWidget(self.center_label)
+		hbox4.addWidget(self.center_input)
+		hbox4.addWidget(self.center_SliderLabel)
+		hbox4.addWidget(self.center_btn)
+
+		vlayout.addLayout(hbox4)
+		vlayout.setSpacing(3) # To reduce the spacing (vertical?) between the widgets. saves so much space
+
 		groupBox.setLayout(vlayout)
 
 		return groupBox
@@ -255,11 +297,12 @@ class SimulatorWidget(QWidget):
 				raise ValueError
 			else: 
 				self.pix = eval(self.pix_input.text())
-				self.pix_SliderLabel.setText('pix') 
+				self.pix_SliderLabel.setText(' pix') 
 				self.pix_input.setPlaceholderText(str(self.pix))
 				self.update_calc()
 				self.update_map_calc()
 				self.plotAtoms() 
+				self.updateResolutions()
 				self.harry_counter += 1
 				self.updateHarryCounter()
 		except:
@@ -296,10 +339,11 @@ class SimulatorWidget(QWidget):
 			else:
 				self.L = eval(self.L_input.text())
 				self.L_input.setPlaceholderText(str(self.L))
-				self.L_Label.setText('nm') 
+				self.L_Label.setText(' nm')
 				self.update_calc()
 				self.update_map_calc()
-				self.plotAtoms() 
+				self.plotAtoms()
+				self.updateResolutions()  
 				self.harry_counter += 1
 				self.updateHarryCounter()
 		except:
@@ -314,10 +358,16 @@ class SimulatorWidget(QWidget):
 			self.L_error.setStandardButtons(QMessageBox.Retry)
 			x = self.L_error.exec()
 
+	def updateResolutions(self):
+		self.realResolution = self.L/self.pix
+		self.kResolution = 2*pi/self.L
+		self.pix_res_label.setText("Real resolution: " + "       %.3f nm/pix"  % (self.realResolution) +
+		 "\nK-space resolution: " + "%.3f nm⁻¹/pix"  % (self.kResolution))
+
 	def updateTheta(self):
 		try: 
 			self.theta_im = eval(self.theta_im_input.text())
-			self.thetaLabel.adjustSize()
+			# self.thetaLabel.adjustSize()
 			self.theta_im_input.setPlaceholderText(str(self.theta_im))
 			self.plotAtoms() 
 			self.harry_counter += 1
@@ -331,9 +381,41 @@ class SimulatorWidget(QWidget):
 			self.theta_im_error.setStandardButtons(QMessageBox.Retry)
 			x = self.theta_im_error.exec()
 
+	def updateCenter(self):
+		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
+				# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
+			# Checking for errors in the input before assigning self.center to the input, to avoid the program crashing if input is complex number/typo 
+			center_temp = eval(self.center_input.text())
+			if len(center_temp) !=2:
+				raise ValueError
+			elif type(center_temp) == complex:
+				raise ValueError
+			else: 
+				self.center = eval(self.center_input.text())
+				self.center_SliderLabel.setText(' nm') 
+				self.center_input.setPlaceholderText(str(self.center))
+				self.update_calc()
+				self.update_map_calc()
+				self.plotAtoms() 
+				self.harry_counter += 1
+				self.updateHarryCounter()
+		except:
+			# try/except to handle errors in case the input is incorrect format, so it doesnt just crash, instead it pops up an error window
+			# https://www.w3schools.com/python/python_try_except.asp
+			# Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
+
+			self.center_error = QMessageBox()
+			self.center_error.setWindowTitle("Error")
+			self.center_error.setText("Type in a valid pair of real numbers separated by a single comma, e.g. 5.4,-1.2.")
+			
+			self.center_error.setInformativeText("Your input for center is: " +  str(self.center_input.text()))
+			self.center_error.setIcon(QMessageBox.Warning)
+			self.center_error.setStandardButtons(QMessageBox.Retry)
+			x = self.center_error.exec()		
+
 	def initMoireBtn(self):
-		groupBox = QGroupBox("Moir\u00e9 lattice?")
-		groupBox.setToolTip("Choose whether to create a moir\u00e9 pattern with two sublattices, or plot only a single lattice")
+		groupBox = QGroupBox("Number of lattices (moir\u00e9, CDW, superlattice)")
+		groupBox.setToolTip("Choose whether to create a moir\u00e9/superlattice pattern with two or three lattices, or plot only a single lattice")
 
 		self.noMoire = QRadioButton("Single")
 		self.noMoire.setToolTip("Create a single lattice using Lattice 1 parameters")
@@ -641,10 +723,8 @@ class SimulatorWidget(QWidget):
 		self.tab1a = QWidget(self)
 		self.tab2a = QWidget(self)
 		self.tab3a = QWidget(self)
-		# self.tab4a = QWidget(self)
 		self.lat1tabs.addTab(self.tab1a, "Parameters")
 		self.lat1tabs.addTab(self.tab3a, "Sublattices")
-		# self.lat1tabs.addTab(self.tab4a, "Origin")
 		self.lat1tabs.addTab(self.tab2a, "Strain")
 
 		self.tab3a.setToolTip("Only works for hexagonal lattices")
@@ -2231,14 +2311,14 @@ class SimulatorWidget(QWidget):
 
 		# if moire btn is  NOT single (ie, bilayer or trilayer), then run the moirelattice code
 		if self.moireBtn != 'Single':
-			self.Z, self.fftZ = moirelattice(self.pix, self.L, self.a, self.b, self.c, self.moireBtn, self.lattice1, self.lattice2, self.lattice3, self.theta_im, self.theta_tw, self.theta_tw2, self.e11, self.e12, self.e22, self.d11, self.d12, self.d22, self.f11, self.f12, self.f22, self.alpha1, self.beta1, self.alpha2, self.beta2, self.alpha3, self.beta3, self.eta, self.origin1, self.origin2, self.origin3, self.filter_bool, self.sigma)
+			self.Z, self.fftZ = moirelattice(self.pix, self.L, self.a, self.b, self.c, self.moireBtn, self.lattice1, self.lattice2, self.lattice3, self.theta_im, self.theta_tw, self.theta_tw2, self.e11, self.e12, self.e22, self.d11, self.d12, self.d22, self.f11, self.f12, self.f22, self.alpha1, self.beta1, self.alpha2, self.beta2, self.alpha3, self.beta3, self.eta, self.origin1, self.origin2, self.origin3, self.filter_bool, self.sigma, self.center)
 
 		# if moire btn is clicked no, only plot a single lattice using the lattice1 parameters. all lattice2 inputs are ignored
 		else: # if moirebtn is clicked to SINGLE layer, just run hexatoms/squareatoms, 
 			if self.lattice1 == 'Hexagonal':
-				self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.alpha1, self.beta1, self.origin1)
+				self.Z, self.fftZ = hexatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.alpha1, self.beta1, self.origin1, self.center)
 			elif self.lattice1 == 'Square':
-				self.Z, self.fftZ = squareatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22)
+				self.Z, self.fftZ = squareatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.center)
 
 			# Normalize the FFTs to be between 0-1 (bc hexatoms only normalizes Z, moirelattice is what normalizes fftZ, but if you chose single lattice, moirelattice code isnt run. so need to normalize the FFT here)
 			self.fftZ = (self.fftZ - np.min(np.min((self.fftZ))))/(np.max(np.max(self.fftZ)) - np.min(np.min(self.fftZ)))
@@ -2271,14 +2351,13 @@ class SimulatorWidget(QWidget):
 			plt.yticks(fontsize=5)
 
 			ax00.tick_params(labelsize=5)
-			ax01.set_xlabel('$k_x$ (1/nm)',fontsize=5)
-			ax01.set_ylabel('$k_y$ (1/nm)',fontsize=5)
+			ax01.set_xlabel('$k_x$ (nm⁻¹)',fontsize=5)
+			ax01.set_ylabel('$k_y$ (nm⁻¹)',fontsize=5)
 			ax01.tick_params(labelsize=5)
 			ax01.xaxis.set_tick_params(width=0.5)
 			ax01.yaxis.set_tick_params(width=0.5)
 
 			plt.tight_layout(pad=0.5,w_pad = 1,h_pad=1) # nothing workd :( 
-
 
 			for axis in ['top','bottom','left','right']:
 				ax00.spines[axis].set_linewidth(0.5)
@@ -2295,7 +2374,6 @@ class SimulatorWidget(QWidget):
 		cb_r = plt.colorbar(fig1, ax=ax00, fraction=0.046, pad=0.04) # fixed colorbar issues, from: https://stackoverflow.com/questions/16702479/matplotlib-colorbar-placement-and-size
 		cb_r.ax.tick_params(width=0.5)
 		plt.tight_layout()
-
 
 		# Plot a circular with the radius of the half-width at half-max of a 2D gaussian of width w, HWHM = sqrt(2*log(2))*w
 		if self.filter_bool == True and self.sigma != 0:
@@ -2314,9 +2392,9 @@ class SimulatorWidget(QWidget):
 		# Plot FFT of original image
 		
 		# Calculate min/max extent of k-space given N pixels and L distance for a sampling rate L/N
-		freq = np.fft.fftfreq(self.pix, self.L/self.pix)
-		extL = 2*np.pi*np.min(freq) 
-		extR = 2*np.pi*np.max(freq)
+		self.freq = np.fft.fftfreq(self.pix, self.L/self.pix)
+		extL = 2*np.pi*np.min(self.freq) 
+		extR = 2*np.pi*np.max(self.freq)
 		
 		# # Below is an explicit calculation to see how Numpy sorts the frequencies for even/odd N pixels
 		# if self.pix%2==0:
@@ -2328,8 +2406,8 @@ class SimulatorWidget(QWidget):
 		
 
 		fig2 = ax01.imshow(self.fftZ**1, cmap = self.colormap_FFT, extent=[extL, extR, extL, extR],vmax = self.vmax_fft,origin='lower')		
-		ax01.set_xlabel('$k_x$ (1/nm)')
-		ax01.set_ylabel('$k_y$ (1/nm)', labelpad= -5)#20) 
+		ax01.set_xlabel('$k_x$ (nm⁻¹)')
+		ax01.set_ylabel('$k_y$ (nm⁻¹)', labelpad= -5)#20) 
 		ax01.set_title('FFT')
 		ax01.grid(False)
 
@@ -2368,8 +2446,8 @@ class SimulatorWidget(QWidget):
 			# plt.rcParams['xtick.major.width'] = 0.5
 			plt.xticks(fontsize=5)
 			plt.yticks(fontsize=5)
-			ax01.set_xlabel('$k_x$ (1/nm)',fontsize=5)
-			ax01.set_ylabel('$k_y$ (1/nm)',fontsize=5)
+			ax01.set_xlabel('$k_x$ (nm⁻¹)',fontsize=5)
+			ax01.set_ylabel('$k_y$ (nm⁻¹)',fontsize=5)
 			ax01.tick_params(labelsize=5)
 			ax00.tick_params(labelsize=5)
 			ax01.xaxis.set_tick_params(width=0.5)
@@ -2456,12 +2534,12 @@ class SimulatorWidget(QWidget):
 
 			# Also save a .txt file with the input parameter values: (IN THE FUTURE maybe make this a pandas dataframe or csv file or something?)
 			param_file = open(self.filePath + '/' + self.fileName +'_params.txt', "w+") # Open a new blank text file where we will write the input parameters
-			param_file.write("# of layers: " + (self.moireBtn) + "\neta: " + str(self.eta) + " (relative strength of sum vs product of sublattices)" + "\nPix: " + str(self.pix) + "\nL: " + str(self.L) +  "\nImage offset angle: " + str(self.theta_im) + "\nLow pass filter: " + str(self.filter_bool) + '\nSigma: ' + str(self.sigma) +
-					'\n\n--------------------------------\nLattice 1:\n--------------------------------\n' + self.lattice1 + '\na: ' + str(self.a) + '\ne11: ' + str(self.e11) +
+			param_file.write("# of layers: " + (self.moireBtn) + "\neta: " + str(self.eta) + " (relative strength of sum vs product of sublattices)" + "\nPix: " + str(self.pix) + " x " + str(self.pix) + "\nL (nm): " + str(self.L) +  "\nImage center offset (nm,nm): " + str(self.center)+  "\nImage offset angle: " + str(self.theta_im) + "\nLow pass filter: " + str(self.filter_bool) + '\nSigma (real pix): ' + str(self.sigma) +
+					'\n\n--------------------------------\nLattice 1:\n--------------------------------\n' + self.lattice1 + '\na (nm): ' + str(self.a) + '\ne11: ' + str(self.e11) +
 					'\ne12: ' + str(self.e12) + '\ne22: ' + str(self.e22) + "\nAlpha1: " + str(self.alpha1) + "\nBeta1: " + str(self.beta1) + "\nOrigin1: " + str(self.origin1) + 
-					'\n\n--------------------------------\nLattice 2:\n--------------------------------\n' + self.lattice2 + '\nb: ' + str(self.b) + '\nd11: ' + str(self.d11) + 
+					'\n\n--------------------------------\nLattice 2:\n--------------------------------\n' + self.lattice2 + '\nb (nm): ' + str(self.b) + '\nd11: ' + str(self.d11) + 
 					'\nd12: ' + str(self.d12) + '\nd22: ' + str(self.d22) + "\nAlpha2: " + str(self.alpha2) + "\nBeta2: " + str(self.beta2) + "\nOrigin2: " + str(self.origin2) + 
-					'\nTwist angle (btwn lattice 1 & 2): ' + str(self.theta_tw) + '\n\n--------------------------------\nLattice 3:\n--------------------------------\n' + self.lattice3 + '\nc: ' + str(self.c) + '\nf11: ' + str(self.f11) + 
+					'\nTwist angle (btwn lattice 1 & 2): ' + str(self.theta_tw) + '\n\n--------------------------------\nLattice 3:\n--------------------------------\n' + self.lattice3 + '\nc (nm): ' + str(self.c) + '\nf11: ' + str(self.f11) + 
 					'\nf12: ' + str(self.f12) + '\nf22: ' + str(self.f22) + "\nAlpha3: " + str(self.alpha3) + "\nBeta3: " + str(self.beta3) + "\nOrigin3: " + str(self.origin3) + 
 					'\nTwist angle (btwn lattice 2 & 3): ' + str(self.theta_tw2) + 
 					'\n\n--------------------------------\nEstimated time to take STM topography: ' + str(self.hrs) + 'h ' + str(self.mins) + 'min ' + str(self.sec) + ' s\nTip scanner speed: ' + str(self.vt) + ' nm/s'

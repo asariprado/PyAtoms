@@ -20,7 +20,7 @@ from numpy import log as log
 from numpy import pi as pi
 
 
-def squareatoms(pix, L, a, theta, e11, e12, e22, origin_x = 0, origin_y = 0):
+def squareatoms(pix, L, a, theta, e11, e12, e22, center):
     """
     Simulates a square atomic lattice and takes the FFT of the lattice
 
@@ -43,22 +43,10 @@ def squareatoms(pix, L, a, theta, e11, e12, e22, origin_x = 0, origin_y = 0):
   
 
     # Create a meshgrid of 'pix' number of points, values from 0 --> L
-    xx = np.linspace(0, L, pix)
-    [X, Y] = np.meshgrid(xx,xx)
-
-    # This just sets the center pixel of the image
-    origin = [origin_x, origin_y]
-    if origin == [0,0]:
-        ctrX = xx[int(np.floor(pix/2))]
-        ctrY = ctrX
-    else:
-        ctrX = xx[origin[0]-1]
-        ctrY = xx[origin[1]-1]
-
-    # Calculate the distance from a point on the meshgrid to the center of image
-    # Distance from point on meshgrid to center of x/y axes
-    x = X - ctrX  # these are also meshgrids
-    y = Y - ctrY
+    xx = np.arange(-(pix//2),(pix-1)//2 + 1)*L/(pix-1) 
+    [X,Y] = np.meshgrid(xx,xx)
+    X0 = center[0]
+    Y0 = center[1] 
 
     # Reciprocal lattice vectors for square crystal WITH STRAIN
     # k1 = (2*np.pi/a)*np.array([1 + e11, e12])
@@ -78,7 +66,8 @@ def squareatoms(pix, L, a, theta, e11, e12, e22, origin_x = 0, origin_y = 0):
     k1 = np.matmul(k1,rotmat)
     k2 = np.matmul(k2,rotmat)
     
-
+    k1x, k1y = k1[0], k1[1]
+    k2x, k2y = k2[0], k2[1]
     
 
     # # Set amplitudes to plot lattice as honeycomb or dots ... This basically just changes the phase of the atoms 
@@ -95,7 +84,7 @@ def squareatoms(pix, L, a, theta, e11, e12, e22, origin_x = 0, origin_y = 0):
     B = 1/4
     
     # Create square lattice
-    Z = A + B * (cos((k1[0]*x) + (k1[1]*y)) + cos((k2[0]*x) + (k2[1]*y)))
+    Z = A + B * (cos(k1x*(X-X0) + k1y*(Y-Y0)) + cos(k2x*(X-X0) + k2y*(Y-Y0)))
 
     # FFT of lattice:
     fftZ = np.abs(npf.fftshift(npf.fft2(Z- np.mean(np.mean(Z)))))  # subtract by mean(mean(Z)) to remove the strong peak at k=0 (DC/constant background)
