@@ -26,7 +26,7 @@ from hexatoms import hexatoms
 from squareatoms import squareatoms
 
 
-def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, theta_offset, theta_tw, theta_tw2, e11, e12, e22, d11, d12, d22, f11, f12, f22,  alpha1, beta1, alpha2, beta2, alpha3, beta3, eta, origin1, origin2, origin3, filter_bool, sigma,center):
+def moirelattice(pix, L, a1, a2, a3, moireBtn, modeBtn, lattice1, lattice2, lattice3, theta_offset, theta_tw, theta_tw2, e11, e12, e22, d11, d12, d22, f11, f12, f22,  alpha1, beta1, alpha2, beta2, alpha3, beta3, eta, xi, origin1, origin2, origin3, filter_bool, sigma,center):
    
     ### Define the rotation angles
 
@@ -57,9 +57,24 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
   
 
     # If only doing bilayer, create the moire lattice: Z = Z1*Z2 and filter it if filter btn is checked
-    if moireBtn == 'Bilayer': 
+    if moireBtn == 'Bilayer':
+        if modeBtn == 'Simple':
+            if eta<0.0:
+                eta = 0.0
+            elif eta>1.0:
+                eta = 1.0
 
-        Z = (eta * Z1 * Z2) + (1-eta)*(Z1 + Z2)
+            Z = (eta * Z1 * Z2) + (1-eta)*(Z1 + Z2)
+
+        if modeBtn == 'Log':
+            if xi<0.0:
+                xi = 0.0
+            elif xi>10.0:
+                xi = 10.0
+
+            # Add small non-zero constant to avoid -inf from log 0
+            Z = np.log(1e-6 + Z1 + Z2*np.exp(-xi))
+
 
         if filter_bool == True: 
 
@@ -67,22 +82,33 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
        
         fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))
 
-        fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
-        fftZ = fftZ_norm
+        fftZ = mat2gray(fftZ)
 
     
     
     ## CREATE THIRD LATTICE IF TRILAYER MOIRE BUTTON IS CHOSEN ## 
-    elif moireBtn == 'Trilayer': 
+    elif moireBtn == 'Trilayer':
         if lattice3 == 'Hexagonal':
             Z3, fftZ3 = hexatoms(pix, L, a3, theta_tw23, f11, f12, f22, alpha3, beta3, origin3,center)
-
             
         elif lattice3 == 'Square':
             Z3, fftZ3 = squareatoms(pix, L, a3, theta_tw23, f11, f12, f22,center)
+        
+        if modeBtn == 'Simple':
+            if eta<0.0:
+                eta = 0.0
+            elif eta>1.0:
+                eta = 1.0  
       
+            Z = (eta * Z1 * Z2 * Z3) + (1-eta)*(Z1 + Z2 + Z3)
 
-        Z = (eta * Z1 * Z2 * Z3) + (1-eta)*(Z1 + Z2 + Z3)
+        if modeBtn == 'Log':
+            if xi<0.0:
+                xi = 0.0
+            elif xi>10.0:
+                xi = 10.0
+
+            Z = np.log(1e-6 + Z1 + Z2*np.exp(-xi) + Z3*np.exp(-2*xi))
 
       # Low pass filter the image if the button is checked:
         if filter_bool == True: 
@@ -92,21 +118,19 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, lattice1, lattice2, lattice3, the
         fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))
 
 
-        fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
-        fftZ = fftZ_norm
+        fftZ = mat2gray(fftZ)
  
     # Normalize the real space image
-    Z = (Z - np.min(np.min(Z)))/(np.max(np.max(Z)) - np.min(np.min(Z))) 
+    Z = mat2gray(Z)
 
 
     return Z, np.abs(fftZ)
 
 
-# explicit function to normalize array. from https://www.geeksforgeeks.org/how-to-normalize-an-array-in-numpy-in-python/
-def normalize_2d(matrix):
-    norm = np.linalg.norm(matrix)
-    matrix = matrix/norm  # normalized matrix
-    return matrix
+# explicit function to normalize the 2D matrix.
+def mat2gray(Z_un):
+    Z = (Z_un - np.min(np.min(Z_un)))/(np.max(np.max(Z_un)) - np.min(np.min(Z_un)))
+    return Z
 
 
 
