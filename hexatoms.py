@@ -107,15 +107,15 @@ def hexatoms(pix, L, a, theta, e11, e12, e22, alpha, beta, origin,center):
 
     # Then normalize so that image values are between 0<Z<1.
     else:
-        Z = (Z_un - np.min(np.min(Z_un)))/(np.max(np.max(Z_un)) - np.min(np.min(Z_un))) 
+        Z = mat2gray(Z_un) 
 
     ## Take 2d FFT of the lattice 
     fftZ = np.abs((npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z))))))
-    # subtract by mean(mean(Z)) to remove the strong peak at k=0 (DC/constant background)
-
-    # Normalize the FFT to be in between 0-1 values
-    # Subtract by the minimum value and then divide by the maximum value:
-    # fftZ_norm = (fftZ - np.min(np.min((fftZ))))/(np.max(np.max(fftZ)) - np.min(np.min(fftZ)))
-    ## ^^ commented out bc the normalization is done in moirelattice.py for bilayer/trilayer, and in _Widgets.py for single layer
+    fftZ = mat2gray(fftZ)
 
     return Z, fftZ
+
+# explicit function to normalize the 2D matrix.
+def mat2gray(Z_un):
+    Z = (Z_un - np.min(np.min(Z_un)))/(np.max(np.max(Z_un)) - np.min(np.min(Z_un)))
+    return Z

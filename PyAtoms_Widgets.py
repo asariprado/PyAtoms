@@ -59,6 +59,7 @@ class SimulatorWidget(QWidget):
 		
 		# Define all default values 
 		self.moireBtn = "Single"
+		self.modeBtn = "Simple"
 		self.pix = 256
 		self.L = 7
 		self.center = 0,0
@@ -100,6 +101,7 @@ class SimulatorWidget(QWidget):
 		self.alpha3 = 1
 		self.beta3 = 0
 		self.eta = 0.8
+		self.xi = 1.0
 
 		self.filter_bool = False
 		self.sigma = 0
@@ -108,6 +110,7 @@ class SimulatorWidget(QWidget):
 		self.saveFileName = ''
 
 
+		self.c_min = 0.0
 		self.vmax_fft = 0.5
 		self.colormap_RS = 'magma'
 		self.colormap_FFT = 'Blues_r'
@@ -309,8 +312,6 @@ class SimulatorWidget(QWidget):
 			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
 			# https://www.w3schools.com/python/python_try_except.asp
 			# Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
-			# self.pix = self.handleError(self.pix_input.text())
-			# print(self.pix)
 			self.pix_error = QMessageBox()
 			self.pix_error.setWindowTitle("Error")
 			# if self.pix >= 8192:
@@ -329,7 +330,6 @@ class SimulatorWidget(QWidget):
 			
 			# Checking for errors in the input before assigning self.L to the input, to avoid the program crashing if input is complex number/typo 
 			L_temp = eval(self.L_input.text())
-			# print(type(L_temp))
 			if L_temp >= 8192:
 				raise ValueError
 			elif type(L_temp) == complex:
@@ -433,47 +433,77 @@ class SimulatorWidget(QWidget):
 		self.noMoire.toggled.connect(self.updateMoireBtn)
 		self.trilayer.toggled.connect(self.updateMoireBtn)
 
-
-
 		# Create QButtonGroup to be mutually exclusive  buttons, from https://www.programcreek.com/python/example/108083/PyQt5.QtWidgets.QButtonGroup
 		self.moire_btn_group = QButtonGroup(self)
 		self.moire_btn_group.addButton(self.noMoire)
 		self.moire_btn_group.addButton(self.yesMoire)
 		self.moire_btn_group.addButton(self.trilayer)
 
+		self.SimpleMode_btn = QRadioButton("Simple")
+		self.SimpleMode_btn.setChecked(True)
+		self.SimpleMode_btn.setToolTip("Moiré simple mode: Relative sum of lattices and product of lattices")
 
-
-
-		# eta
-		self.eta_label = QLabel("0 \u2264 \u03b7 \u2264 1:") # Greek letters unicode : https://unicode.org/charts/PDF/U0370.pdf
-
-		self.eta_label.setToolTip("Relative strength of the sum of lattices vs. multiplication of lattices\n\u03b7*(Z1*Z2) + (1-\u03b7)*(Z1+Z2)\nPick a value between 0 and 1 for \u03b7")
+		# Create vt input text box
 		self.eta_input = QLineEdit(self)
-		self.eta_input.returnPressed.connect(self.update_eta) 
-
+		self.eta_input.returnPressed.connect(self.update_eta) # Connect this intput dialog whenever the enter/return button is pressed
 		self.eta_input.setPlaceholderText(str(self.eta))
-		self.eta_input.setFixedWidth(65)
-		self.eta_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
+		self.eta_input.setFixedWidth(60)
+		self.eta_input.setToolTip("\u03b7*(Z1*Z2) + (1-\u03b7)*(Z1+Z2)\nPick a value between 0 and 1 for \u03b7")
 
 		self.eta_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update!
 		self.eta_btn.clicked.connect(self.update_eta)
-		self.eta_btn.setAutoDefault(False)	
+		self.eta_btn.setAutoDefault(False)
 
+		# Define label to display the value of the slider next to the textbox
+		self.eta_label = QLabel("0 \u2264 \u03B7 \u2264 1:", self)
+
+		self.LogMode_btn = QRadioButton("Log")
+		self.LogMode_btn.setChecked(False)
+		self.LogMode_btn.setToolTip("Moiré log mode: log of sum of lattices with layer-dependence")
+
+		# Create vt input text box
+		self.xi_input = QLineEdit(self)
+		self.xi_input.returnPressed.connect(self.update_xi) # Connect this intput dialog whenever the enter/return button is pressed
+		self.xi_input.setPlaceholderText(str(self.xi))
+		self.xi_input.setFixedWidth(60)
+		self.xi_input.setToolTip("log(Z1 + Z2*e^{-\u03be}) \nPick a value between 0 and 10 for \u03be")
+
+		self.xi_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update!
+		self.xi_btn.clicked.connect(self.update_xi)
+		self.xi_btn.setAutoDefault(False)
+
+		# Define label to display the value of the slider next to the textbox
+		self.xi_label = QLabel("0 \u2264 \u03BE \u2264 10:", self)
+
+		self.SimpleMode_btn.toggled.connect(self.updateModeBtn)
+		self.LogMode_btn.toggled.connect(self.updateModeBtn)
+
+		# Create QButtonGroup to be mutually exclusive  buttons, from https://www.programcreek.com/python/example/108083/PyQt5.QtWidgets.QButtonGroup
+		self.mode_btn_group = QButtonGroup(self)
+		self.mode_btn_group.addButton(self.SimpleMode_btn)
+		self.mode_btn_group.addButton(self.LogMode_btn)
 
 		hbox = QHBoxLayout()
 		hbox.addWidget(self.noMoire)
 		hbox.addWidget(self.yesMoire)
 		hbox.addWidget(self.trilayer)
 
-
 		vlayout = QVBoxLayout(self)
+
 		vlayout.addLayout(hbox)
 
-		hlayout = QHBoxLayout(self)
-		hlayout.addWidget(self.eta_label)
-		hlayout.addWidget(self.eta_input)
-		hlayout.addWidget(self.eta_btn)
-		vlayout.addLayout(hlayout)
+		hlayout1 = QHBoxLayout(self)
+		hlayout1.addWidget(self.SimpleMode_btn)
+		hlayout1.addWidget(self.eta_label)
+		hlayout1.addWidget(self.eta_input)
+		hlayout1.addWidget(self.eta_btn)
+		vlayout.addLayout(hlayout1)
+		hlayout2 = QHBoxLayout(self)
+		hlayout2.addWidget(self.LogMode_btn)
+		hlayout2.addWidget(self.xi_label)
+		hlayout2.addWidget(self.xi_input)
+		hlayout2.addWidget(self.xi_btn)
+		vlayout.addLayout(hlayout2)
 		groupBox.setLayout(vlayout)
 		vlayout.setSpacing(1)
 
@@ -509,6 +539,26 @@ class SimulatorWidget(QWidget):
 			self.moire_btn_error.setStandardButtons(QMessageBox.Retry)
 			x = self.moire_btn_error.exec()
 
+	def updateModeBtn(self):
+		radio_btn = self.sender()
+		if radio_btn.isChecked():
+			if radio_btn.text() == "Simple":
+				self.modeBtn = "Simple"
+			elif radio_btn.text() == "Log":
+				self.modeBtn = "Log"
+			# Update the plot every time user changes the button choice
+		try:
+			self.plotAtoms() 
+			self.harry_counter += 0.5 # because for radio buttons, it runs the code twice for some reason. so add a TOTAL of 1 each time the user changes the radio btn 
+			self.updateHarryCounter()
+		except:
+			self.mode_btn_error = QMessageBox()
+			self.mode_btn_error.setWindowTitle("Error")
+			self.mode_btn_error.setText("Check all text line inputs.")
+			self.mode_btn_error.setInformativeText("There may be a typo somewhere.")
+			self.mode_btn_error.setIcon(QMessageBox.Warning)
+			self.mode_btn_error.setStandardButtons(QMessageBox.Retry)
+			x = self.mode_btn_error.exec()
 
 	def initCalcWidget(self):
 		groupBox = QGroupBox("SPM image time estimator")
@@ -2126,6 +2176,25 @@ class SimulatorWidget(QWidget):
 			self.eta_error.setStandardButtons(QMessageBox.Retry)
 			x = self.eta_error.exec()
 
+	def update_xi(self):
+		try: 	# I used eval() instead of float() in case an input is a mathematical expression like '3.2-1.9' 
+				# https://stackoverflow.com/questions/9383740/what-does-pythons-eval-do
+			self.xi = eval(self.xi_input.text()) 
+			self.xi_input.setPlaceholderText(str(self.xi))
+			self.plotAtoms() 
+			self.harry_counter += 1
+			self.updateHarryCounter()
+		except:
+			# try/except to handle errors in case the input is a string, so it doesnt just crash, instead it pops up an error window
+			# https://www.w3schools.com/python/python_try_except.asp
+			# Pop up button syntax: https://pythonprogramminglanguage.com/pyqt5-message-box/
+			self.xi_error = QMessageBox()
+			self.xi_error.setWindowTitle("Error")
+			self.xi_error.setText("Type in a number or numerical expression")
+			self.xi_error.setInformativeText("Your input for \u03be is: " +  str(self.xi_input.text()))
+			self.xi_error.setIcon(QMessageBox.Warning)
+			self.xi_error.setStandardButtons(QMessageBox.Retry)
+			x = self.xi_error.exec()
 
 	# CREATING THE MATPLOTLIB FIGURE
 	def initMatplotlibFig(self):
@@ -2311,7 +2380,7 @@ class SimulatorWidget(QWidget):
 
 		# if moire btn is  NOT single (ie, bilayer or trilayer), then run the moirelattice code
 		if self.moireBtn != 'Single':
-			self.Z, self.fftZ = moirelattice(self.pix, self.L, self.a, self.b, self.c, self.moireBtn, self.lattice1, self.lattice2, self.lattice3, self.theta_im, self.theta_tw, self.theta_tw2, self.e11, self.e12, self.e22, self.d11, self.d12, self.d22, self.f11, self.f12, self.f22, self.alpha1, self.beta1, self.alpha2, self.beta2, self.alpha3, self.beta3, self.eta, self.origin1, self.origin2, self.origin3, self.filter_bool, self.sigma, self.center)
+			self.Z, self.fftZ = moirelattice(self.pix, self.L, self.a, self.b, self.c, self.moireBtn, self.modeBtn, self.lattice1, self.lattice2, self.lattice3, self.theta_im, self.theta_tw, self.theta_tw2, self.e11, self.e12, self.e22, self.d11, self.d12, self.d22, self.f11, self.f12, self.f22, self.alpha1, self.beta1, self.alpha2, self.beta2, self.alpha3, self.beta3, self.eta, self.xi, self.origin1, self.origin2, self.origin3, self.filter_bool, self.sigma, self.center)
 
 		# if moire btn is clicked no, only plot a single lattice using the lattice1 parameters. all lattice2 inputs are ignored
 		else: # if moirebtn is clicked to SINGLE layer, just run hexatoms/squareatoms, 
@@ -2321,7 +2390,7 @@ class SimulatorWidget(QWidget):
 				self.Z, self.fftZ = squareatoms(self.pix, self.L, self.a, self.theta_im, self.e11, self.e12, self.e22, self.center)
 
 			# Normalize the FFTs to be between 0-1 (bc hexatoms only normalizes Z, moirelattice is what normalizes fftZ, but if you chose single lattice, moirelattice code isnt run. so need to normalize the FFT here)
-			self.fftZ = (self.fftZ - np.min(np.min((self.fftZ))))/(np.max(np.max(self.fftZ)) - np.min(np.min(self.fftZ)))
+			self.fftZ = mat2gray(self.fftZ)
 	 
 
 
@@ -2366,13 +2435,19 @@ class SimulatorWidget(QWidget):
 
 
 		# Plot original image
-		fig1 = ax00.imshow(self.Z, cmap = self.colormap_RS, extent=[0,self.L,0,self.L])
+		# fig1 = ax00.imshow(self.Z, cmap = self.colormap_RS, extent=[0,self.L,0,self.L])
+		fig1 = ax00.imshow(self.Z, cmap = self.colormap_RS, extent=[-self.L/2,self.L/2,-self.L/2,self.L/2])
 		ax00.set_xticks([])
 		ax00.set_yticks([])
 		ax00.set_title('Real space image')
 		ax00.grid(False)
 		cb_r = plt.colorbar(fig1, ax=ax00, fraction=0.046, pad=0.04) # fixed colorbar issues, from: https://stackoverflow.com/questions/16702479/matplotlib-colorbar-placement-and-size
 		cb_r.ax.tick_params(width=0.5)
+		# if Log mode is enabled for moire lattice, estimate best image range from histogram
+		if self.modeBtn == 'Log':
+			Zhist,bins = np.histogram(self.Z[:],self.pix//2,density=True)
+			self.c_min = bins[Zhist.searchsorted(0.2)]
+			fig1.set_clim(self.c_min,1.0)
 		plt.tight_layout()
 
 		# Plot a circular with the radius of the half-width at half-max of a 2D gaussian of width w, HWHM = sqrt(2*log(2))*w
@@ -2405,7 +2480,7 @@ class SimulatorWidget(QWidget):
 		# 	extR = (self.pix-1)*np.pi/self.L
 		
 
-		fig2 = ax01.imshow(self.fftZ**1, cmap = self.colormap_FFT, extent=[extL, extR, extL, extR],vmax = self.vmax_fft,origin='lower')		
+		fig2 = ax01.imshow(self.fftZ, cmap = self.colormap_FFT, extent=[extL, extR, extL, extR],vmax = self.vmax_fft,origin='upper')		
 		ax01.set_xlabel('$k_x$ (nm⁻¹)')
 		ax01.set_ylabel('$k_y$ (nm⁻¹)', labelpad= -5)#20) 
 		ax01.set_title('FFT')
@@ -2419,11 +2494,6 @@ class SimulatorWidget(QWidget):
 			sigma_k = 1/self.sigma_real # The width of gaussian in k-space
 			circ_k = plt.Circle((0,0),sigma_k*np.sqrt(2*np.log(2)),fill=False,color='red')
 			ax01.add_artist(circ_k)
-
-		# scalebar_FFT = AnchoredSizeBar(ax01.transData, np.ceil(np.pi/(4*self.a)), str(np.ceil(np.pi/self.a)) + r' $\mathrm{nm}^{-1}$',
-		# 			       'lower right', pad=0.5, sep=5, borderpad=0.5, frameon=True, color='black',label_top=True)
-
-		# ax01.add_artist(scalebar_FFT)
 		
 		# Fix to correct for issue with Matplotlib version 3.5.x creating large fonts, thick lines, etc
 		import matplotlib as mpl
@@ -2462,13 +2532,7 @@ class SimulatorWidget(QWidget):
 
 
 
-		self.canvas.draw() 
-
-
-
-
-
-
+		self.canvas.draw()
 
 
 	def initSaveButton(self):
@@ -2504,7 +2568,7 @@ class SimulatorWidget(QWidget):
 		return groupBox
 
 	def updateSaveButton(self):
-		# The line below opens the file dirctory so you can choose where to save the files...
+		# The line below opens the file directory so you can choose where to save the files...
 		# from https://www.tutorialexample.com/an-introduce-to-pyqt-qfiledialog-get-directory-path-with-examples-pyqt-tutorial/
 		# & https://www.tutorialexample.com/an-introduce-to-pyqt-button-bind-click-event-with-examples-pyqt-tutorial/ 
 		# & https://pythonspot.com/pyqt5-file-dialog/
@@ -2523,18 +2587,22 @@ class SimulatorWidget(QWidget):
 				os.makedirs(self.filePath) # of the form ~/users/Desktop/filename (file name has no extension!)
 
 		
-
 			# Save lattice & FFT figure as png's in the created folder:
 			# plt.savefig(self.fileName+'.png')
-			mplimg.imsave(self.filePath + '/' + self.fileName+'.png', self.Z, cmap = self.colormap_RS)
-			mplimg.imsave(self.filePath + '/' + self.fileName+'_FFT.png', self.fftZ, cmap = self.colormap_FFT)
+			if self.modeBtn == 'Log':
+				mplimg.imsave(self.filePath + '/' + self.fileName+'.png', self.Z, cmap = self.colormap_RS, vmin = self.c_min, vmax = 1.0)
+			else:
+				mplimg.imsave(self.filePath + '/' + self.fileName+'.png', self.Z, cmap = self.colormap_RS, vmin = 0.0, vmax = 1.0)
+			mplimg.imsave(self.filePath + '/' + self.fileName+'_FFT.png', self.fftZ, cmap = self.colormap_FFT, vmin = 0.0, vmax = self.vmax_fft)
 			
 			# Save atoms array as txt file in the created folder
 			np.savetxt(self.filePath + '/' + self.fileName +'.txt', self.Z)
 
 			# Also save a .txt file with the input parameter values: (IN THE FUTURE maybe make this a pandas dataframe or csv file or something?)
 			param_file = open(self.filePath + '/' + self.fileName +'_params.txt', "w+") # Open a new blank text file where we will write the input parameters
-			param_file.write("# of layers: " + (self.moireBtn) + "\neta: " + str(self.eta) + " (relative strength of sum vs product of sublattices)" + "\nPix: " + str(self.pix) + " x " + str(self.pix) + "\nL (nm): " + str(self.L) +  "\nImage center offset (nm,nm): " + str(self.center)+  "\nImage offset angle: " + str(self.theta_im) + "\nLow pass filter: " + str(self.filter_bool) + '\nSigma (real pix): ' + str(self.sigma) +
+			param_file.write("# of layers: " + (self.moireBtn) + ", Moiré mode: " + (self.modeBtn) + "\neta: " + str(self.eta) + " (relative strength of sum vs product of sublattices)" +
+					"\nxi: " + str(self.xi) + " (ratio of layer distance, d, to decay length, λ)" +
+					"\nPix: " + str(self.pix) + " x " + str(self.pix) + "\nL (nm): " + str(self.L) +  "\nImage center offset (nm,nm): " + str(self.center)+  "\nImage offset angle: " + str(self.theta_im) + "\nLow pass filter: " + str(self.filter_bool) + '\nSigma (real pix): ' + str(self.sigma) +
 					'\n\n--------------------------------\nLattice 1:\n--------------------------------\n' + self.lattice1 + '\na (nm): ' + str(self.a) + '\ne11: ' + str(self.e11) +
 					'\ne12: ' + str(self.e12) + '\ne22: ' + str(self.e22) + "\nAlpha1: " + str(self.alpha1) + "\nBeta1: " + str(self.beta1) + "\nOrigin1: " + str(self.origin1) + 
 					'\n\n--------------------------------\nLattice 2:\n--------------------------------\n' + self.lattice2 + '\nb (nm): ' + str(self.b) + '\nd11: ' + str(self.d11) + 
@@ -2670,7 +2738,6 @@ class SimulatorWidget(QWidget):
 
 	
 	def updateHarryCounter(self): # Open harry spotify link after every 250 changes a user makes :) 
-		# print(self.harry_counter)
 		if self.harry_counter % 250 == 0:
 
 			self.harry_window = QMessageBox()
@@ -2678,9 +2745,7 @@ class SimulatorWidget(QWidget):
 			self.harry_window.setInformativeText("Music recommendation courtesy of asariprado@physics.ucla.edu")
 			self.harry_window.setIcon(QMessageBox.Information)
 			self.harry_window.setStandardButtons(QMessageBox.Open | QMessageBox.Cancel)
-			x = self.harry_window.exec()
-			# print(x)
-			
+			x = self.harry_window.exec()			
 
 			if x == 8192: # 8192 is the code corresponding to the 'Open' button being clicked
 				self.url = 'https://open.spotify.com/album/5r36AJ6VOJtp00oxSkBZ5h?si=RVB4b2eNR6iBZH4vQln6rQ'
@@ -2693,7 +2758,10 @@ class SimulatorWidget(QWidget):
 	qInstallMessageHandler(handler)
 
 
-
+# explicit function to normalize the 2D matrix.
+def mat2gray(Z_un):
+    Z = (Z_un - np.min(np.min(Z_un)))/(np.max(np.max(Z_un)) - np.min(np.min(Z_un)))
+    return Z
 
 
 
