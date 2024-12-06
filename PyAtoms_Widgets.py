@@ -105,7 +105,7 @@ class SimulatorWidget(QWidget):
 
 		self.filter_bool = False
 		self.sigma = 0
-		self.sigma_real = self.sigma*self.L/(self.pix-1) *np.sqrt(2*np.log(2))
+		self.sigma_real = self.sigma*self.L/(self.pix-1)
 
 		self.saveFileName = ''
 
@@ -302,6 +302,7 @@ class SimulatorWidget(QWidget):
 				self.pix = eval(self.pix_input.text())
 				self.pix_SliderLabel.setText(' pix') 
 				self.pix_input.setPlaceholderText(str(self.pix))
+				self.updateSigma()
 				self.update_calc()
 				self.update_map_calc()
 				self.plotAtoms() 
@@ -340,6 +341,7 @@ class SimulatorWidget(QWidget):
 				self.L = eval(self.L_input.text())
 				self.L_input.setPlaceholderText(str(self.L))
 				self.L_Label.setText(' nm')
+				self.updateSigma()
 				self.update_calc()
 				self.update_map_calc()
 				self.plotAtoms()
@@ -2453,7 +2455,9 @@ class SimulatorWidget(QWidget):
 		# Plot a circular with the radius of the half-width at half-max of a 2D gaussian of width w, HWHM = sqrt(2*log(2))*w
 		if self.filter_bool == True and self.sigma != 0:
 			self.sigma_real = self.sigma*self.L/(self.pix-1) # Convert pixels to real-space units
-			circ = plt.Circle((self.L/8,self.L/8),self.sigma_real*np.sqrt(2*np.log(2)),fill=True,color='white',alpha=0.5)
+			square = plt.Rectangle((-3*self.L/8 - 2*self.sigma_real,-3*self.L/8 - 2*self.sigma_real), 4*self.sigma_real, 4*self.sigma_real, fc='black',ec='white')
+			circ = plt.Circle((-3*self.L/8,-3*self.L/8),self.sigma_real*np.sqrt(2*np.log(2)),fill=True,color='white',alpha=0.5)
+			ax00.add_artist(square)
 			ax00.add_artist(circ)
 
 		from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
@@ -2625,21 +2629,20 @@ class SimulatorWidget(QWidget):
 		groupBox.setToolTip("Low pass filter the data")
 		vlayout = QVBoxLayout(self)
 
-		self.filter_btn = QCheckBox("Filter (pix)")
+		self.filter_btn = QCheckBox("Filter")
 		self.filter_btn.setChecked(False)
 		self.filter_btn.stateChanged.connect(self.updateSigma)
 		self.filter_btn.setToolTip("Check to filter")
-		# self.calc_btn_grp = QButtonGroup()
-		# self.calc_btn_grp.addButton(self.calc_topo_btn, 1)
-
-		
 
 		# Create vt input text box
 		self.sigma_input = QLineEdit(self)
 		self.sigma_input.returnPressed.connect(self.updateSigma) # Connect this intput dialog whenever the enter/return button is pressed
 		self.sigma_input.setPlaceholderText(str(self.sigma))
-		self.sigma_input.setFixedWidth(60)
+		self.sigma_input.setFixedWidth(50)
 		self.sigma_input.setToolTip("Set size of gaussian mask (in real space)")
+
+		self.sigmaUnitLabel = QLabel('pix', self)
+		self.sigmaUnitLabel.setMinimumWidth(30)
 
 		self.sigma_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update!
 		self.sigma_btn.clicked.connect(self.updateSigma)
@@ -2649,11 +2652,6 @@ class SimulatorWidget(QWidget):
 		self.sigma_label = QLabel("Sigma:", self)
 
 		self.sigma_real_label = QLabel("     %.2f nm"  % (self.sigma_real), self)
-		# self.sigma_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
-		# self.sigma_label.setMinimumWidth(40)
-		# self.vt_nm_label = QLabel(" nm/s", self)
-		# self.vt_nm_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
-		# self.vt_nm_label.setMinimumWidth(30)
 
 
 		hbox = QHBoxLayout(self)
@@ -2667,7 +2665,7 @@ class SimulatorWidget(QWidget):
 		hbox2 = QHBoxLayout(self)
 		hbox2.addWidget(self.sigma_label)
 		hbox2.addWidget(self.sigma_input)
-		# hbox.addWidget(self.vt_nm_label)
+		hbox2.addWidget(self.sigmaUnitLabel)
 		hbox2.addWidget(self.sigma_btn)
 		# hbox2.setSpacing(2)
 
