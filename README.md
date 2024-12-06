@@ -6,7 +6,8 @@ Simulates scanning probe microscopy (SPM) images
 (Formerly named: SPM Simulator, Atom Simulator)
 
 
-<img width="350" alt="image" src="https://user-images.githubusercontent.com/38303099/220842967-6bba9f6e-c6bb-4c8b-ba37-f24e27c49212.png">
+![image](https://github.com/user-attachments/assets/a84ece07-8a82-46be-b27d-05cc498e37b8)
+
 
 ### Dependencies:
 - Python 3
@@ -42,19 +43,20 @@ For any other issues or crash reports, suggestions, contact asariprado@physics.u
 ##
 ## How to use 
 
-<img width="900" alt="image" src="https://github.com/user-attachments/assets/d3758b78-b696-4f70-9617-48d13223fcc9">
+![image](https://github.com/user-attachments/assets/f3d1196a-62d0-4daf-84bc-4a5d23210d06)
 
 Note that all fields accept typical mathematical operations in python and NumPy such as `+` `-` `*` `/` `sqrt` `log` and all valid NumPy functions `func` can be called via `np.func()`. 
 
-1. Number of lattices (moiré, CDW, superlattice)
+1. **Number of lattices** (moiré, CDW, superlattice) and **Moiré model** (Simple, Log)
     - Choose to simulate a 1, 2 or 3 layer lattice
        - Lattice 1 parameters change the single/first layer.
        - Lattice 2 only works if bilayer/trilayer are selected. These change the second lattice.
        - Lattice 3 only works if trilayer is selected. These change the third lattice.
-   - `eta`, $\eta$ : A phenomenological parameter we use to weigh the relative strength of the sum of lattices, $Z_1 + Z_2$, versus the product of lattices, $Z_1 * Z_2$. $\eta$ is a real number between 0 and 1: The moiré/superlattice image for $\eta=1$ is purely the product and $\eta=0$ purely the sum.
-   - If $Z_1$ and $Z_2$ are two periodic lattices, the superimposed moiré/superlattice image is approximated as $Z_{moire} = (1-\eta)(Z_1 + Z_2) + \eta Z_1Z_2$ This toy model provides a good match to both experimental STM images and their Fourier transforms.
-   - Similarly, for three periodic lattices, the moiré/superlattice image is approximated as $Z_{moire} = (1-\eta)(Z_1 + Z_2 + Z_3) + \eta Z_1Z_2Z_3$.
-   - For an alternative method for simulating SPM images that may be implemented in future releases, see F. Joucken, et al. <a href="https://doi.org/10.1016/j.carbon.2014.11.030" target="_blank" rel="noopener noreferrer"> *Carbon* **83**, 48 (2015). </a>
+   - Choose the model to simulate the moiré/CDW/superlattice
+       - `Simple`: This minimal toy model approximates the moiré image, $T_M$, as the weighted sum between the sum of the individual lattices, $\sum_l Z_l$, and the product of the lattices, $\prod_l Z_l$ and is given by $T_M \propto (1-\eta)\sum_l Z_l + \eta\prod_L Z_l$. This toy model provides a good match to experimental STM images and offers a wide image contrast. However, the Fourier transforms -- by design -- contains only the first order atomic Bragg and moiré lattice peaks. The image is normalized such that $0\leq T_M \leq 1$.
+           - `eta`, $\eta$ : A phenomenological parameter we use to weigh the relative strength of the sum of lattices, $\sum_l Z_l$, to the product of lattices, $\prod_L Z_l$. $\eta$ is a real number between 0 and 1: The moiré/superlattice image for $\eta=0$ purely the sum and $\eta=1$ is purely the product.
+       - `Log`: This model, described by Joucken *et al* (<a href="https://doi.org/10.1016/j.carbon.2014.11.030" target="_blank" rel="noopener noreferrer"> *Carbon* **83**, 48 (2015). </a>) is rooted in the constant-current tunneling process and takes into account the distance of the multilayers to the STM tip. The moiré/superlattice image, $T_M^L$, is approximated as $T_M^L \propto \ln|Z_1 + Z_2 e^{-\xi}|$ (bilayer) or $T_M^L \propto \ln|Z_1 + Z_2 e^{-\xi} + Z_3 e^{-2\xi}|$ (trilayer). This model provides a good match to both experimental STM images and their Fourier transforms, at the cost of limited image contrast.
+           - `xi`, $\xi$ : The ratio of the inter-layer distance, $d$, and out-of-plane wavefunction decay length, $\lambda$: $\xi = d/\lambda$. $\xi$ is a real number between 0 and 10: For $\xi=0$, the intensity of the lattices is maximized; for $\xi$ = 10, only the top lattice, $Z_1$, is imaged.            
 
 2. Image parameters
     - `Real resolution`: Current spatial resolution, defined as L/pix, in units of nm/pix.
@@ -125,6 +127,7 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 ## Examples
 1. Twisted bilayer graphene with $1.1^\circ$ twist angle.
     - `Moire lattice`: bilayer
+    - `Simple`
     -  `eta` $\eta$ : 0.5
     - `L = 35`
     - `Pixels = 1024`
@@ -151,6 +154,7 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 
 2. 1T-TaS2 with $(\sqrt{13}\times\sqrt{13})R13.9^\circ$ charge density wave superlattice.
     - `Moire lattice`: bilayer
+    - `Simple`
     - `eta` $\eta$ : 0.5
     - `L = 7`
     - `Pixels = 256`
@@ -176,6 +180,7 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 
 3. 2H-NbSe2 with $(3\times 3)R0^\circ$ charge density wave superlattice.
     - `Moire lattice`: bilayer
+    - `Simple`
     - `eta` $\eta$ : 0.5
     - `L = 7`
     - `Pixels = 256`
@@ -201,6 +206,7 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 
 4. Kekule-O (trivial) distorted graphene with $(\sqrt{3}\times\sqrt{3})R30^\circ$ superlattice.
     - `Moire lattice`: bilayer
+    - `Simple`
     - `eta` $\eta$ : 0.5
     - `L = 7`
     - `Pixels = 256`
@@ -226,6 +232,7 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 
  5. Kekule-O (topological) distorted graphene with $(\sqrt{3}\times\sqrt{3})R30^\circ$ superlattice.
     - `Moire lattice`: bilayer
+    - `Simple`
     - `eta` $\eta$ : 0.5
     - `L = 7`
     - `Pixels = 256`
