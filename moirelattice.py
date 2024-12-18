@@ -77,7 +77,6 @@ def moirelattice(pix, L, a1, a2, a3, moireBtn, modeBtn, lattice1, lattice2, latt
 
 
         if filter_bool == True: 
-
             Z = gaussian_filter(Z, sigma,mode='mirror')
        
         fftZ = np.abs(npf.fftshift(npf.fft2(Z - np.mean(np.mean(Z)))))

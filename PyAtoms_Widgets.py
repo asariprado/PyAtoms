@@ -114,16 +114,12 @@ class SimulatorWidget(QWidget):
 		self.vmax_fft = 0.5
 		self.colormap_RS = 'magma'
 		self.colormap_FFT = 'Blues_r'
-		self.colormapList = ['magma', 'magma_r','viridis', 'viridis_r', 'plasma', 'plasma_r', 'inferno', 'inferno_r', 'Greys', 'Greys_r',
-							'cividis', 'cividis_r','bone','bone_r','Blues', 'Blues_r','Purples',  'Purples_r',   'Greens', 'Greens_r', 
-							'Oranges', 'Oranges_r','Reds','Reds_r','YlOrBr','YlOrBr_r', 'YlOrRd', 'YlOrRd_r', 'OrRd', 'OrRd_r', 'PuRd', 'PuRd_r', 
-							'RdPu', 'RdPu_r', 'BuPu', 'BuPu_r','GnBu', 'GnBu_r', 'PuBu', 'PuBu_r',  'YlGnBu', 'YlGnBu_r', 'PuBuGn', 'PuBuGn_r', 
-							'BuGn', 'BuGn_r', 'YlGn', 'YlGn_r','pink','pink_r','hot', 'hot_r', 'afmhot', 'afmhot_r', 'gist_heat', 'gist_heat_r',
-				            'PiYG',  'PiYG_r', 'PRGn','PRGn_r', 'BrBG', 'BrBG_r', 'PuOr', 'PuOr_r', 'RdGy','RdGy_r', 'RdBu','RdBu_r',
-         				   	'RdYlBu', 'RdYlBu_r', 'RdYlGn','RdYlGn_r', 'Spectral', 'Spectral_r', 'coolwarm', 'coolwarm_r', 'bwr', 'bwr_r', 
-         				   	'seismic','seismic_r',  'twilight', 'twilight_r', 'twilight_shifted', 'twilight_shifted_r',  'hsv', 'hsv_r',
-				            'ocean', 'ocean_r', 'gist_earth', 'gist_earth_r', 'terrain', 'terrain_r','gnuplot2','gnuplot2_r', 'CMRmap', 'CMRmap_r',
-				            'gist_rainbow', 'gist_rainbow_r', 'rainbow','rainbow_r', 'jet', 'jet_r']
+		self.colormapList = ['magma', 'magma_r','viridis', 'viridis_r','inferno', 'inferno_r', 'Greys', 'Greys_r',
+							'cividis', 'cividis_r','bone','bone_r','Blues', 'Blues_r','Purples',  'Purples_r',
+							'Oranges', 'Oranges_r','YlOrBr','YlOrBr_r', 'YlOrRd', 'YlOrRd_r',
+							'BuPu', 'BuPu_r','GnBu', 'GnBu_r', 'PuBu', 'PuBu_r',  'YlGnBu', 'YlGnBu_r',
+							'pink','pink_r', 'gist_heat', 'gist_heat_r', 'RdBu','RdBu_r',
+         				   	'RdYlBu', 'RdYlBu_r', 'Spectral', 'Spectral_r', 'bwr', 'bwr_r']
 
 
 		self.figure =plt.figure(figsize=(10,10))
@@ -197,7 +193,7 @@ class SimulatorWidget(QWidget):
 
 
 		# Length of image
-		self.length_Label = QLabel("L: ")
+		self.length_Label = QLabel("Image length, L: ")
 		self.length_Label.setToolTip("Length of image in nanometers") 
 		self.L_input = QLineEdit(self)
 		self.L_input.returnPressed.connect(self.updateL) # Connect this intput dialog whenever the enter/return button is pressed
@@ -226,7 +222,7 @@ class SimulatorWidget(QWidget):
 
 
 		# Image twist angle theta
-		self.theta_label = QLabel("Theta:")
+		self.theta_label = QLabel("Scan angle, \u03b8:")
 		self.theta_label.setToolTip("Rotates the entire image by the input offset angle") 
 		self.theta_im_input = QLineEdit(self)
 		self.theta_im_input.returnPressed.connect(self.updateTheta) # Connect this intput dialog whenever the enter/return button is pressed
@@ -254,7 +250,7 @@ class SimulatorWidget(QWidget):
 		vlayout.addLayout(hbox3) # Add the widgets and value text to the groupbox
 
 				# Center or image offset
-		self.center_label = QLabel("Offset:")
+		self.center_label = QLabel("Image offset:")
 		self.center_label.setToolTip("x,y distance (nm) to offset the center of the image. Default is no offset: 0,0")
 		self.center_input = QLineEdit(self)
 		self.center_input.returnPressed.connect(self.updateCenter) # Connect this input dialog whenever the enter/return button is pressed
@@ -361,7 +357,7 @@ class SimulatorWidget(QWidget):
 			x = self.L_error.exec()
 
 	def updateResolutions(self):
-		self.realResolution = self.L/self.pix
+		self.realResolution = self.L/(self.pix-1)
 		self.kResolution = 2*pi/self.L
 		self.pix_res_label.setText("Real resolution: " + "       %.3f nm/pix"  % (self.realResolution) +
 		 "\nK-space resolution: " + "%.3f nm⁻¹/pix"  % (self.kResolution))
@@ -416,7 +412,7 @@ class SimulatorWidget(QWidget):
 			x = self.center_error.exec()		
 
 	def initMoireBtn(self):
-		groupBox = QGroupBox("Number of lattices (moir\u00e9, CDW, superlattice)")
+		groupBox = QGroupBox("Number of lattices (for moir\u00e9, CDW, or superlattice) and multilayer model (simple, log)")
 		groupBox.setToolTip("Choose whether to create a moir\u00e9/superlattice pattern with two or three lattices, or plot only a single lattice")
 
 		self.noMoire = QRadioButton("Single")
@@ -788,10 +784,10 @@ class SimulatorWidget(QWidget):
 		### Pick lattice 1 symmetry ###
 		self.symm_label = QLabel("Symmetry:", self)
 		self.symm_label.setToolTip("Choose symmetry of first lattice")
-		self.hex1btn = QRadioButton("Hexagonal")
+		self.hex1btn = QRadioButton("Triangular/Hexagonal")
 		self.sq1btn = QRadioButton("Square")
 		self.hex1btn.setChecked(True)
-		self.hex1btn.setToolTip("Create hexagonal lattice")
+		self.hex1btn.setToolTip("Create triangular/hexagonal lattice")
 		self.sq1btn.setToolTip("Create square lattice")
 
 		# Connect btn to update functions when clicked https://www.tutorialspoint.com/pyqt/pyqt_qpushbutton_widget.htm
@@ -1081,10 +1077,10 @@ class SimulatorWidget(QWidget):
 		### Pick lattice 2 symmetry ###
 		self.symm_label = QLabel("Symmetry:", self)
 		self.symm_label.setToolTip("Choose symmetry of second lattice")
-		self.hex2btn = QRadioButton("Hexagonal")
+		self.hex2btn = QRadioButton("Triangular/Hexagonal")
 		self.sq2btn = QRadioButton("Square")
 		self.hex2btn.setChecked(True)
-		self.hex2btn.setToolTip("Create hexagonal lattice")
+		self.hex2btn.setToolTip("Create triangular/hexagonal lattice")
 		self.sq2btn.setToolTip("Create square lattice")
 
 		# Connect btn to update functions when clicked https://www.tutorialspoint.com/pyqt/pyqt_qpushbutton_widget.htm
@@ -1403,10 +1399,10 @@ class SimulatorWidget(QWidget):
 		### Pick lattice 3 symmetry ###
 		self.symm_label = QLabel("Symmetry:", self)
 		self.symm_label.setToolTip("Choose symmetry of third lattice")
-		self.hex3btn = QRadioButton("Hexagonal")
+		self.hex3btn = QRadioButton("Triangular/Hexagonal")
 		self.sq3btn = QRadioButton("Square")
 		self.hex3btn.setChecked(True)
-		self.hex3btn.setToolTip("Create hexagonal lattice")
+		self.hex3btn.setToolTip("Create triangular/hexagonal lattice")
 		self.sq3btn.setToolTip("Create square lattice")
 
 		# Connect btn to update functions when clicked https://www.tutorialspoint.com/pyqt/pyqt_qpushbutton_widget.htm
@@ -2649,7 +2645,7 @@ class SimulatorWidget(QWidget):
 		self.sigma_btn.setAutoDefault(False)
 
 		# Define label to display the value of the slider next to the textbox
-		self.sigma_label = QLabel("Sigma:", self)
+		self.sigma_label = QLabel("Gaussian width, \u03c3:", self)
 
 		self.sigma_real_label = QLabel("     %.2f nm"  % (self.sigma_real), self)
 
