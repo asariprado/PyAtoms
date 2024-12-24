@@ -170,7 +170,7 @@ class SimulatorWidget(QWidget):
 		## From https://doc.qt.io/qt-6/qlineedit.html#editingFinished
 		# self.pix_input.editingFinished.connect(self.updatePix) # nvm it doesnt work correctly
 		self.pix_input.setPlaceholderText(str(self.pix))
-		self.pix_input.setFixedWidth(100)
+		self.pix_input.setFixedWidth(70)
 		self.pix_input.setToolTip("Create a square (pix x pix) image")
 
 		self.pix_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update!
@@ -199,7 +199,7 @@ class SimulatorWidget(QWidget):
 		self.L_input.returnPressed.connect(self.updateL) # Connect this intput dialog whenever the enter/return button is pressed
 		# self.L_input.returnPressed.connect(self.update_vt) # Connect to update_vt function to calculate the new estimate time of STM image bc it depends on the length of image
 		self.L_input.setPlaceholderText(str(self.L))
-		self.L_input.setFixedWidth(100)
+		self.L_input.setFixedWidth(70)
 		self.L_input.setToolTip("Length of image in nanometers") 
 
 		# Literally just creates the little label next to the text box that says the units
@@ -227,7 +227,7 @@ class SimulatorWidget(QWidget):
 		self.theta_im_input = QLineEdit(self)
 		self.theta_im_input.returnPressed.connect(self.updateTheta) # Connect this intput dialog whenever the enter/return button is pressed
 		self.theta_im_input.setPlaceholderText(str(self.theta_im))
-		self.theta_im_input.setFixedWidth(100)
+		self.theta_im_input.setFixedWidth(70)
 		self.theta_im_input.setToolTip("Rotates the entire image by the input offset angle")
 
 		# Literally just creates the little label next to the text box that says the units
@@ -258,7 +258,7 @@ class SimulatorWidget(QWidget):
 		## From https://doc.qt.io/qt-6/qlineedit.html#editingFinished
 		# self.pix_input.editingFinished.connect(self.updatePix) # nvm it doesnt work correctly
 		self.center_input.setPlaceholderText(str(self.center))
-		self.center_input.setFixedWidth(100)
+		self.center_input.setFixedWidth(70)
 		self.center_input.setToolTip("Input the offset (nm, nm) for the image. Default is (0,0)")
 
 		self.center_btn = QPushButton("Go", self) # Create a QPushButton so users can press enter and/or click this button to update!
