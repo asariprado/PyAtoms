@@ -43,7 +43,8 @@ For any other issues or crash reports, suggestions, contact asariprado@physics.u
 ##
 ## How to use 
 
-![image](https://github.com/user-attachments/assets/f3d1196a-62d0-4daf-84bc-4a5d23210d06)
+![Screenshot 2024-12-17 at 8 42 59 PM](https://github.com/user-attachments/assets/12c27ad4-588d-4e15-a0f3-f4582a5a200e)
+
 
 Note that all fields accept typical mathematical operations in python and NumPy such as `+` `-` `*` `/` `sqrt` `log` and all valid NumPy functions `func` can be called via `np.func()`. 
 
@@ -61,17 +62,17 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 2. Image parameters
     - `Real resolution`: Current spatial resolution, defined as L/pix, in units of nm/pix.
     - `K-space resolution`: Current spatial resolution in reciprocal space, defined as 2π/L, in units of nm⁻¹/pix.
-    - `pixels`: number of pixels. Must be an integer or a mathematical expression of integers.
-    - `L`: length of the image window in nanometers. Must be a real number or a mathematical expression of real numbers.
-    - `theta`: Rotation (counter-clockwise) of the atomic lattice. Must be a real number or a mathematical expression of real numbers.
-    - `Offset`: Location of center of image. Must be a pair of real numbers, or a mathematical expression of real numbers, separated by a comma, e.g. -1.2,4.5.
+    - `Pixels`: number of pixels. Must be an integer or a mathematical expression of integers.
+    - `Image length, L`: length of the image window in nanometers. Must be a real number or a mathematical expression of real numbers.
+    - `Scan angle, θ`: Rotation (counter-clockwise) of the atomic lattice. Must be a real number or a mathematical expression of real numbers.
+    - `Image offset`: Location of center of image. Must be a pair of real numbers, or a mathematical expression of real numbers, separated by a comma, e.g. -1.2,4.5.
 
 3. Colormap
     -  `Real space image`: colormap of the real space simulated atomic lattice.
     -  `FFT`: colormap of the 2D fast Fourier transform.
     
 4. Low pass filtering
-    - `sigma`: radius of a Gaussian mask in real space in units of pixels. The half-width at half-max of the gaussian is shown as a white circle in the bottom left corner of the image.
+    - `Gaussian width, σ`: radius of a Gaussian mask in real space in units of pixels. The half-width at half-max of the gaussian is shown as a white circle in the bottom left corner of the image.
     - The radius of the gaussian mask in nanometers is shown in the text box.
 
 5. Save files
@@ -98,7 +99,7 @@ Note that all fields accept typical mathematical operations in python and NumPy 
 
 8. Lattices
     - Parameters tab
-       - `symmetry`: Choose to simulate either a hexagonal (triangular/honeycomb) or square lattice.
+       - `symmetry`: Choose to simulate either a triangular/hexagonal or square lattice.
        - `Lattice constant`: periodicity/spacing between atoms in nanometers.
        - `Twist angle`: twists the second lattice with respect to the first lattice (in Lattice 2 params) // twists the third lattice with respect to the second lattice (in Lattice 3 params)
 
