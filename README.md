@@ -204,8 +204,16 @@ Note that all fields accept typical mathematical operations in python and NumPy 
    ![2H-NbSe2](https://user-images.githubusercontent.com/62832051/182723639-dc7b7277-1328-4ecd-8913-8428cc38331f.png)
    ![2H-NbSe2_FFT](https://user-images.githubusercontent.com/62832051/182723651-0ced0fed-5f33-4a78-bbc4-d9bf321e9811.png)
 
+   Here is an example where PyAtoms can simulate real data.
+    
+   Top: Experimental measurement of NbSe2 showing a CDW phase gradient from bond- to site-centered from Sanna *et al* <a href="https://rdcu.be/dSFwq" target="_blank" rel="noopener noreferrer"> *npj Quantum Materials* **7**, 6 (2022). </a>
 
-4. Kekule-O (trivial) distorted graphene with $(\sqrt{3}\times\sqrt{3})R30^\circ$ superlattice.
+   Bottom: PyAtoms simulation of this phase gradient by adding a small discommensuration term, δ, so that the CDW superlattice is given by (3 + δ)x(3 + δ)R0°.
+
+   <img width="489" alt="image" src="https://github.com/user-attachments/assets/c61bf104-e246-4d5a-8032-232ca81e0c39" />
+
+
+5. Kekule-O (trivial) distorted graphene with $(\sqrt{3}\times\sqrt{3})R30^\circ$ superlattice.
     - `Moire lattice`: bilayer
     - `Simple`
     - `eta` $\eta$ : 0.5
@@ -231,7 +239,7 @@ Note that all fields accept typical mathematical operations in python and NumPy 
     ![Kekule-O trivial_FFT](https://user-images.githubusercontent.com/62832051/182722894-8a1e5cc1-afaa-41c3-8d5a-ee098aed254d.png)
 
 
- 5. Kekule-O (topological) distorted graphene with $(\sqrt{3}\times\sqrt{3})R30^\circ$ superlattice.
+ 6. Kekule-O (topological) distorted graphene with $(\sqrt{3}\times\sqrt{3})R30^\circ$ superlattice.
     - `Moire lattice`: bilayer
     - `Simple`
     - `eta` $\eta$ : 0.5
