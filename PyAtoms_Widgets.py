@@ -412,7 +412,7 @@ class SimulatorWidget(QWidget):
 			x = self.center_error.exec()		
 
 	def initMoireBtn(self):
-		groupBox = QGroupBox("Number of lattices (for moir\u00e9, CDW, or superlattice) and multilayer model (simple, log)")
+		groupBox = QGroupBox("Number of lattices and multilayer model")
 		groupBox.setToolTip("Choose whether to create a moir\u00e9/superlattice pattern with two or three lattices, or plot only a single lattice")
 
 		self.noMoire = QRadioButton("Single")
@@ -2733,17 +2733,18 @@ class SimulatorWidget(QWidget):
 	
 	def updateHarryCounter(self): # Open harry spotify link after every 250 changes a user makes :) 
 		if self.harry_counter % 250 == 0:
+			return
 
-			self.harry_window = QMessageBox()
-			self.harry_window.setText("Thank you for using PyAtoms! Enjoy some Harry Styles :)")
-			self.harry_window.setInformativeText("Music recommendation courtesy of asariprado@physics.ucla.edu")
-			self.harry_window.setIcon(QMessageBox.Information)
-			self.harry_window.setStandardButtons(QMessageBox.Open | QMessageBox.Cancel)
-			x = self.harry_window.exec()			
+			# self.harry_window = QMessageBox()
+			# self.harry_window.setText("Thank you for using PyAtoms! Enjoy some Harry Styles :)")
+			# self.harry_window.setInformativeText("Music recommendation courtesy of asariprado@physics.ucla.edu")
+			# self.harry_window.setIcon(QMessageBox.Information)
+			# self.harry_window.setStandardButtons(QMessageBox.Open | QMessageBox.Cancel)
+			# x = self.harry_window.exec()			
 
-			if x == 8192: # 8192 is the code corresponding to the 'Open' button being clicked
-				self.url = 'https://open.spotify.com/album/5r36AJ6VOJtp00oxSkBZ5h?si=RVB4b2eNR6iBZH4vQln6rQ'
-				webbrowser.open(self.url)
+			# if x == 8192: # 8192 is the code corresponding to the 'Open' button being clicked
+			# 	self.url = 'https://open.spotify.com/album/5r36AJ6VOJtp00oxSkBZ5h?si=RVB4b2eNR6iBZH4vQln6rQ'
+			# 	webbrowser.open(self.url)
 
 	# TO SUPPRESS QLAYOUT WARNING IN TERMINAL. from: https://stackoverflow.com/questions/25660597/hide-critical-pyqt-warning-when-clicking-a-checkboc
 	def handler(msg_type, msg_log_context, msg_string):
