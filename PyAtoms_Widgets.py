@@ -1718,7 +1718,7 @@ class SimulatorWidget(QWidget):
 	def updateLattice1(self):
 		radio_btn = self.sender()
 		if radio_btn.isChecked():
-			if radio_btn.text() == "Hexagonal":
+			if radio_btn.text() == "Triangular/Hexagonal":
 				self.lattice1 = "Hexagonal"
 			elif radio_btn.text() == "Square":
 				self.lattice1 = "Square"
@@ -1731,7 +1731,7 @@ class SimulatorWidget(QWidget):
 	def updateLattice2(self):
 		radio_btn = self.sender()
 		if radio_btn.isChecked():
-			if radio_btn.text() == "Hexagonal":
+			if radio_btn.text() == "Triangular/Hexagonal":
 				self.lattice2 = "Hexagonal"
 			elif radio_btn.text() == "Square":
 				self.lattice2 = "Square"
@@ -1743,7 +1743,7 @@ class SimulatorWidget(QWidget):
 	def updateLattice3(self):
 		radio_btn = self.sender()
 		if radio_btn.isChecked():
-			if radio_btn.text() == "Hexagonal":
+			if radio_btn.text() == "Triangular/Hexagonal":
 				self.lattice3 = "Hexagonal"
 			elif radio_btn.text() == "Square":
 				self.lattice3 = "Square"
