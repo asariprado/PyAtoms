@@ -13,6 +13,7 @@ Simulates scanning probe microscopy (SPM) images
 - Python 3
 - NumPy
 - Matplotlib
+- SciPy
 - PyQt5 
 
 ## Installation instructions - Mac OS and Windows. (Not tested on Linux systems)
