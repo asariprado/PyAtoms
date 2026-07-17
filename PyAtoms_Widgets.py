@@ -43,6 +43,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 # NavigationToolbar2QT: It will provide the tool bar for the matplotlib figs (zooming in, panning, saving image, etc)
 # https://www.geeksforgeeks.org/how-to-embed-matplotlib-graph-in-pyqt5/
 
+from scipy.ndimage import gaussian_filter
+
+import traceback
 
 from hexatoms import hexatoms
 from squareatoms import squareatoms
@@ -146,6 +149,460 @@ class SimulatorWidget(QWidget):
 		
 
 		self.harry_counter = 0 
+
+		# drift simulation defaults
+		self.drift_bool = False
+		self.drift_velocity = (0.0, 0.0)
+		self.drift_vx = 0.0
+		self.drift_vy = 0.0
+		self.fast_scan_direction = "Horizontal"
+
+	def initDriftParameters(self):
+		"""
+		creates GUI controls for the STM drift simulation
+
+		simulates what the STM would display if the sample drifts relative to the tip
+		"""
+
+		# make a boxed gui section
+		groupBox = QGroupBox("Raw STM drift")
+		groupBox.setToolTip(
+			"Simulate the raw image an STM would record if the sample drifts relative to the lab."
+		)
+
+		# main vertical layout for this box
+		vlayout = QVBoxLayout()
+
+		# checkbox
+		self.drift_checkbox = QCheckBox("Show raw drifted image")
+		self.drift_checkbox.setChecked(self.drift_bool)
+		self.drift_checkbox.setToolTip(
+			"If checked, the real-space image is sampled as if the sampel drifted during the scan."
+		)
+		self.drift_checkbox.stateChanged.connect(self.updateDriftSettings)
+		vlayout.addWidget(self.drift_checkbox)
+
+		# drift velocity input
+		self.drift_velocity_label = QLabel("Drift velocity:")
+		self.drift_velocity_label.setToolTip(
+			"Sample drift velocity relative to the tip as vx, vy in nm/s."
+		)
+
+		# acceptable
+		# 0.01, 0
+		# (0.01, 0)
+		# -0.02, 0.015
+		self.drift_velocity_input = QLineEdit(self)
+		self.drift_velocity_input.setPlaceholderText(str(self.drift_velocity))
+		self.drift_velocity_input.setFixedWidth(95)
+		self.drift_velocity_input.setToolTip(
+			"Input sample drift velocity as vx, vy in nm/s. Example: 0.01, -0.02"
+		)
+
+		self.drift_velocity_input.returnPressed.connect(self.updateDriftSettings)
+
+		self.drift_velocity_units = QLabel("nm/s", self)
+		self.drift_velocity_units.setMinimumWidth(35)
+
+		self.drift_velocity_btn = QPushButton("Go", self)
+		self.drift_velocity_btn.clicked.connect(self.updateDriftSettings)
+		self.drift_velocity_btn.setAutoDefault(False)
+
+		hbox_velocity = QHBoxLayout()
+		hbox_velocity.addWidget(self.drift_velocity_label)
+		hbox_velocity.addWidget(self.drift_velocity_input)
+		hbox_velocity.addWidget(self.drift_velocity_units)
+		hbox_velocity.addWidget(self.drift_velocity_btn)
+
+		vlayout.addLayout(hbox_velocity)
+
+		self.fast_scan_label = QLabel("Fast scan:")
+		self.fast_scan_label.setToolTip(
+			"Choose whether the saved forward scan is horizontal or vertical."
+		)
+
+		self.fast_scan_dropdown = QComboBox(self)
+		self.fast_scan_dropdown.addItems(["Horizontal", "Vertical"])
+		self.fast_scan_dropdown.setCurrentText(self.fast_scan_direction)
+		 
+		self.fast_scan_dropdown.activated[str].connect(self.updateDriftSettings)
+		
+		hbox_fast = QHBoxLayout()
+		hbox_fast.addWidget(self.fast_scan_label)
+		hbox_fast.addWidget(self.fast_scan_dropdown)
+
+		vlayout.addLayout(hbox_fast)
+
+		vlayout.setSpacing(3)
+
+		groupBox.setLayout(vlayout)
+
+		return groupBox
+
+	def updateDriftSettings(self):
+		"""
+		Read the drift GUI inputs and redraw the image.
+
+		This stores:
+		- whether raw drift simulation is enabled
+		- sample drift velocity vector (vx, vy)
+		- horizontal or vertical fast scan
+		"""
+
+		try:
+			# Check whether the drift checkbox is turned on
+			self.drift_bool = self.drift_checkbox.isChecked()
+
+			# Only update the velocity if the input box is not empty.
+			if self.drift_velocity_input.text().strip() != "":
+
+				# Read the text from the box
+				velocity_text = self.drift_velocity_input.text().strip()
+
+				# Allow either:
+				# 0.01, -0.02
+				# or:
+				# (0.01, -0.02)
+				velocity_text = velocity_text.replace("(", "")
+				velocity_text = velocity_text.replace(")", "")
+
+				# Split into vx and vy
+				velocity_parts = velocity_text.split(",")
+
+				# There must be exactly two values
+				if len(velocity_parts) != 2:
+					raise ValueError("Drift velocity must have exactly two comma-separated values.")
+
+				# Convert both values to floats
+				vx = float(velocity_parts[0].strip())
+				vy = float(velocity_parts[1].strip())
+
+				# Save drift velocity
+				self.drift_velocity = (vx, vy)
+
+				# Update placeholder
+				self.drift_velocity_input.setPlaceholderText(str(self.drift_velocity))
+
+			# Read the fast scan direction
+			self.fast_scan_direction = self.fast_scan_dropdown.currentText()
+
+			# Redraw the image
+			self.plotAtoms()
+
+			# Keep Harry counter behavior
+			self.harry_counter += 1
+			self.updateHarryCounter()
+
+		except ValueError:
+			# This is specifically for bad velocity input
+			self.drift_error = QMessageBox()
+			self.drift_error.setWindowTitle("Error")
+			self.drift_error.setText(
+				"Type a valid drift velocity pair, e.g. 0.01, -0.02."
+			)
+			self.drift_error.setInformativeText(
+				"Your input for drift velocity is: " + str(self.drift_velocity_input.text())
+			)
+			self.drift_error.setIcon(QMessageBox.Warning)
+			self.drift_error.setStandardButtons(QMessageBox.Retry)
+			x = self.drift_error.exec()
+
+		except Exception:
+			# This catches the REAL crash and shows the traceback instead of quitting
+			self.drift_error = QMessageBox()
+			self.drift_error.setWindowTitle("Drift simulation error")
+			self.drift_error.setText("Something went wrong while applying drift.")
+			self.drift_error.setInformativeText(traceback.format_exc())
+			self.drift_error.setIcon(QMessageBox.Critical)
+			self.drift_error.setStandardButtons(QMessageBox.Retry)
+			x = self.drift_error.exec()
+
+	def drift_mat2gray(self, Z_un):
+		"""
+		normalize an image to the range [0, 1]
+		"""
+		zmin = np.min(Z_un)
+		zmax = np.max(Z_un)
+
+		if zmax == zmin:
+			return np.ones_like(Z_un)
+		
+		return (Z_un - zmin) / (zmax - zmin)
+	
+	def evaluateHexLatticeAtCoords(self, X, Y, a, theta, e11, e12, e22, alpha, beta, origin):
+		"""
+		evaluate a hexagonal pyatoms lattice directly at coordinates x, y
+		
+		mirrors logic in hexatoms but instead of generating the lattice
+		on the standard mesh, it evaluates it at whatever coordinates
+		we pass in
+		"""
+
+		X0 = self.center[0]
+		Y0 = self.center[1]
+
+		k1 = (2*np.pi/a) * np.array([
+			1 - e11 - (e12/np.sqrt(3)),
+			(1/np.sqrt(3)) - e12 - (e22/np.sqrt(3))
+		])
+
+		k2 = (2*np.pi/a) * np.array([
+			-1 + e11 - (e12/np.sqrt(3)),
+			(1/np.sqrt(3)) + e12 - (e22/np.sqrt(3))
+		])
+
+		k3 = -(k1 + k2)
+
+		theta_rad = np.deg2rad(theta)
+		rotmat = np.array([
+			[np.cos(theta_rad), -np.sin(theta_rad)],
+			[np.sin(theta_rad),  np.cos(theta_rad)]
+		])
+
+		k1 = np.matmul(k1, rotmat)
+		k2 = np.matmul(k2, rotmat)
+		k3 = np.matmul(k3, rotmat)
+
+		k1x, k1y = k1[0], k1[1]
+		k2x, k2y = k2[0], k2[1]
+		k3x, k3y = k3[0], k3[1]
+
+		T = (
+			np.exp(1j*(k1x*(X - X0) + k1y*(Y - Y0))) +
+			np.exp(1j*(k2x*(X - X0) + k2y*(Y - Y0))) +
+			np.exp(1j*(k3x*(X - X0) + k3y*(Y - Y0)))
+		)
+
+		phase = alpha + beta*np.exp(1j*2*np.pi/3)
+
+		if origin == "A-site":
+			pass
+		elif origin == "Hollow":
+			phase *= np.exp(1j*2*np.pi/3)
+		elif origin == "B-site":
+			phase *= np.exp(1j*2*np.pi/3)**2
+
+		Z_un = np.real(T*phase + np.conjugate(T*phase))
+
+		if alpha == 0 and beta == 0:
+			Z = np.ones_like(X)
+		else:
+			Z = self.drift_mat2gray(Z_un)
+
+		return Z
+
+	def evaluateSquareLatticeAtCoords(self, X, Y, a, theta, e11, e12, e22):
+		"""
+		evaluate a square lattice directly at coordinates x, y
+		
+		mirrors logic in squareatoms
+		"""
+
+		X0 = self.center[0]
+		Y0 = self.center[1]
+
+		k1 = (2*np.pi/a) * np.array([1 - e11, -e12])
+		k2 = (2*np.pi/a) * np.array([-e12, 1 - e22])
+
+		theta_rad = np.deg2rad(theta)
+		rotmat = np.array([
+			[np.cos(theta_rad), -np.sin(theta_rad)],
+			[np.sin(theta_rad),  np.cos(theta_rad)]
+		])
+
+		k1 = np.matmul(k1, rotmat)
+		k2 = np.matmul(k2, rotmat)
+
+		k1x, k1y = k1[0], k1[1]
+		k2x, k2y = k2[0], k2[1]
+
+		A = 1/2
+		B = 1/4
+
+		Z = A + B * (
+			np.cos(k1x*(X - X0) + k1y*(Y - Y0)) +
+			np.cos(k2x*(X - X0) + k2y*(Y - Y0))
+		)
+
+		return Z
+	
+	def evaluateLayerAtCoords(self, X, Y, lattice_type, a, theta, e11, e12, e22, alpha, beta, origin):
+		"""
+		evaluate one layer (hex or square) at coords x and y
+		"""
+
+		if lattice_type == 'Hexagonal':
+			return self.evaluateHexLatticeAtCoords(X, Y, a, theta, e11, e12, e22, alpha, beta, origin)
+
+		elif lattice_type == 'Square':
+			return self.evaluateSquareLatticeAtCoords(X, Y, a, theta, e11, e12, e22)
+
+		else:
+			return np.zeros_like(X)
+		
+	def evaluateCurrentStructureAtCoords(self, X, Y):
+		"""
+		evaluate the currently selected structure directly at x, y
+		
+		uses same logic as moirelattice
+		"""
+
+		theta_im = self.theta_im
+		theta_tw12 = self.theta_tw + theta_im
+		theta_tw23 = self.theta_tw2 + self.theta_tw + theta_im
+
+		# layer 1
+		Z1 = self.evaluateLayerAtCoords(
+			X, Y,
+			self.lattice1,
+			self.a,
+			theta_im,
+			self.e11, self.e12, self.e22,
+			self.alpha1, self.beta1,
+			self.origin1
+		)
+
+		
+		if self.moireBtn == 'Single':
+			return Z1
+
+
+		Z2 = self.evaluateLayerAtCoords(
+			X, Y,
+			self.lattice2,
+			self.b,
+			theta_tw12,
+			self.d11, self.d12, self.d22,
+			self.alpha2, self.beta2,
+			self.origin2
+		)
+
+		if self.moireBtn == 'Bilayer':
+
+			if self.modeBtn == 'Simple':
+				eta = self.eta
+
+				if eta < 0.0:
+					eta = 0.0
+				elif eta > 1.0:
+					eta = 1.0
+
+				Z = (eta * Z1 * Z2) + (1 - eta) * (Z1 + Z2)
+
+			elif self.modeBtn == 'Log':
+				xi = self.xi
+
+				if xi < 0.0:
+					xi = 0.0
+				elif xi > 10.0:
+					xi = 10.0
+
+				Z = np.log(1e-6 + Z1 + Z2*np.exp(-xi))
+
+			else:
+				Z = Z1
+
+			if self.filter_bool == True:
+				Z = gaussian_filter(Z, self.sigma, mode='mirror')
+
+			return self.drift_mat2gray(Z)
+
+
+		Z3 = self.evaluateLayerAtCoords(
+			X, Y,
+			self.lattice3,
+			self.c,
+			theta_tw23,
+			self.f11, self.f12, self.f22,
+			self.alpha3, self.beta3,
+			self.origin3
+		)
+
+		if self.moireBtn == 'Trilayer':
+
+			if self.modeBtn == 'Simple':
+				eta = self.eta
+
+				if eta < 0.0:
+					eta = 0.0
+				elif eta > 1.0:
+					eta = 1.0
+
+				Z = (eta * Z1 * Z2 * Z3) + (1 - eta) * (Z1 + Z2 + Z3)
+
+			elif self.modeBtn == 'Log':
+				xi = self.xi
+
+				if xi < 0.0:
+					xi = 0.0
+				elif xi > 10.0:
+					xi = 10.0
+
+				Z = np.log(1e-6 + Z1 + Z2*np.exp(-xi) + Z3*np.exp(-2*xi))
+
+			else:
+				Z = Z1
+
+			if self.filter_bool == True:
+				Z = gaussian_filter(Z, self.sigma, mode='mirror')
+
+			return self.drift_mat2gray(Z)
+
+		return Z1
+		
+
+
+
+
+
+	def applyRawDrift(self, Z_ideal):
+		"""
+		create the drifted STM image
+
+		stm controller thinks it is scanning a normal square raster grid
+		but if the sample drifts relative to the tip during the scan, each pixel
+		actually samples a slightly shifted point on the sample
+		"""
+		if self.drift_bool == False:
+			return Z_ideal
+
+		pix = int(self.pix)
+
+		L = float(self.L)
+
+		vs = float(self.vt)
+
+		if vs == 0:
+			return Z_ideal
+		
+		dx = L / (pix - 1)
+		dy = L / (pix - 1)
+
+		# define pixel (0, 0) to be bottom left
+		rows, cols = np.indices((pix, pix))
+
+		X_scan = -L/2 + cols * dx
+		Y_scan = -L/2 + rows * dy
+
+		if self.fast_scan_direction == "Horizontal":
+			t_acq = rows * (2 * L / vs) + cols * (dx / vs)
+
+		elif self.fast_scan_direction == "Vertical":
+			t_acq = cols * (2 * L / vs) + rows * (dy / vs)
+
+		else:
+			# fore safety fallback use horizontal
+			t_acq = rows * (2 * L / vs) + cols * (dx / vs)
+
+		vx = float(self.drift_velocity[0])
+		vy = float(self.drift_velocity[1])
+
+		X_sample = X_scan + vx * t_acq
+		Y_sample = Y_scan + vy * t_acq
+
+		Z_raw = self.evaluateCurrentStructureAtCoords(X_sample, Y_sample)
+
+		return Z_raw
 
 	def initImageParameters(self):
 		groupBox = QGroupBox("Image parameters")
@@ -2389,7 +2846,15 @@ class SimulatorWidget(QWidget):
 
 			# Normalize the FFTs to be between 0-1 (bc hexatoms only normalizes Z, moirelattice is what normalizes fftZ, but if you chose single lattice, moirelattice code isnt run. so need to normalize the FFT here)
 			self.fftZ = mat2gray(self.fftZ)
-	 
+
+		
+		self.Z_ideal = self.Z.copy()
+
+		self.Z = self.applyRawDrift(self.Z_ideal)
+
+		if self.drift_bool == True:
+			self.fftZ = np.abs(npf.fftshift(npf.fft2(self.Z - np.mean(np.mean(self.Z)))))
+			self.fftZ = self.drift_mat2gray(self.fftZ)
 
 
 		# Create an axis for plotting - the matplotlib gridspec figure was defined in self.__init__ in the GUI app

@@ -98,11 +98,14 @@ class Window(QDialog):
 
         
         grid.addWidget(self.SimWidget.initFiltering(), 0, 3)
-        grid.addWidget(self.SimWidget.initSaveButton(),1, 3)
+        grid.addWidget(self.SimWidget.initSaveButton(), 2, 3)
 
         # Add calculator widgets
         grid.addWidget(self.SimWidget.initCalcWidget(),0,4)
         grid.addWidget(self.SimWidget.initMapCalcWidget(), 1, 4)
+
+        # add drift widget
+        grid.addWidget(self.SimWidget.initDriftParameters(), 0, 5)
 
         # Settings for first lattice
         grid.addWidget(self.SimWidget.initLattice1Parameters(), 0, 0, 3, 1)
