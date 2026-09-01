@@ -1,5 +1,5 @@
-# PyAtoms
-
+# PyAtoms (Old)
+## Note: As of August 2026, all future versions/upgrades of PyAtoms can be found at  <a href="https://github.com/GutierrezPhys/PyAtoms" target="_blank" rel="noopener noreferrer"> https://github.com/GutierrezPhys/PyAtoms </a>
 
 Simulates scanning probe microscopy (SPM) images. Please read our preprint describing PyAtoms: <a href="https://arxiv.org/abs/2412.18332" target="__blank" rel="noopener noreferrer"> https://arxiv.org/abs/2412.18332. </a>
 
